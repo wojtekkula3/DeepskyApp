@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DeepskyApp</string>
+    <string name="nav_menu_picture_of_the_day">Picture of The Day</string>
+    <string name="nav_menu_my_favourite">My favourite</string>
 </resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/pictureOfTheDay">
+
+    <fragment
+        android:id="@+id/pictureOfTheDay"
+        android:name="com.wojciechkula.deepskyapp.presentation.pictureoftheday.PictureOfTheDay"
+        android:label="fragment_picture_of_the_day"
+        tools:layout="@layout/fragment_picture_of_the_day" >
+        <action
+            android:id="@+id/action_pictureOfTheDay_to_favouritePictures"
+            app:destination="@id/favouritePictures" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouritePictures"
+        android:name="com.wojciechkula.deepskyapp.presentation.favouritepictures.FavouritePictures"
+        android:label="fragment_favourite_pictures"
+        tools:layout="@layout/fragment_favourite_pictures" />
+</navigation>
