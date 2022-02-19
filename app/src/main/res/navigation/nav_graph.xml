@@ -9,7 +9,7 @@
         android:id="@+id/pictureOfTheDay"
         android:name="com.wojciechkula.deepskyapp.presentation.pictureoftheday.PictureOfTheDay"
         android:label="fragment_picture_of_the_day"
-        tools:layout="@layout/fragment_picture_of_the_day" >
+        tools:layout="@layout/fragment_picture_of_the_day">
         <action
             android:id="@+id/action_pictureOfTheDay_to_favouritePictures"
             app:destination="@id/favouritePictures" />

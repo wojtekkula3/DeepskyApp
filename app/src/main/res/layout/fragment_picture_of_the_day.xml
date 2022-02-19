@@ -29,7 +29,7 @@
                 android:id="@+id/imageOutput"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:src="@drawable/hidden_galaxy_ic_342"/>
+                tools:src="@drawable/hidden_galaxy_ic_342" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
