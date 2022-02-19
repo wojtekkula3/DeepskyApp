@@ -2,4 +2,7 @@
     <string name="app_name">DeepskyApp</string>
     <string name="nav_menu_picture_of_the_day">Picture of The Day</string>
     <string name="nav_menu_my_favourite">My favourite</string>
+    <string name="apod_copyright">Copyright:</string>
+    <string name="apod_date">Date:</string>
+    <string name="apod_explanation">Explanation:</string>
 </resources>
