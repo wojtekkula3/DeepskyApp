@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/pictureOfTheDay"
+        android:icon="@drawable/ic_image"
+        android:title="@string/nav_menu_picture_of_the_day" />
+
+    <item
+        android:id="@+id/favouritePictures"
+        android:icon="@drawable/ic_favourite"
+        android:title="@string/nav_menu_my_favourite" />
+</menu>
