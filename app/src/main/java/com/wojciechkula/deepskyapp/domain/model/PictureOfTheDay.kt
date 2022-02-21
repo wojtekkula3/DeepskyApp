@@ -1,7 +1,6 @@
-package com.wojciechkula.deepskyapp.data.entity
+package com.wojciechkula.deepskyapp.domain.model
 
-data class PictureOfTheDayEntity(
-    val id: Int,
+data class PictureOfTheDay(
     val copyright: String? = null,
     val date: String,
     val explanation: String,
@@ -10,4 +9,5 @@ data class PictureOfTheDayEntity(
     val service_version: String,
     val title: String,
     val url: String
-)
+) {
+}
