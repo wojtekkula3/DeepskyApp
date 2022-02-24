@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
+import com.wojciechkula.deepskyapp.R
 import com.wojciechkula.deepskyapp.databinding.FragmentPictureOfTheDayBinding
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDay
 import com.wojciechkula.utils.NetworkConnection
@@ -37,17 +39,22 @@ class PictureOfTheDay : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeNetworkConnection()
         observeViewModel()
+        initViews()
     }
 
     private fun observeNetworkConnection() {
         hasNetworkConnection.observe(viewLifecycleOwner) {
-            viewModel.changeNetworkConnection(it)
+            viewModel.changeNetworkConnectionStatus(it)
         }
     }
 
     private fun observeViewModel() {
         viewModel.viewState.observe(viewLifecycleOwner, ::bindState)
         viewModel.viewEvent.observe(viewLifecycleOwner, ::handleEvents)
+    }
+
+    private fun initViews() {
+        binding.addToFavouriteButton.setOnClickListener { viewModel.onFavouriteButtonClick() }
     }
 
     private fun bindState(state: PictureOfTheDayViewState) {
@@ -69,6 +76,22 @@ class PictureOfTheDay : Fragment() {
                 binding.loadingProgressBar.visibility = View.VISIBLE
             } else {
                 binding.loadingProgressBar.visibility = View.GONE
+            }
+
+            if (isAlreadyFavourite) {
+                binding.addToFavouriteButton.setColorFilter(
+                    ActivityCompat.getColor(
+                        this@PictureOfTheDay.requireContext(),
+                        R.color.red_500
+                    )
+                )
+            } else {
+                binding.addToFavouriteButton.setColorFilter(
+                    ActivityCompat.getColor(
+                        this@PictureOfTheDay.requireContext(),
+                        androidx.appcompat.R.color.material_grey_600
+                    )
+                )
             }
         }
     }
@@ -95,7 +118,6 @@ class PictureOfTheDay : Fragment() {
         when (event) {
             is PictureOfTheDayViewEvent.ShowError -> onShowError(event.message)
         }
-
     }
 
     private fun onShowError(message: String) {

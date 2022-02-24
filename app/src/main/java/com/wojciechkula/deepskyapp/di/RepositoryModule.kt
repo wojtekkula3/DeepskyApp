@@ -1,7 +1,7 @@
 package com.wojciechkula.deepskyapp.di
 
-import com.wojciechkula.deepskyapp.data.repository.APODRepositoryImpl
-import com.wojciechkula.deepskyapp.domain.repository.APODRepository
+import com.wojciechkula.deepskyapp.data.repository.PictureRepositoryImpl
+import com.wojciechkula.deepskyapp.domain.repository.PictureRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun APODRepository(apodRepositoryImpl: APODRepositoryImpl): APODRepository
+    abstract fun PictureRepository(pictureRepositoryImpl: PictureRepositoryImpl): PictureRepository
 }

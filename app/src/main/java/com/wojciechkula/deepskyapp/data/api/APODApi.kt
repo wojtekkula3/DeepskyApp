@@ -15,7 +15,14 @@ interface APODApi {
         @Query("api_key")
         apiKey: String = BuildConfig.APOD_API_KEY,
         @Query("date")
-        date: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        date: String = getCurrentDate()
     ): Response<PictureOfTheDay>
 
+    companion object {
+        fun getCurrentDate(): String {
+            val dateFormater = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            dateFormater.timeZone = TimeZone.getTimeZone("GMT-04:00")
+            return dateFormater.format(Date())
+        }
+    }
 }
