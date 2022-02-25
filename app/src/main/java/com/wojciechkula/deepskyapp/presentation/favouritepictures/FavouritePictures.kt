@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wojciechkula.deepskyapp.databinding.FragmentFavouritePicturesBinding
-import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDay
+import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesListAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,27 +46,39 @@ class FavouritePictures : Fragment() {
     }
 
     private fun initViews() {
-        binding.picturesRecyclerView.layoutManager = GridLayoutManager(activity, 2)
+        binding.picturesRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.picturesRecyclerView.adapter = adapter
+
     }
 
     private fun observeViewModel() {
         viewModel.picturesList.observe(viewLifecycleOwner, ::bindPictures)
     }
 
-    private fun bindPictures(pictureList: List<PictureOfTheDay>?) {
-        binding.picturesRecyclerView.adapter = adapter
-        val list = pictureList?.map { picture ->
-            FavouritePicturesItem(
-                copyright = picture.copyright,
-                date = picture.date,
-                explanation = picture.explanation,
-                title = picture.title,
-                url = picture.url
-            )
+    private fun bindPictures(pictureList: List<FavouritePictureModel>) {
+        inflateRecyclerView(pictureList)
+        if (pictureList.isEmpty()) {
+            binding.noPicturesYetLabel.visibility = View.VISIBLE
+        } else {
+            binding.noPicturesYetLabel.visibility = View.GONE
         }
-        adapter.submitList(list)
-
     }
 
-
+    private fun inflateRecyclerView(pictureList: List<FavouritePictureModel>) {
+        val list = pictureList.map { picture ->
+            picture.id?.let {
+                id
+                FavouritePicturesItem(
+                    id = id,
+                    copyright = picture.copyright,
+                    date = picture.date,
+                    explanation = picture.explanation,
+                    title = picture.title,
+                    url = picture.url,
+                    bitmap = picture.bitmap,
+                )
+            }
+        }
+        adapter.submitList(list)
+    }
 }

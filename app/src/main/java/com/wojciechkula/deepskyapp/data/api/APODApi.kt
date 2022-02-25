@@ -1,7 +1,7 @@
 package com.wojciechkula.deepskyapp.data.api
 
 import com.wojciechkula.deepskyapp.BuildConfig
-import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDay
+import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,7 +16,7 @@ interface APODApi {
         apiKey: String = BuildConfig.APOD_API_KEY,
         @Query("date")
         date: String = getCurrentDate()
-    ): Response<PictureOfTheDay>
+    ): Response<PictureOfTheDayModel>
 
     companion object {
         fun getCurrentDate(): String {

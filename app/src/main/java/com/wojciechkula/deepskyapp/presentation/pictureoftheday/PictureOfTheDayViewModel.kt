@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.presentation.pictureoftheday
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -67,20 +68,20 @@ class PictureOfTheDayViewModel @Inject constructor(
         }
     }
 
-    fun onFavouriteButtonClick() {
+    fun onFavouriteButtonClick(pictureBitmap: Bitmap) {
         viewModelScope.launch {
             val apod = viewState.value?.pictureOfTheDay
             if (apod != null) {
                 if (viewState.value?.isAlreadyFavourite == true) {
                     try {
-                        deleteFavouritePictureInteractor(apod)
+                        deleteFavouritePictureInteractor(apod.date)
                         _viewState.value = viewState.newBuilder { copy(isAlreadyFavourite = false) }
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
                 } else {
                     try {
-                        addFavouritePictureInteractor(apod)
+                        addFavouritePictureInteractor.invoke(apod, pictureBitmap)
                         _viewState.value = viewState.newBuilder { copy(isAlreadyFavourite = true) }
                     } catch (e: Exception) {
                         Timber.e(e)

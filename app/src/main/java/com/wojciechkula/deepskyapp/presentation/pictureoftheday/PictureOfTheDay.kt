@@ -1,5 +1,7 @@
 package com.wojciechkula.deepskyapp.presentation.pictureoftheday
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.wojciechkula.deepskyapp.R
 import com.wojciechkula.deepskyapp.databinding.FragmentPictureOfTheDayBinding
-import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDay
+import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.utils.NetworkConnection
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -54,7 +56,12 @@ class PictureOfTheDay : Fragment() {
     }
 
     private fun initViews() {
-        binding.addToFavouriteButton.setOnClickListener { viewModel.onFavouriteButtonClick() }
+        binding.addToFavouriteButton.setOnClickListener { viewModel.onFavouriteButtonClick(getBitmap()) }
+    }
+
+    private fun getBitmap(): Bitmap {
+        val bitmapDrawable = binding.imageOutput.drawable as BitmapDrawable
+        return bitmapDrawable.bitmap
     }
 
     private fun bindState(state: PictureOfTheDayViewState) {
@@ -96,7 +103,7 @@ class PictureOfTheDay : Fragment() {
         }
     }
 
-    private fun setPictureInfo(pictureOfTheDay: PictureOfTheDay) {
+    private fun setPictureInfo(pictureOfTheDay: PictureOfTheDayModel) {
         Glide.with(this@PictureOfTheDay)
             .load(pictureOfTheDay.url)
             .into(binding.imageOutput)

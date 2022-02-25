@@ -9,7 +9,7 @@
     app:cardElevation="6dp">
 
     <RelativeLayout
-        android:layout_width="152dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/favouritePicturesItemTitle"
-            android:layout_width="152dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/favouritePicturesItemImageView"
             android:layout_centerHorizontal="true"

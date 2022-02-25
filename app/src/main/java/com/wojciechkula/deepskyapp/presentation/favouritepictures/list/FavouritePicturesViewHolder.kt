@@ -14,7 +14,7 @@ class FavouritePicturesViewHolder(
     fun bind(picture: FavouritePicturesItem, onItemClicked: (picture: FavouritePicturesItem) -> Unit){
 
         Glide.with(view.context)
-            .load(picture.url)
+            .load(picture.bitmap)
             .into(view.findViewById(R.id.favouritePicturesItemImageView) as ImageView)
         (view.findViewById(R.id.favouritePicturesItemTitle) as TextView).text = picture.title
 
