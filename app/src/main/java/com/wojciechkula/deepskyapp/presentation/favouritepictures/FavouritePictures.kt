@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wojciechkula.deepskyapp.R
 import com.wojciechkula.deepskyapp.databinding.FragmentFavouritePicturesBinding
@@ -14,7 +15,6 @@ import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesListAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,7 +29,7 @@ class FavouritePictures : Fragment() {
 
     private val adapter by lazy {
         FavouritePicturesListAdapter { picture ->
-            Timber.d("Clicked")
+            findNavController().navigate(FavouritePicturesDirections.openPictureDetails(picture))
         }
     }
 
