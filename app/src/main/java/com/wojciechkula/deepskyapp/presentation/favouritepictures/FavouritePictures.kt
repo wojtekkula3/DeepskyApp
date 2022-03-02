@@ -4,15 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.wojciechkula.deepskyapp.R
 import com.wojciechkula.deepskyapp.databinding.FragmentFavouritePicturesBinding
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class FavouritePictures : Fragment() {
@@ -21,7 +25,7 @@ class FavouritePictures : Fragment() {
     private val binding
         get() = _binding!!
 
-    private val viewModel: FavouritePicturesViewModel by viewModels()
+    private val viewModel: FavouritePicturesViewModel by activityViewModels()
 
     private val adapter by lazy {
         FavouritePicturesListAdapter { picture ->
@@ -33,7 +37,7 @@ class FavouritePictures : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        activity?.window?.statusBarColor= activity?.let { ContextCompat.getColor(it, R.color.red_500) }!!
+        activity?.window?.statusBarColor = activity?.let { ContextCompat.getColor(it, R.color.red_700) }!!
 //        activity?.setTheme(R.style.Theme_DeepskyApp_FavouritePictures)
         _binding = FragmentFavouritePicturesBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -71,7 +75,7 @@ class FavouritePictures : Fragment() {
                 FavouritePicturesItem(
                     id = id,
                     copyright = picture.copyright,
-                    date = picture.date,
+                    date = dateStringToDate(picture.date),
                     explanation = picture.explanation,
                     title = picture.title,
                     url = picture.url,
@@ -79,6 +83,10 @@ class FavouritePictures : Fragment() {
                 )
             }
         }
-        adapter.submitList(list)
+        adapter.submitList(list.sortedByDescending { it?.date })
+    }
+
+    private fun dateStringToDate(date: String): Date {
+        return SimpleDateFormat("yyyy-MM-dd").parse(date)
     }
 }

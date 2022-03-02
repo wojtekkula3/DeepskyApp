@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="Szukaj..."
+            android:background="@color/red_700"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
