@@ -9,7 +9,7 @@ interface PictureRepository {
 
     suspend fun getPictureOfTheDay(): Response<PictureOfTheDayModel>
     fun getFavouritePictures(): LiveData<List<FavouritePictureModel>>
-    suspend fun getPictureByDate(date: String): List<FavouritePictureModel>
+    fun getPictureByDate(date: String): LiveData<List<FavouritePictureModel>>
     suspend fun addFavouritePicture(picture: FavouritePictureModel): Long
     suspend fun deleteFavouritePicture(date: String): Int
 }

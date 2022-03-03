@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -12,7 +13,9 @@ import com.bumptech.glide.Glide
 import com.wojciechkula.deepskyapp.databinding.FragmentPictureDetailsBinding
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem
 import com.wojciechkula.utils.DateFormatter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PictureDetails : Fragment() {
 
     private var _binding: FragmentPictureDetailsBinding? = null
@@ -44,6 +47,14 @@ class PictureDetails : Fragment() {
 
     private fun observeViewModel() {
         viewModel.picture.observe(viewLifecycleOwner, ::bindPicture)
+        viewModel.viewEvent.observe(viewLifecycleOwner, ::handleEvents)
+    }
+
+    private fun handleEvents(event: PictureDetailsViewEvent) {
+        when (event) {
+            is PictureDetailsViewEvent.Error -> Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+            PictureDetailsViewEvent.ShowFavouritePictures -> findNavController().popBackStack()
+        }
     }
 
     private fun bindPicture(picture: FavouritePicturesItem) {
@@ -58,7 +69,10 @@ class PictureDetails : Fragment() {
             binding.copyrightLabel.visibility = View.GONE
             binding.copyrightOutput.visibility = View.GONE
         }
-        binding.dateOutput.text = DateFormatter.formatDate(picture.date)
+
+        val dateString = DateFormatter.formatDate(picture.date)
+        binding.dateOutput.text = dateString
         binding.explanationOutput.text = picture.explanation
+        binding.deleteButton.setOnClickListener { viewModel.deleteFavouritePicture(dateString) }
     }
 }

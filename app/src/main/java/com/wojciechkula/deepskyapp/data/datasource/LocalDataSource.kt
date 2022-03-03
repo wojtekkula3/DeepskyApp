@@ -10,7 +10,7 @@ class LocalDataSource @Inject constructor(
 
     fun getFavouritePictures() = favouritePictureDao.getFavouritePictues()
 
-    suspend fun getPictureByDate(date: String) = favouritePictureDao.getPictureByDate(date)
+    fun getPictureByDate(date: String) = favouritePictureDao.getPictureByDate(date)
 
     suspend fun saveTodayPicture(selectedPicture: FavouritePictureEntity) =
         favouritePictureDao.addFavouritePicture(selectedPicture)

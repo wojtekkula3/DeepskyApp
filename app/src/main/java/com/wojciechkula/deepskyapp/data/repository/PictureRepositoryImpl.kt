@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.data.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.wojciechkula.deepskyapp.data.api.APODApi
 import com.wojciechkula.deepskyapp.data.datasource.LocalDataSource
@@ -26,8 +27,15 @@ class PictureRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getPictureByDate(date: String) = localDataSource.getPictureByDate(date)
-        .map { favouritePictureEntity -> favPicMapper.mapToDomain(favouritePictureEntity) }
+    override fun getPictureByDate(date: String): LiveData<List<FavouritePictureModel>> =
+        localDataSource.getPictureByDate(date)
+            .map { list: List<FavouritePictureEntity> ->
+                list.map { favouritePictureEntity ->
+                    favPicMapper.mapToDomain(
+                        favouritePictureEntity
+                    )
+                }
+            }
 
     override suspend fun addFavouritePicture(picture: FavouritePictureModel): Long =
         localDataSource.saveTodayPicture(favPicMapper.mapToEntity(picture))

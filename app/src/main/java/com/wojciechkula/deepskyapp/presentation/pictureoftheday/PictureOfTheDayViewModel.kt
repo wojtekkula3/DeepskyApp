@@ -32,6 +32,8 @@ class PictureOfTheDayViewModel @Inject constructor(
     val viewEvent: LiveData<PictureOfTheDayViewEvent>
         get() = _viewEvent
 
+    val isFavouriteState: LiveData<Boolean> = checkIfPictureIsFavouriteInteractor()
+
     init {
         _viewState.value = PictureOfTheDayViewState()
     }
@@ -52,11 +54,9 @@ class PictureOfTheDayViewModel @Inject constructor(
             if (response.isSuccessful) {
                 val apod = response.body()
                 if (apod != null) {
-                    val isAlreadyFavourite = checkIfPictureIsFavouriteInteractor(apod.date)
                     _viewState.value = viewState.newBuilder {
                         copy(
                             pictureOfTheDay = apod,
-                            isAlreadyFavourite = isAlreadyFavourite,
                             isLoading = false
                         )
                     }
@@ -72,17 +72,15 @@ class PictureOfTheDayViewModel @Inject constructor(
         viewModelScope.launch {
             val apod = viewState.value?.pictureOfTheDay
             if (apod != null) {
-                if (viewState.value?.isAlreadyFavourite == true) {
+                if (isFavouriteState.value == true) {
                     try {
                         deleteFavouritePictureInteractor(apod.date)
-                        _viewState.value = viewState.newBuilder { copy(isAlreadyFavourite = false) }
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
                 } else {
                     try {
                         addFavouritePictureInteractor.invoke(apod, pictureBitmap)
-                        _viewState.value = viewState.newBuilder { copy(isAlreadyFavourite = true) }
                     } catch (e: Exception) {
                         Timber.e(e)
                     }

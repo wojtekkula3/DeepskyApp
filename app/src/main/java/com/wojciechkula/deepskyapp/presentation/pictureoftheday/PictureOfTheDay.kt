@@ -41,8 +41,8 @@ class PictureOfTheDay : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.statusBarColor = activity?.let { ContextCompat.getColor(it, R.color.blue_700) }!!
-        observeNetworkConnection()
         observeViewModel()
+        observeNetworkConnection()
         initViews()
     }
 
@@ -55,6 +55,25 @@ class PictureOfTheDay : Fragment() {
     private fun observeViewModel() {
         viewModel.viewState.observe(viewLifecycleOwner, ::bindState)
         viewModel.viewEvent.observe(viewLifecycleOwner, ::handleEvents)
+        viewModel.isFavouriteState.observe(viewLifecycleOwner, ::bindIsFavouriteState)
+    }
+
+    private fun bindIsFavouriteState(isAlreadyFavourite: Boolean) {
+        if (isAlreadyFavourite) {
+            binding.addToFavouriteButton.setColorFilter(
+                ActivityCompat.getColor(
+                    this@PictureOfTheDay.requireContext(),
+                    R.color.red_500
+                )
+            )
+        } else {
+            binding.addToFavouriteButton.setColorFilter(
+                ActivityCompat.getColor(
+                    this@PictureOfTheDay.requireContext(),
+                    androidx.appcompat.R.color.material_grey_600
+                )
+            )
+        }
     }
 
     private fun initViews() {
@@ -85,22 +104,6 @@ class PictureOfTheDay : Fragment() {
                 binding.loadingProgressBar.visibility = View.VISIBLE
             } else {
                 binding.loadingProgressBar.visibility = View.GONE
-            }
-
-            if (isAlreadyFavourite) {
-                binding.addToFavouriteButton.setColorFilter(
-                    ActivityCompat.getColor(
-                        this@PictureOfTheDay.requireContext(),
-                        R.color.red_500
-                    )
-                )
-            } else {
-                binding.addToFavouriteButton.setColorFilter(
-                    ActivityCompat.getColor(
-                        this@PictureOfTheDay.requireContext(),
-                        androidx.appcompat.R.color.material_grey_600
-                    )
-                )
             }
         }
     }

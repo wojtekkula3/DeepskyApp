@@ -14,7 +14,7 @@ interface FavouritePictureDao {
     fun getFavouritePictues(): LiveData<List<FavouritePictureEntity>>
 
     @Query("SELECT * FROM `favourite pictures` WHERE date LIKE :date ")
-    suspend fun getPictureByDate(date: String): List<FavouritePictureEntity>
+    fun getPictureByDate(date: String): LiveData<List<FavouritePictureEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFavouritePicture(favouritePictureEntity: FavouritePictureEntity): Long
