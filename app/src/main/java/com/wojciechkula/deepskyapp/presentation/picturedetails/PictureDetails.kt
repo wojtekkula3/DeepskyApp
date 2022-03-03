@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.presentation.picturedetails
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.wojciechkula.deepskyapp.R
 import com.wojciechkula.deepskyapp.databinding.FragmentPictureDetailsBinding
 import com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem
 import com.wojciechkula.utils.DateFormatter
@@ -73,6 +75,22 @@ class PictureDetails : Fragment() {
         val dateString = DateFormatter.formatDate(picture.date)
         binding.dateOutput.text = dateString
         binding.explanationOutput.text = picture.explanation
-        binding.deleteButton.setOnClickListener { viewModel.deleteFavouritePicture(dateString) }
+        binding.deleteButton.setOnClickListener { showDeleteDialog(dateString) }
+    }
+
+    private fun showDeleteDialog(date: String) {
+        val dialog = AlertDialog.Builder(requireContext())
+        dialog.setMessage(getString(R.string.picture_details_dialog_message))
+            .setCancelable(true)
+            .setPositiveButton(getString(R.string.picture_details_dialog_confirm)) { dialog, id ->
+                viewModel.deleteFavouritePicture(date)
+            }
+            .setNegativeButton(getString(R.string.profile_details_dialog_cancel)) { dialog, id ->
+                dialog.cancel()
+            }
+
+        val alert = dialog.create()
+        alert.setTitle(getString(R.string.picture_details_dialog_title))
+        alert.show()
     }
 }

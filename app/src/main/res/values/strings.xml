@@ -5,4 +5,12 @@
     <string name="apod_copyright">Copyright:</string>
     <string name="apod_date">Date:</string>
     <string name="apod_explanation">Explanation:</string>
+    <string name="apod_no_internet_connection">No internet connection</string>
+    <string name="favourite_pictures_search">Search...</string>
+    <string name="favourite_pictures_you_don_t_have_favourite_pictures_yet">You don\'t have favourite pictures yet</string>
+    <string name="picture_details_delete_from_favourite">Delete from favourite</string>
+    <string name="picture_details_dialog_message">Are sure you want to delete this picture?</string>
+    <string name="picture_details_dialog_confirm">Confirm</string>
+    <string name="profile_details_dialog_cancel">Cancel</string>
+    <string name="picture_details_dialog_title">Confirm to delete</string>
 </resources>
