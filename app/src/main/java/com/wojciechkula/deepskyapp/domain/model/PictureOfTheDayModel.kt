@@ -1,6 +1,6 @@
 package com.wojciechkula.deepskyapp.domain.model
 
-data class PictureOfTheDay(
+data class PictureOfTheDayModel(
     val copyright: String? = null,
     val date: String,
     val explanation: String,
@@ -9,5 +9,4 @@ data class PictureOfTheDay(
     val service_version: String,
     val title: String,
     val url: String
-) {
-}
+)

@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.presentation.pictureoftheday
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +32,8 @@ class PictureOfTheDayViewModel @Inject constructor(
     val viewEvent: LiveData<PictureOfTheDayViewEvent>
         get() = _viewEvent
 
+    val isFavouriteState: LiveData<Boolean> = checkIfPictureIsFavouriteInteractor()
+
     init {
         _viewState.value = PictureOfTheDayViewState()
     }
@@ -51,11 +54,9 @@ class PictureOfTheDayViewModel @Inject constructor(
             if (response.isSuccessful) {
                 val apod = response.body()
                 if (apod != null) {
-                    val isAlreadyFavourite = checkIfPictureIsFavouriteInteractor(apod.date)
                     _viewState.value = viewState.newBuilder {
                         copy(
                             pictureOfTheDay = apod,
-                            isAlreadyFavourite = isAlreadyFavourite,
                             isLoading = false
                         )
                     }
@@ -67,21 +68,19 @@ class PictureOfTheDayViewModel @Inject constructor(
         }
     }
 
-    fun onFavouriteButtonClick() {
+    fun onFavouriteButtonClick(pictureBitmap: Bitmap) {
         viewModelScope.launch {
             val apod = viewState.value?.pictureOfTheDay
             if (apod != null) {
-                if (viewState.value?.isAlreadyFavourite == true) {
+                if (isFavouriteState.value == true) {
                     try {
-                        deleteFavouritePictureInteractor(apod)
-                        _viewState.value = viewState.newBuilder { copy(isAlreadyFavourite = false) }
+                        deleteFavouritePictureInteractor(apod.date)
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
                 } else {
                     try {
-                        addFavouritePictureInteractor(apod)
-                        _viewState.value = viewState.newBuilder { copy(isAlreadyFavourite = true) }
+                        addFavouritePictureInteractor.invoke(apod, pictureBitmap)
                     } catch (e: Exception) {
                         Timber.e(e)
                     }

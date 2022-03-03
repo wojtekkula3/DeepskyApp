@@ -18,7 +18,8 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Szukaj..."
+            app:title="@string/favourite_pictures_search"
+            android:background="@color/red_700"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,7 +34,7 @@
         android:id="@+id/noPicturesYetLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You don't have favourite pictures yet"
+        android:text="@string/favourite_pictures_you_don_t_have_favourite_pictures_yet"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

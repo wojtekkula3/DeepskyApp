@@ -18,5 +18,22 @@
         android:id="@+id/favouritePictures"
         android:name="com.wojciechkula.deepskyapp.presentation.favouritepictures.FavouritePictures"
         android:label="fragment_favourite_pictures"
-        tools:layout="@layout/fragment_favourite_pictures" />
+        tools:layout="@layout/fragment_favourite_pictures">
+        <action
+            android:id="@+id/openPictureDetails"
+            app:destination="@id/pictureDetails"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/pictureDetails"
+        android:name="com.wojciechkula.deepskyapp.presentation.picturedetails.PictureDetails"
+        android:label="fragment_picture_details"
+        tools:layout="@layout/fragment_picture_details">
+        <argument
+            android:name="pictureData"
+            app:argType="com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem" />
+    </fragment>
 </navigation>

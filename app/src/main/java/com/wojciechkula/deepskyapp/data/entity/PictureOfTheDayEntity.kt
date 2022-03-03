@@ -1,7 +1,6 @@
 package com.wojciechkula.deepskyapp.data.entity
 
 data class PictureOfTheDayEntity(
-    val id: Int,
     val copyright: String? = null,
     val date: String,
     val explanation: String,

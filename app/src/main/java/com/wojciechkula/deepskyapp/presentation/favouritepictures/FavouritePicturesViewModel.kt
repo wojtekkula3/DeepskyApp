@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.wojciechkula.deepskyapp.domain.interactor.GetFavouritePicturesInteractor
-import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDay
+import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class FavouritePicturesViewModel @Inject constructor(
     private val getFavouritePicturesInteractor: GetFavouritePicturesInteractor
 ) : ViewModel() {
 
-    val picturesList : LiveData<List<PictureOfTheDay>> = getFavouritePicturesInteractor()
+    val picturesList: LiveData<List<FavouritePictureModel>> = getFavouritePicturesInteractor()
 
     private var _viewState = MutableLiveData<FavouritePicturesViewState>()
     val viewState : LiveData<FavouritePicturesViewState>

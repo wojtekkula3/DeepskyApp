@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/favouritePictureItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -9,7 +10,7 @@
     app:cardElevation="6dp">
 
     <RelativeLayout
-        android:layout_width="152dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -21,14 +22,27 @@
 
         <TextView
             android:id="@+id/favouritePicturesItemTitle"
-            android:layout_width="152dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/favouritePicturesItemImageView"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:padding="6dp"
-            android:textAppearance="?textAppearanceBody2"
+            android:padding="4dp"
+            android:textAppearance="?textAppearanceBody1"
+            android:textStyle="bold"
             tools:text="Hidden Galaxy IC 342" />
+
+        <TextView
+            android:id="@+id/favouritePicturesDate"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/favouritePicturesItemTitle"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingBottom="4dp"
+            android:textColor="#515151"
+            android:textSize="14sp"
+            tools:text="2017-02-02" />
     </RelativeLayout>
 
 

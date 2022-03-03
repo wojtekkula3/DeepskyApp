@@ -1,12 +1,8 @@
-package com.wojciechkula.deepskyapp.data.entity
+package com.wojciechkula.deepskyapp.domain.model
 
 import android.graphics.Bitmap
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "Favourite pictures")
-data class FavouritePictureEntity(
-    @PrimaryKey(autoGenerate = true)
+data class FavouritePictureModel (
     val id: Int? = null,
     val copyright: String? = null,
     val date: String,
