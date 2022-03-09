@@ -30,6 +30,8 @@ class PictureOfTheDay : Fragment() {
     lateinit var hasNetworkConnection: NetworkConnection
     private val viewModel: PictureOfTheDayViewModel by activityViewModels()
 
+    private var isPictureSet = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,7 +90,10 @@ class PictureOfTheDay : Fragment() {
     private fun bindState(state: PictureOfTheDayViewState) {
         with(state) {
             if (pictureOfTheDay != null) {
-                setPictureInfo(pictureOfTheDay)
+                if (!isPictureSet) {
+                    setPictureInfo(pictureOfTheDay)
+                    isPictureSet = true
+                }
             } else {
                 binding.imageCardView.visibility = View.GONE
                 binding.infoCardView.visibility = View.GONE
@@ -104,6 +109,14 @@ class PictureOfTheDay : Fragment() {
                 binding.loadingProgressBar.visibility = View.VISIBLE
             } else {
                 binding.loadingProgressBar.visibility = View.GONE
+            }
+
+            if (timeToNewPicture.isNotEmpty()) {
+                binding.newPictureInLabel.text = getString(R.string.apod_new_picture_in_time, timeToNewPicture)
+                binding.newPictureInLabel.visibility = View.VISIBLE
+            } else {
+                binding.newPictureInLabel.visibility = View.GONE
+
             }
         }
     }

@@ -12,8 +12,10 @@ import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInter
 import com.wojciechkula.deepskyapp.domain.interactor.GetPictureOfTheDayInteractor
 import com.wojciechkula.deepskyapp.extension.newBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -60,12 +62,42 @@ class PictureOfTheDayViewModel @Inject constructor(
                             isLoading = false
                         )
                     }
+                    startCountdownToNextPicture()
                 }
             } else {
                 Timber.e("Error while getting response from APOD API", response.message())
                 _viewEvent.postValue(PictureOfTheDayViewEvent.ShowError(response.message()))
             }
         }
+    }
+
+    private fun startCountdownToNextPicture() {
+        viewModelScope.launch {
+            val timeOfNewPictureUpdate = getDateOfNewPictureUpdate()
+            while (true) {
+                val currentDate = Calendar.getInstance()
+                val diff = timeOfNewPictureUpdate.timeInMillis - currentDate.timeInMillis
+
+                val hours = diff / (1000 * 60 * 60) % 24
+                val minutes = diff / (1000 * 60) % 60
+                val seconds = (diff / 1000) % 60
+                _viewState.value =
+                    viewState.newBuilder { copy(timeToNewPicture = "${hours}h ${minutes}min ${seconds}s") }
+                delay(1000)
+            }
+        }
+    }
+
+    private fun getDateOfNewPictureUpdate(): Calendar {
+        val date = Date()
+        val eventDate = Calendar.getInstance()
+        eventDate.timeZone = TimeZone.getTimeZone("GMT-04:00")
+        eventDate.time = date
+        eventDate.add(Calendar.DATE, 1)
+        eventDate.set(Calendar.HOUR_OF_DAY, 0)
+        eventDate.set(Calendar.MINUTE, 0)
+        eventDate.set(Calendar.SECOND, 0)
+        return eventDate
     }
 
     fun onFavouriteButtonClick(pictureBitmap: Bitmap) {
