@@ -26,6 +26,13 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/openAbout"
+            app:destination="@id/aboutApp"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/pictureDetails"
@@ -36,4 +43,9 @@
             android:name="pictureData"
             app:argType="com.wojciechkula.deepskyapp.presentation.favouritepictures.list.FavouritePicturesItem" />
     </fragment>
+    <fragment
+        android:id="@+id/aboutApp"
+        android:name="com.wojciechkula.deepskyapp.presentation.about.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
 </navigation>

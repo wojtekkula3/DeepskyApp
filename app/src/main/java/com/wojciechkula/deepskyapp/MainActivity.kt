@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                     bottomNavigationView.visibility = View.VISIBLE
                 }
                 R.id.pictureDetails -> bottomNavigationView.visibility = View.GONE
+                R.id.aboutApp -> bottomNavigationView.visibility = View.GONE
             }
         }
         bottomNavigationView.setupWithNavController(navController)
