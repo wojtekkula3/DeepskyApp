@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_100"
+    tools:context=".presentation.about.AboutFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/deepskyAppLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Deepsky App"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backButton" />
+
+        <TextView
+            android:id="@+id/poweredByLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="POWERED BY"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/deepskyAppLabel" />
+
+
+        <ImageView
+            android:id="@+id/nasaLogo"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/nasa_logo"
+            app:layout_constraintEnd_toStartOf="@+id/apodLogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poweredByLabel" />
+
+
+        <ImageView
+            android:id="@+id/apodLogo"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/astronomy_picture_of_the_day_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/nasaLogo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/nasaLogo"
+            app:layout_constraintTop_toTopOf="@+id/nasaLogo" />
+
+        <TextView
+            android:id="@+id/informationLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:justificationMode="inter_word"
+            android:paddingBottom="12dp"
+            android:text="Welcome people - thirsty of night sky travelers! This application will help you discover the wonders of our Universe! \n\nEach day, at 00:00 GMT-4 time, the new picture is served to the main screen. From that moment it is available to view for the 24h, after this time new picture will be shown. You can also save it for later if you liked it.\n\nAstronomy Picture of the Day (APOD) is originated, written, coordinated, and edited since 1995 by Robert Nemiroff and Jerry Bonnell. The APOD archive contains the largest collection of annotated astronomical images on the internet. In real life, Robert and Jerry are two professional astronomers who spend most of their time researching the universe. Robert is a professor at Michigan Technological University in Houghton, Michigan, USA, while Jerry is a scientist at NASA's Goddard Space Flight Center in Greenbelt, Maryland USA."
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nasaLogo" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

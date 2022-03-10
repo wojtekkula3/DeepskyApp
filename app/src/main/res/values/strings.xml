@@ -13,4 +13,5 @@
     <string name="picture_details_dialog_confirm">Confirm</string>
     <string name="profile_details_dialog_cancel">Cancel</string>
     <string name="picture_details_dialog_title">Confirm to delete</string>
+    <string name="apod_new_picture_in_time">New picture in: %1$s</string>
 </resources>

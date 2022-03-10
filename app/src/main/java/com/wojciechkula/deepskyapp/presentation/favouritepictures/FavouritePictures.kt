@@ -38,7 +38,6 @@ class FavouritePictures : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         activity?.window?.statusBarColor = activity?.let { ContextCompat.getColor(it, R.color.red_700) }!!
-//        activity?.setTheme(R.style.Theme_DeepskyApp_FavouritePictures)
         _binding = FragmentFavouritePicturesBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -52,6 +51,16 @@ class FavouritePictures : Fragment() {
     private fun initViews() {
         binding.picturesRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.picturesRecyclerView.adapter = adapter
+
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.aboutApp -> {
+                    findNavController().navigate(FavouritePicturesDirections.openAbout())
+                    true
+                }
+                else -> false
+            }
+        }
 
     }
 
