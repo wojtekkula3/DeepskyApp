@@ -10,14 +10,15 @@ The application is created for people who is interested in astronomy discoveries
 
 Picture of the day screen:
 
-<img src="https://user-images.githubusercontent.com/45050205/157853432-719c282b-2e7d-47e3-9d29-f6aefa767876.jpg" width="280">
+<img src="https://user-images.githubusercontent.com/45050205/157853432-719c282b-2e7d-47e3-9d29-f6aefa767876.jpg" width="280">&nbsp;
 <img src="https://user-images.githubusercontent.com/45050205/157853439-281bf1d0-0aa5-402c-90a7-b31a18669c6e.jpg" width="280">&nbsp; &nbsp;<br>
 
 My Favourite screen and one selected item:
 
-<img src="https://user-images.githubusercontent.com/45050205/157853465-68d3fb8b-5e08-4663-9ead-60f245cd6eea.jpg" width="280">
-<img src="https://user-images.githubusercontent.com/45050205/157853473-750ef72e-a5e3-404b-b997-71d472784652.jpg" width="280">
-<img src="https://user-images.githubusercontent.com/45050205/157853484-b6bc93a0-a58c-404f-ba81-54436205d971.jpg" width="280">
+<img src="https://user-images.githubusercontent.com/45050205/157853465-68d3fb8b-5e08-4663-9ead-60f245cd6eea.jpg" width="280">&nbsp;
+<img src="https://user-images.githubusercontent.com/45050205/157853473-750ef72e-a5e3-404b-b997-71d472784652.jpg" width="280">&nbsp;
+<img src="https://user-images.githubusercontent.com/45050205/157853484-b6bc93a0-a58c-404f-ba81-54436205d971.jpg" width="280">&nbsp;
+<br>
 
 ## What technologies was used?
 
@@ -28,10 +29,11 @@ With the use of  **Clean Architecture** and  **MVVM** the presentation, logic an
 In this project you can also find **TypeConverter** provided by Room Database which converts Bitmap from the given API to the ByteArray type in which the pictures are saved in local database. The other direction is also done.
 
 Other technologies that was used: **LiveData, LiveEvent, Timber, Hilt (Dependency Injection)**
+<br>
 
 ## Who is the author?
 
-👨‍💻 Implemented by: [Wojciech Kula]
+👨‍💻 Implemented by: [Wojciech Kula] <br>
 🌌 Powered by: [NASA-APOD]
 
 [NASA-APOD]: <https://apod.nasa.gov/apod/>
