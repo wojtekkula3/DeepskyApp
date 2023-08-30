@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hadilq.liveevent.LiveEvent
+import com.wojciechkula.deepskyapp.data.api.ApiError
+import com.wojciechkula.deepskyapp.data.api.ApiException
+import com.wojciechkula.deepskyapp.data.api.ApiSuccess
 import com.wojciechkula.deepskyapp.domain.interactor.AddFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.CheckIfPictureIsFavouriteInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInteractor
@@ -52,10 +55,9 @@ class PictureOfTheDayViewModel @Inject constructor(
     private fun getAstronomyPictureOfTheDay() {
         viewModelScope.launch {
             _viewState.value = viewState.newBuilder { copy(isLoading = true) }
-            val response = getPictureOfTheDayInteractor()
-            if (response.isSuccessful) {
-                val apod = response.body()
-                if (apod != null) {
+            when (val response = getPictureOfTheDayInteractor()) {
+                is ApiSuccess -> {
+                    val apod = response.data
                     _viewState.value = viewState.newBuilder {
                         copy(
                             pictureOfTheDay = apod,
@@ -64,9 +66,16 @@ class PictureOfTheDayViewModel @Inject constructor(
                     }
                     startCountdownToNextPicture()
                 }
-            } else {
-                Timber.e("Error while getting response from APOD API", response.message())
-                _viewEvent.postValue(PictureOfTheDayViewEvent.ShowError(response.message()))
+
+                is ApiError -> {
+                    Timber.e("Error while getting response from APOD API", response.message)
+                    _viewEvent.postValue(PictureOfTheDayViewEvent.ShowError(response.message ?: "External API error"))
+                }
+
+                is ApiException -> {
+                    Timber.e("Internal API error:", response.e.message)
+                    _viewEvent.postValue(PictureOfTheDayViewEvent.ShowError(response.e.message ?: "Internal API error"))
+                }
             }
         }
     }

@@ -128,7 +128,8 @@ class PictureOfTheDay : Fragment() {
 
         binding.titleOutput.text = pictureOfTheDay.title
         if (pictureOfTheDay.copyright != null) {
-            binding.copyrightOutput.text = pictureOfTheDay.copyright
+            // replace unnecessary new line signs
+            binding.copyrightOutput.text = pictureOfTheDay.copyright.replace("\n", "")
         } else {
             binding.copyrightLabel.visibility = View.GONE
             binding.copyrightOutput.visibility = View.GONE
