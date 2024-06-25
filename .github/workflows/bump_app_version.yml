@@ -37,7 +37,7 @@ jobs:
           # Update build.gradle with new version code and name
           echo "${{ env.VERSION_CODE }} - ${{ env.version_name }}"
           sed -i "s/versionCode [0-9]\+/versionCode ${{ env.VERSION_CODE }}/g" app/build.gradle
-          sed -I "s/versionName \"[^\"]*\"/versionName \"${{ env.VERSION_NAME }}\"/g" app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"${{ env.VERSION_NAME }}\"/g" app/build.gradle
 
       - name: Commit and push changes
         run: |
