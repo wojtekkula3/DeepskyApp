@@ -1,7 +1,7 @@
 name: Build and Deploy to Google Play
 
 on:
-  workflow_dispatch:
+  push:
     branches:
       - main
 
@@ -9,6 +9,7 @@ jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
+    if: startsWith(github.event.head_commit.message, 'Bump to version')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
