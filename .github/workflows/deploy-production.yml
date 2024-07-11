@@ -1,9 +1,7 @@
-name: Build and Deploy to Google Play
+name: Deploy to Google Play Production
 
 on:
-  workflow_dispatch:
-    branches:
-      - main
+  workflow_dispatch: { }
 
 jobs:
   build:
