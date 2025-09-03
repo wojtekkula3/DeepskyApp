@@ -1,6 +1,6 @@
 [versions]
 # Android/Kotlin
-android-gradle-plugin = "8.1.4"
+android-gradle-plugin = "8.7.0"
 kotlin = "2.0.0" # KSP needs to be updated accordingly
 ksp = "2.0.0-1.0.22" # Most recent version corresponding to the used kotlin version can be found here https://github.com/google/ksp/releases
 # General plugins

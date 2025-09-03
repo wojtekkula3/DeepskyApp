@@ -27,11 +27,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "APOD_API_KEY", localProperties['APOD_API_KEY']
         }
         debug {
+            minifyEnabled false
             buildConfigField "String", "APOD_API_KEY", localProperties['APOD_API_KEY']
         }
     }
