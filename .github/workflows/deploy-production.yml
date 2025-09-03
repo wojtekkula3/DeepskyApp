@@ -15,7 +15,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+#          cache: gradle
       - name: Create local.properties
         run: echo "APOD_API_KEY=${{ secrets.APOD_API_KEY }}" > local.properties
 
