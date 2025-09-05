@@ -2,6 +2,7 @@ package com.wojciechkula.deepskyapp.presentation.pictureoftheday
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.wojciechkula.deepskyapp.R
 import com.wojciechkula.deepskyapp.databinding.FragmentPictureOfTheDayBinding
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
@@ -122,22 +127,58 @@ class PictureOfTheDay : Fragment() {
     }
 
     private fun setPictureInfo(pictureOfTheDay: PictureOfTheDayModel) {
-        Glide.with(this@PictureOfTheDay)
-            .load(pictureOfTheDay.url)
-            .into(binding.imageOutput)
+        with(binding) {
+            addToFavouriteButton.isEnabled = false
+            addToFavouriteButton.alpha = 0.5f
 
-        binding.titleOutput.text = pictureOfTheDay.title
-        if (pictureOfTheDay.copyright != null) {
-            // replace unnecessary new line signs
-            binding.copyrightOutput.text = pictureOfTheDay.copyright.replace("\n", "")
-        } else {
-            binding.copyrightLabel.visibility = View.GONE
-            binding.copyrightOutput.visibility = View.GONE
+            Glide.with(this@PictureOfTheDay)
+                .load(pictureOfTheDay.url)
+                .listener(createGlideListener())
+                .into(imageOutput)
+
+            titleOutput.text = pictureOfTheDay.title
+            if (pictureOfTheDay.copyright != null) {
+                // replace unnecessary new line signs
+                copyrightOutput.text = pictureOfTheDay.copyright.replace("\n", "")
+            } else {
+                copyrightLabel.visibility = View.GONE
+                copyrightOutput.visibility = View.GONE
+            }
+            dateOutput.text = pictureOfTheDay.date
+            explanationOutput.text = pictureOfTheDay.explanation
+            imageCardView.visibility = View.VISIBLE
+            infoCardView.visibility = View.VISIBLE
         }
-        binding.dateOutput.text = pictureOfTheDay.date
-        binding.explanationOutput.text = pictureOfTheDay.explanation
-        binding.imageCardView.visibility = View.VISIBLE
-        binding.infoCardView.visibility = View.VISIBLE
+    }
+
+    private fun createGlideListener() = object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            binding.addToFavouriteButton.isEnabled = false
+            binding.addToFavouriteButton.alpha = 0.5f
+            return false
+        }
+
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: Target<Drawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            if (resource is BitmapDrawable) {
+                binding.addToFavouriteButton.isEnabled = true
+                binding.addToFavouriteButton.alpha = 1.0f
+            } else {
+                binding.addToFavouriteButton.isEnabled = false
+                binding.addToFavouriteButton.alpha = 0.5f
+            }
+            return false
+        }
     }
 
     private fun handleEvents(event: PictureOfTheDayViewEvent) {
