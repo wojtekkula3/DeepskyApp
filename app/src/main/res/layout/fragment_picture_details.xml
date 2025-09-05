@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                tools:src="@drawable/hidden_galaxy_ic_342" />
+                tools:src="@drawable/ic_galaxy" />
 
         </androidx.cardview.widget.CardView>
 

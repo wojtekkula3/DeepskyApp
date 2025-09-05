@@ -131,10 +131,15 @@ class PictureOfTheDay : Fragment() {
             addToFavouriteButton.isEnabled = false
             addToFavouriteButton.alpha = 0.5f
 
-            Glide.with(this@PictureOfTheDay)
-                .load(pictureOfTheDay.url)
-                .listener(createGlideListener())
-                .into(imageOutput)
+            if (pictureOfTheDay.media_type == "image") {
+                Glide.with(this@PictureOfTheDay)
+                    .load(pictureOfTheDay.url)
+                    .listener(createGlideListener())
+                    .into(imageOutput)
+            } else {
+                layoutNotAvailable.visibility = View.VISIBLE
+                addToFavouriteButton.visibility = View.GONE
+            }
 
             titleOutput.text = pictureOfTheDay.title
             if (pictureOfTheDay.copyright != null) {
