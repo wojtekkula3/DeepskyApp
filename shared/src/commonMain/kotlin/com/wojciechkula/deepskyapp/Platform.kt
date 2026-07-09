@@ -1,0 +1,7 @@
+package com.wojciechkula.deepskyapp
+
+interface Platform {
+    val name: String
+}
+
+expect fun getPlatform(): Platform
