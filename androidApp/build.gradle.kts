@@ -1,4 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val apodApiKey: String = localProperties.getProperty("APOD_API_KEY") ?: "\"\""
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -24,12 +31,17 @@ android {
     namespace = "com.wojciechkula.deepskyapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.wojciechkula.deepskyapp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "APOD_API_KEY", apodApiKey)
     }
     packaging {
         resources {
