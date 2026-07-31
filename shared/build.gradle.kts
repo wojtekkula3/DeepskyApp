@@ -50,7 +50,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(projects.data)
             implementation(projects.core.common)
+            implementation(projects.core.designsystem)
+            implementation(projects.feature.picture)
+            implementation(projects.feature.favourites)
             implementation(libs.koin.core)
+            implementation(libs.koin.composeViewmodel)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.networkKtor3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

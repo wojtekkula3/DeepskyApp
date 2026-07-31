@@ -15,6 +15,15 @@ class DateFormatterTest {
 
         assertEquals("2026-07-07", formatter.currentApodDate())
     }
+
+    @Test
+    fun currentApodDate_resolvesInApodZoneNotDeviceZone() {
+        // 2026-07-13T01:00 in Warsaw (UTC+2) is still 2026-07-12T19:00 at UTC-4, so APOD is serving
+        // the 12th. Using the device zone here would ask for the 13th — a date the API has no data for.
+        val fixedClock = FixedClock(Instant.parse("2026-07-12T23:00:00Z"))
+
+        assertEquals("2026-07-12", DateFormatter(clock = fixedClock).currentApodDate())
+    }
 }
 
 private class FixedClock(private val instant: Instant) : Clock {
