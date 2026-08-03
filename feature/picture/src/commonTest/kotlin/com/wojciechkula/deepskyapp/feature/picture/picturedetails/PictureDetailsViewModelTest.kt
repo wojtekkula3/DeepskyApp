@@ -82,7 +82,9 @@ class PictureDetailsViewModelTest {
 
         vm.handleUiEvent(DeleteConfirmedPressed)
         advanceUntilIdle()
-        assertNotNull(vm.states.value.snackbarMessage)
+        // The message is a state enum rather than the exception's text: the screen resolves the copy,
+        // so no Throwable.message can reach the UI.
+        assertEquals(PictureDetailsMessage.DeleteFailed, vm.states.value.snackbarMessage)
 
         vm.handleUiEvent(SnackbarDismissed)
         assertNull(vm.states.value.snackbarMessage)

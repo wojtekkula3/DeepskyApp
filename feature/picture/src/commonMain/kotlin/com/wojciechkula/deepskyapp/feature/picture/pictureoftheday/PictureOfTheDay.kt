@@ -27,6 +27,17 @@ import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
+import com.wojciechkula.deepskyapp.feature.picture.resources.Res
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_add_to_favourites
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_copyright
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_date
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_explanation
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_load_error
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_new_picture_in
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_no_internet
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_not_available
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_try_again
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_remove_from_favourites
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
@@ -37,6 +48,7 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -71,7 +83,7 @@ private fun PictureOfTheDayScreen(
         ) {
             when (val screenState = uiState.screenState) {
                 Error -> MessageContent(
-                    message = "Could not load today's picture",
+                    message = stringResource(Res.string.picture_of_the_day_load_error),
                     onRetry = { uiEvent(RetryPressed) }
                 )
 
@@ -83,7 +95,7 @@ private fun PictureOfTheDayScreen(
                 )
 
                 NoInternet -> MessageContent(
-                    message = "No internet connection",
+                    message = stringResource(Res.string.picture_of_the_day_no_internet),
                     onRetry = { uiEvent(RetryPressed) }
                 )
 
@@ -104,7 +116,7 @@ private fun MessageContent(message: String, onRetry: () -> Unit) {
         onClick = onRetry,
         modifier = Modifier.padding(top = 16.dp)
     ) {
-        Text("Try again")
+        Text(stringResource(Res.string.picture_of_the_day_try_again))
     }
 }
 
@@ -130,7 +142,7 @@ private fun SuccessContent(
             )
         } else {
             Text(
-                text = "Picture is not available today",
+                text = stringResource(Res.string.picture_of_the_day_not_available),
                 modifier = Modifier.padding(24.dp)
             )
         }
@@ -151,9 +163,9 @@ private fun SuccessContent(
                         Icon(
                             painter = DeepskyIcons.favourite(),
                             contentDescription = if (isFavourite) {
-                                "Remove from favourites"
+                                stringResource(Res.string.picture_remove_from_favourites)
                             } else {
-                                "Add to favourites"
+                                stringResource(Res.string.picture_add_to_favourites)
                             },
                             tint = if (isFavourite) {
                                 MaterialTheme.colorScheme.error
@@ -164,14 +176,22 @@ private fun SuccessContent(
                     }
                 }
             }
-            picture.copyright?.let { LabelledText(label = "Copyright:", value = it.replace("\n", "")) }
-            LabelledText(label = "Date:", value = picture.date)
-            LabelledText(label = "Explanation:", value = picture.explanation)
+            picture.copyright?.let {
+                LabelledText(
+                    label = stringResource(Res.string.picture_label_copyright),
+                    value = it.replace("\n", "")
+                )
+            }
+            LabelledText(label = stringResource(Res.string.picture_label_date), value = picture.date)
+            LabelledText(
+                label = stringResource(Res.string.picture_label_explanation),
+                value = picture.explanation
+            )
         }
     }
     if (timeToNewPicture.isNotEmpty()) {
         Text(
-            text = "New picture in: $timeToNewPicture",
+            text = stringResource(Res.string.picture_of_the_day_new_picture_in, timeToNewPicture),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(12.dp)
