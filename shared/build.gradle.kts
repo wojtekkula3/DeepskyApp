@@ -71,6 +71,11 @@ kotlin {
        compilerOptions {
            jvmTarget = JvmTarget.JVM_11
        }
+       // Required for the composeResources tab labels to be packaged into the Android artifact —
+       // without it stringResource throws MissingResourceException on the first frame.
+       androidResources {
+           enable = true
+       }
        withHostTest {}
     }
     
@@ -86,6 +91,7 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
+            implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
@@ -105,6 +111,13 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+// Pinned so the generated accessors keep a stable package regardless of the module coordinates. The
+// only resources :shared owns are the bottom-bar tab labels, which belong here because deciding which
+// destinations are tabs — and what they are called — is a presentation concern of the nav host.
+compose.resources {
+    packageOfResClass = "com.wojciechkula.deepskyapp.shared.resources"
 }
 
 dependencies {
