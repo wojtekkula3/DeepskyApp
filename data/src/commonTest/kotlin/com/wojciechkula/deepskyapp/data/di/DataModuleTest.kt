@@ -1,6 +1,7 @@
 package com.wojciechkula.deepskyapp.data.di
 
 import com.wojciechkula.deepskyapp.core.common.DateFormatter
+import com.wojciechkula.deepskyapp.core.common.Logger
 import com.wojciechkula.deepskyapp.data.database.dao.FavouritePictureDao
 import com.wojciechkula.deepskyapp.data.database.entity.FavouritePictureEntity
 import com.wojciechkula.deepskyapp.domain.repository.FavouriteRepository
@@ -20,6 +21,11 @@ private class FakeFavouritePictureDao : FavouritePictureDao {
     override suspend fun delete(date: String): Int = 0
 }
 
+private class NoopLogger : Logger {
+    override fun d(tag: String, message: String) = Unit
+    override fun e(tag: String, message: String) = Unit
+}
+
 class DataModuleTest {
 
     @Test
@@ -30,6 +36,7 @@ class DataModuleTest {
                 module {
                     single<FavouritePictureDao> { FakeFavouritePictureDao() }
                     single { DateFormatter() }
+                    single<Logger> { NoopLogger() }
                 },
             )
         }

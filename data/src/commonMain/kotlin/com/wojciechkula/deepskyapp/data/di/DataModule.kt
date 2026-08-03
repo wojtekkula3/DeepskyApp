@@ -16,6 +16,8 @@ expect fun platformModule(): Module
 fun dataModule(apiKey: String): Module = module {
     single { createHttpClient(httpClientEngine()) }
     single { APODApi(client = get(), apiKey = apiKey) }
-    single<PictureRepository> { PictureRepositoryImpl(api = get(), dateFormatter = get()) }
+    single<PictureRepository> {
+        PictureRepositoryImpl(api = get(), dateFormatter = get(), logger = get())
+    }
     single<FavouriteRepository> { FavouriteRepositoryImpl(dao = get()) }
 }

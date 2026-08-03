@@ -1,6 +1,7 @@
 package com.wojciechkula.deepskyapp.data.repository
 
 import com.wojciechkula.deepskyapp.core.common.DateFormatter
+import com.wojciechkula.deepskyapp.core.common.Logger
 import com.wojciechkula.deepskyapp.data.api.APODApi
 import com.wojciechkula.deepskyapp.domain.Result
 import io.ktor.client.HttpClient
@@ -19,10 +20,21 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 private const val API_KEY = "test-key"
+
+private class FakeLogger : Logger {
+    val errors = mutableListOf<String>()
+
+    override fun d(tag: String, message: String) = Unit
+
+    override fun e(tag: String, message: String) {
+        errors += message
+    }
+}
 
 private val JSON_BODY = """
     {
@@ -40,13 +52,14 @@ private val JSON_BODY = """
 class PictureRepositoryImplTest {
 
     private fun repository(
+        logger: Logger = FakeLogger(),
         handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData,
     ): PictureRepositoryImpl {
         val client = HttpClient(MockEngine { request -> handler(request) }) {
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
         }
         val api = APODApi(client = client, apiKey = API_KEY)
-        return PictureRepositoryImpl(api, DateFormatter())
+        return PictureRepositoryImpl(api, DateFormatter(), logger)
     }
 
     @Test
@@ -111,5 +124,29 @@ class PictureRepositoryImplTest {
         val exception = assertIs<Result.Exception>(result)
         val causeChain = generateSequence(exception.throwable) { it.cause }
         assertTrue(causeChain.any { it.message?.contains("network down") == true })
+    }
+
+    @Test
+    fun `logs the status code when the API answers with an error`() = runTest {
+        val logger = FakeLogger()
+        val repository = repository(logger) { respondError(HttpStatusCode.Forbidden) }
+
+        repository.getPictureOfTheDay()
+
+        assertTrue(logger.errors.single().contains("403"))
+    }
+
+    @Test
+    fun `logs a failed request without leaking the api key`() = runTest {
+        val logger = FakeLogger()
+        val repository = repository(logger) {
+            throw RuntimeException("connect failed: /planetary/apod?api_key=$API_KEY")
+        }
+
+        repository.getPictureOfTheDay()
+
+        val line = logger.errors.single()
+        assertTrue(line.contains("RuntimeException"))
+        assertFalse(line.contains(API_KEY))
     }
 }
