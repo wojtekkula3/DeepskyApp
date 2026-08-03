@@ -9,7 +9,7 @@ import com.wojciechkula.deepskyapp.data.database.entity.FavouritePictureEntity
 
 internal const val APOD_DATABASE_NAME = "apod_database.db"
 
-@Database(entities = [FavouritePictureEntity::class], version = 1)
+@Database(entities = [FavouritePictureEntity::class], version = 2)
 @ConstructedBy(APODDatabaseConstructor::class)
 internal abstract class APODLocalDatabase : RoomDatabase() {
     abstract fun favouritePictureDao(): FavouritePictureDao
