@@ -30,8 +30,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarHost
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarType
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyContentDescriptions
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
+import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
+import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_back
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_back
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
@@ -56,6 +57,7 @@ import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -98,8 +100,8 @@ private fun PictureDetailsScreen(
                     modifier = Modifier.padding(start = 16.dp, top = 8.dp)
                 ) {
                     Icon(
-                        painter = DeepskyIcons.back(),
-                        contentDescription = DeepskyContentDescriptions.back
+                        painter = painterResource(DesignSystemRes.drawable.ic_back),
+                        contentDescription = stringResource(DesignSystemRes.string.content_description_back)
                     )
                 }
                 when (val screenState = uiState.screenState) {

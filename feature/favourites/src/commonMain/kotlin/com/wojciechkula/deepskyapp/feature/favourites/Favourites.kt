@@ -29,7 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
+import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_info
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
@@ -44,6 +45,7 @@ import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenAbo
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenDetails
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.AboutPressed
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.ItemPressed
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -87,7 +89,7 @@ private fun FavouritesScreen(
                     // The original app rendered this as a menu item with ic_info, not as a text button.
                     IconButton(onClick = { uiEvent(AboutPressed) }) {
                         Icon(
-                            painter = DeepskyIcons.info(),
+                            painter = painterResource(DesignSystemRes.drawable.ic_info),
                             contentDescription = stringResource(
                                 Res.string.favourites_content_description_about
                             )

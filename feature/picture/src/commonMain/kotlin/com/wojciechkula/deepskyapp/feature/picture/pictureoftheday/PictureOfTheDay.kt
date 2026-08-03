@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
+import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
@@ -48,6 +49,7 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -161,7 +163,7 @@ private fun SuccessContent(
                 if (picture.mediaType == "image") {
                     IconButton(onClick = onFavouriteClick) {
                         Icon(
-                            painter = DeepskyIcons.favourite(),
+                            painter = painterResource(DesignSystemRes.drawable.ic_favourite),
                             contentDescription = if (isFavourite) {
                                 stringResource(Res.string.picture_remove_from_favourites)
                             } else {

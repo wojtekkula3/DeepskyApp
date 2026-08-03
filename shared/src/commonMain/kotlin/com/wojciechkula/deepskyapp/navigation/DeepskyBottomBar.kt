@@ -11,8 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
+import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_image
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -43,8 +46,8 @@ internal fun DeepskyBottomBar(
 
 @Composable
 private fun TopLevelTab.painter(): Painter = when (this) {
-    TopLevelTab.PictureOfTheDay -> DeepskyIcons.picture()
-    TopLevelTab.Favourites -> DeepskyIcons.favourite()
+    TopLevelTab.PictureOfTheDay -> painterResource(DesignSystemRes.drawable.ic_image)
+    TopLevelTab.Favourites -> painterResource(DesignSystemRes.drawable.ic_favourite)
 }
 
 // The original app swapped the bottom bar's tint per tab (blue on Picture of The Day, red on My

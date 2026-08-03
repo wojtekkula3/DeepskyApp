@@ -1,5 +1,5 @@
 <resources>
-    <string name="picture_of_the_day_load_error">Could not load today\'s picture</string>
+    <string name="picture_of_the_day_load_error">Could not load today's picture</string>
     <string name="picture_of_the_day_no_internet">No internet connection</string>
     <string name="picture_of_the_day_try_again">Try again</string>
     <string name="picture_of_the_day_not_available">Picture is not available today</string>

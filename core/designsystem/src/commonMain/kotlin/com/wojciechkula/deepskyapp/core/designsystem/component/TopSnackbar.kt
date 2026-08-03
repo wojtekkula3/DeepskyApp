@@ -17,11 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
-import com.wojciechkula.deepskyapp.core.designsystem.resources.Res
+import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_dismiss
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_close
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -56,8 +57,8 @@ fun TopSnackbar(
                 modifier = Modifier.size(CloseButtonSize)
             ) {
                 Icon(
-                    painter = DeepskyIcons.close(),
-                    contentDescription = stringResource(Res.string.content_description_dismiss),
+                    painter = painterResource(DesignSystemRes.drawable.ic_close),
+                    contentDescription = stringResource(DesignSystemRes.string.content_description_dismiss),
                     modifier = Modifier.size(CloseIconSize)
                 )
             }
