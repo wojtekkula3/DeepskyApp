@@ -1,5 +1,9 @@
 package com.wojciechkula.deepskyapp.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,6 +21,8 @@ import com.wojciechkula.deepskyapp.core.navigation.PictureOfTheDay as PictureOfT
 import com.wojciechkula.deepskyapp.feature.favourites.Favourites
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDay
+
+private const val TransitionDurationMillis = 500
 
 /**
  * The single place that maps every destination key to a screen. Features stay navigation-agnostic:
@@ -48,6 +54,26 @@ internal fun DeepskyNavHost() {
                 .padding(padding)
                 .consumeWindowInsets(padding),
             onBack = { backStack.removeLastOrNull() },
+            // The original app's enter_right_to_left / exit_right_to_left pair (a 500 ms horizontal
+            // slide), reversed on back.
+            transitionSpec = {
+                slideInHorizontally(
+                    animationSpec = tween(TransitionDurationMillis),
+                    initialOffsetX = { width -> width }
+                ) togetherWith slideOutHorizontally(
+                    animationSpec = tween(TransitionDurationMillis),
+                    targetOffsetX = { width -> -width }
+                )
+            },
+            popTransitionSpec = {
+                slideInHorizontally(
+                    animationSpec = tween(TransitionDurationMillis),
+                    initialOffsetX = { width -> -width }
+                ) togetherWith slideOutHorizontally(
+                    animationSpec = tween(TransitionDurationMillis),
+                    targetOffsetX = { width -> width }
+                )
+            },
             entryProvider = entryProvider {
                 entry<PictureOfTheDayKey> { PictureOfTheDay() }
                 entry<FavouritesKey> {
