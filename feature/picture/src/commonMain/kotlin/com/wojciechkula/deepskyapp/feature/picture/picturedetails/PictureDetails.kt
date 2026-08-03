@@ -30,11 +30,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarHost
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarType
+import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyContentDescriptions
 import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
+import com.wojciechkula.deepskyapp.feature.picture.resources.Res
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_delete
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_delete_error
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_dialog_cancel
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_dialog_confirm
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_dialog_message
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_dialog_title
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_not_found
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_copyright
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_date
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_explanation
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.NotFound
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Success
@@ -44,6 +56,7 @@ import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -84,13 +97,14 @@ private fun PictureDetailsScreen(
                     onClick = { uiEvent(BackPressed) },
                     modifier = Modifier.padding(start = 16.dp, top = 8.dp)
                 ) {
-                    Icon(painter = DeepskyIcons.back(), contentDescription = "Back")
+                    Icon(
+                        painter = DeepskyIcons.back(),
+                        contentDescription = DeepskyContentDescriptions.back
+                    )
                 }
                 when (val screenState = uiState.screenState) {
                     Loading -> LoadingContent()
-
-                    NotFound -> MessageContent("This picture is no longer in your favourites")
-
+                    NotFound -> MessageContent(stringResource(Res.string.picture_details_not_found))
                     is Success -> SuccessContent(
                         picture = screenState.picture,
                         onDeleteConfirmed = { uiEvent(DeleteConfirmedPressed) }
@@ -111,13 +125,15 @@ private fun PictureDetailsScreen(
 @Composable
 private fun Snackbar(
     modifier: Modifier = Modifier,
-    message: String?,
+    message: PictureDetailsMessage?,
     onDismiss: () -> Unit
 ) {
     message?.let {
         TopSnackbarHost(
             modifier = modifier,
-            message = it,
+            message = when (it) {
+                PictureDetailsMessage.DeleteFailed -> stringResource(Res.string.picture_details_delete_error)
+            },
             type = TopSnackbarType.ERROR,
             onDismiss = onDismiss
         )
@@ -163,14 +179,14 @@ private fun SuccessContent(
             .fillMaxWidth()
             .padding(24.dp)
     ) {
-        Text("Delete from favourite")
+        Text(stringResource(Res.string.picture_details_delete))
     }
 
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Confirm to delete") },
-            text = { Text("Are sure you want to delete this picture?") },
+            title = { Text(stringResource(Res.string.picture_details_dialog_title)) },
+            text = { Text(stringResource(Res.string.picture_details_dialog_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -178,12 +194,12 @@ private fun SuccessContent(
                         onDeleteConfirmed()
                     }
                 ) {
-                    Text("Confirm")
+                    Text(stringResource(Res.string.picture_details_dialog_confirm))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.picture_details_dialog_cancel))
                 }
             }
         )
@@ -216,9 +232,17 @@ private fun DescriptionBox(picture: FavouritePictureModel) {
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(picture.title, style = MaterialTheme.typography.titleLarge)
-            picture.copyright?.let { LabelledText(label = "Copyright:", value = it.replace("\n", "")) }
-            LabelledText(label = "Date:", value = picture.date)
-            LabelledText(label = "Explanation:", value = picture.explanation)
+            picture.copyright?.let {
+                LabelledText(
+                    label = stringResource(Res.string.picture_label_copyright),
+                    value = it.replace("\n", "")
+                )
+            }
+            LabelledText(label = stringResource(Res.string.picture_label_date), value = picture.date)
+            LabelledText(
+                label = stringResource(Res.string.picture_label_explanation),
+                value = picture.explanation
+            )
         }
     }
 }
@@ -250,7 +274,10 @@ private fun PictureDetailsSuccessPreview() {
 @Composable
 private fun PictureDetailsLoadingPreview() {
     DeepskyTheme {
-        PictureDetailsScreen(uiState = PictureDetailsUiState(screenState = Loading), uiEvent = {})
+        PictureDetailsScreen(
+            uiState = PictureDetailsUiState(screenState = Loading),
+            uiEvent = {}
+        )
     }
 }
 
@@ -258,7 +285,10 @@ private fun PictureDetailsLoadingPreview() {
 @Composable
 private fun PictureDetailsNotFoundPreview() {
     DeepskyTheme {
-        PictureDetailsScreen(uiState = PictureDetailsUiState(screenState = NotFound), uiEvent = {})
+        PictureDetailsScreen(
+            uiState = PictureDetailsUiState(screenState = NotFound),
+            uiEvent = {}
+        )
     }
 }
 
@@ -269,7 +299,7 @@ private fun PictureDetailsSnackbarPreview() {
         PictureDetailsScreen(
             uiState = PictureDetailsUiState(
                 screenState = Success(previewPicture),
-                snackbarMessage = "Error while deleting the picture"
+                snackbarMessage = PictureDetailsMessage.DeleteFailed
             ),
             uiEvent = {}
         )

@@ -4,8 +4,12 @@ import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 
 data class PictureDetailsUiState(
     val screenState: PictureDetailsScreenState = PictureDetailsScreenState.Loading,
-    val snackbarMessage: String? = null
+    val snackbarMessage: PictureDetailsMessage? = null
 )
+
+enum class PictureDetailsMessage {
+    DeleteFailed
+}
 
 sealed interface PictureDetailsScreenState {
     data class Success(val picture: FavouritePictureModel) : PictureDetailsScreenState

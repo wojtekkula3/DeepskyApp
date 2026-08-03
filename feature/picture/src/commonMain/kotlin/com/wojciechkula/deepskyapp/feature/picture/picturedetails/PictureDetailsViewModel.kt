@@ -49,7 +49,7 @@ class PictureDetailsViewModel(
             deleteFavouritePicture(date)
             action(NavigateBack)
         } catch (exception: Exception) {
-            updateState { copy(snackbarMessage = exception.message ?: "Error while deleting") }
+            updateState { copy(snackbarMessage = PictureDetailsMessage.DeleteFailed) }
         }
     }
 }
