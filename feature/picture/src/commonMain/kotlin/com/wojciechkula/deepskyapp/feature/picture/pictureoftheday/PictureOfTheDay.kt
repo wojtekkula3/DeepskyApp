@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
@@ -147,10 +149,18 @@ private fun SuccessContent(
                 Text(picture.title, style = MaterialTheme.typography.titleLarge)
                 if (picture.mediaType == "image") {
                     IconButton(onClick = onFavouriteClick) {
-                        Text(
-                            text = "♥",
-                            color = if (isFavourite) Color(0xFFE14D4D) else Color(0xFF5F5F5F),
-                            style = MaterialTheme.typography.headlineSmall
+                        Icon(
+                            painter = DeepskyIcons.favourite(),
+                            contentDescription = if (isFavourite) {
+                                "Remove from favourites"
+                            } else {
+                                "Add to favourites"
+                            },
+                            tint = if (isFavourite) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
                         )
                     }
                 }
