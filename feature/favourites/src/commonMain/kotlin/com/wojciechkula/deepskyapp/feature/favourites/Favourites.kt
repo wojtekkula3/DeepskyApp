@@ -70,7 +70,12 @@ private fun FavouritesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Favourites") },
+                title = {
+                    Text(
+                        text = "Favourites",
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                },
                 actions = {
                     TextButton(onClick = { uiEvent(AboutPressed) }) { Text("About") }
                 }
@@ -101,7 +106,7 @@ private fun FavouritesScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = 4.dp),
+                    .padding(horizontal = 24.dp),
                 verticalItemSpacing = 8.dp,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {

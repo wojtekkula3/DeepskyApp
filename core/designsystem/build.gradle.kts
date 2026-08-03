@@ -15,6 +15,11 @@ kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11
         }
+        // Required for the composeResources drawables to be packaged into the Android artifact —
+        // without it painterResource throws MissingResourceException at runtime.
+        androidResources {
+            enable = true
+        }
         withHostTest {}
     }
     iosArm64()
@@ -26,6 +31,7 @@ kotlin {
             api(libs.compose.foundation)
             api(libs.compose.material3)
             api(libs.compose.ui)
+            implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.kotlinx.coroutines.core)
         }
@@ -33,6 +39,11 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+// Pinned so the generated accessors keep a stable package regardless of the module coordinates.
+compose.resources {
+    packageOfResClass = "com.wojciechkula.deepskyapp.core.designsystem.resources"
 }
 
 dependencies {

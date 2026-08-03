@@ -11,6 +11,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarHost
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarType
+import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
@@ -78,8 +80,11 @@ private fun PictureDetailsScreen(
                     .padding(padding)
                     .verticalScroll(rememberScrollState())
             ) {
-                IconButton(onClick = { uiEvent(BackPressed) }) {
-                    Text("←", style = MaterialTheme.typography.headlineSmall)
+                IconButton(
+                    onClick = { uiEvent(BackPressed) },
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                ) {
+                    Icon(painter = DeepskyIcons.back(), contentDescription = "Back")
                 }
                 when (val screenState = uiState.screenState) {
                     Loading -> LoadingContent()
@@ -156,7 +161,7 @@ private fun SuccessContent(
         onClick = { showDeleteDialog = true },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(24.dp)
     ) {
         Text("Delete from favourite")
     }
@@ -190,7 +195,7 @@ private fun Picture(picture: FavouritePictureModel) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(24.dp)
     ) {
         AsyncImage(
             model = picture.url,
@@ -207,7 +212,7 @@ private fun DescriptionBox(picture: FavouritePictureModel) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 24.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(picture.title, style = MaterialTheme.typography.titleLarge)
