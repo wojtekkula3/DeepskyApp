@@ -42,8 +42,14 @@ kotlin {
 }
 
 // Pinned so the generated accessors keep a stable package regardless of the module coordinates.
+// The class is public and renamed because features read these accessors directly instead of going
+// through a hand-written facade: a feature already imports its own `Res`, and two classes with that
+// name in one file would need an import alias in every call site. Renaming here does not affect the
+// packaged resource paths — those follow `packageOfResClass`.
 compose.resources {
+    publicResClass = true
     packageOfResClass = "com.wojciechkula.deepskyapp.core.designsystem.resources"
+    nameOfResClass = "DesignSystemRes"
 }
 
 dependencies {

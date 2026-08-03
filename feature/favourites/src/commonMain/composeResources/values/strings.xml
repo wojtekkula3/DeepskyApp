@@ -1,5 +1,5 @@
 <resources>
     <string name="favourites_title">Favourites</string>
-    <string name="favourites_empty">You don\'t have favourite pictures yet</string>
+    <string name="favourites_empty">You don't have favourite pictures yet</string>
     <string name="favourites_content_description_about">About the app</string>
 </resources>

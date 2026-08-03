@@ -21,8 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyContentDescriptions
-import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
+import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
+import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_back
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_back
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.feature.about.resources.Res
 import com.wojciechkula.deepskyapp.feature.about.resources.about_body
@@ -54,8 +55,8 @@ private fun AboutScreen(onBack: () -> Unit) {
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             ) {
                 Icon(
-                    painter = DeepskyIcons.back(),
-                    contentDescription = DeepskyContentDescriptions.back
+                    painter = painterResource(DesignSystemRes.drawable.ic_back),
+                    contentDescription = stringResource(DesignSystemRes.string.content_description_back)
                 )
             }
             Text(
