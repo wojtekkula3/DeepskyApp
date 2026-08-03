@@ -13,10 +13,11 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,9 +29,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
+import com.wojciechkula.deepskyapp.feature.favourites.resources.Res
+import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_content_description_about
+import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_empty
+import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_title
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Empty
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Success
@@ -38,6 +44,7 @@ import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenAbo
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenDetails
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.AboutPressed
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.ItemPressed
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -72,12 +79,20 @@ private fun FavouritesScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Favourites",
+                        text = stringResource(Res.string.favourites_title),
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 },
                 actions = {
-                    TextButton(onClick = { uiEvent(AboutPressed) }) { Text("About") }
+                    // The original app rendered this as a menu item with ic_info, not as a text button.
+                    IconButton(onClick = { uiEvent(AboutPressed) }) {
+                        Icon(
+                            painter = DeepskyIcons.info(),
+                            contentDescription = stringResource(
+                                Res.string.favourites_content_description_about
+                            )
+                        )
+                    }
                 }
             )
         }
@@ -98,7 +113,7 @@ private fun FavouritesScreen(
                     .padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-                Text("You don't have favourite pictures yet")
+                Text(stringResource(Res.string.favourites_empty))
             }
 
             is Success -> LazyVerticalStaggeredGrid(

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun DeepskyBottomBar(
@@ -22,11 +23,12 @@ internal fun DeepskyBottomBar(
 ) {
     NavigationBar(modifier = modifier) {
         TopLevelTab.entries.forEach { tab ->
+            val label = stringResource(tab.label)
             NavigationBarItem(
                 selected = tab == selectedTab,
                 onClick = { onTabSelected(tab) },
-                icon = { Icon(painter = tab.painter(), contentDescription = tab.label) },
-                label = { Text(tab.label) },
+                icon = { Icon(painter = tab.painter(), contentDescription = label) },
+                label = { Text(label) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = selectedTab.selectedColor(),
                     selectedTextColor = selectedTab.selectedColor(),

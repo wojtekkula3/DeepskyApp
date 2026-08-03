@@ -21,25 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyContentDescriptions
 import com.wojciechkula.deepskyapp.core.designsystem.icon.DeepskyIcons
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.feature.about.resources.Res
+import com.wojciechkula.deepskyapp.feature.about.resources.about_body
+import com.wojciechkula.deepskyapp.feature.about.resources.about_content_description_apod_logo
+import com.wojciechkula.deepskyapp.feature.about.resources.about_content_description_nasa_logo
+import com.wojciechkula.deepskyapp.feature.about.resources.about_powered_by
+import com.wojciechkula.deepskyapp.feature.about.resources.about_title
 import com.wojciechkula.deepskyapp.feature.about.resources.apod_logo
 import com.wojciechkula.deepskyapp.feature.about.resources.nasa_logo
 import org.jetbrains.compose.resources.painterResource
-
-// Copied verbatim from the original fragment_about.xml.
-private const val ABOUT_TEXT =
-    "Welcome people - thirsty of night sky travelers! This application will help you discover the " +
-        "wonders of our Universe!\n\nEach day, at 00:00 GMT-4 time, the new picture is served to " +
-        "the main screen. From that moment it is available to view for the 24h, after this time " +
-        "new picture will be shown. You can also save it for later if you liked it.\n\nAstronomy " +
-        "Picture of the Day (APOD) is originated, written, coordinated, and edited since 1995 by " +
-        "Robert Nemiroff and Jerry Bonnell. The APOD archive contains the largest collection of " +
-        "annotated astronomical images on the internet. In real life, Robert and Jerry are two " +
-        "professional astronomers who spend most of their time researching the universe. Robert " +
-        "is a professor at Michigan Technological University in Houghton, Michigan, USA, while " +
-        "Jerry is a scientist at NASA's Goddard Space Flight Center in Greenbelt, Maryland USA."
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun About(onBack: () -> Unit) {
@@ -59,10 +53,13 @@ private fun AboutScreen(onBack: () -> Unit) {
                 onClick = onBack,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             ) {
-                Icon(painter = DeepskyIcons.back(), contentDescription = "Back")
+                Icon(
+                    painter = DeepskyIcons.back(),
+                    contentDescription = DeepskyContentDescriptions.back
+                )
             }
             Text(
-                text = "Deepsky App",
+                text = stringResource(Res.string.about_title),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -70,7 +67,7 @@ private fun AboutScreen(onBack: () -> Unit) {
                     .padding(top = 24.dp)
             )
             Text(
-                text = "POWERED BY",
+                text = stringResource(Res.string.about_powered_by),
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -86,17 +83,17 @@ private fun AboutScreen(onBack: () -> Unit) {
             ) {
                 Image(
                     painter = painterResource(Res.drawable.nasa_logo),
-                    contentDescription = "NASA logo",
+                    contentDescription = stringResource(Res.string.about_content_description_nasa_logo),
                     modifier = Modifier.size(160.dp)
                 )
                 Image(
                     painter = painterResource(Res.drawable.apod_logo),
-                    contentDescription = "Astronomy Picture of the Day logo",
+                    contentDescription = stringResource(Res.string.about_content_description_apod_logo),
                     modifier = Modifier.size(120.dp)
                 )
             }
             Text(
-                text = ABOUT_TEXT,
+                text = stringResource(Res.string.about_body),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(all = 18.dp)
             )
