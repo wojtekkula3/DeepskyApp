@@ -26,47 +26,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * A snackbar shown at the top of the screen, driven by state rather than by a one-shot channel:
- * the screen keeps the message in its UiState and clears it from [onDismiss].
- */
-@Composable
-fun TopSnackbar(
-    modifier: Modifier = Modifier,
-    message: String,
-    type: TopSnackbarType = TopSnackbarType.SUCCESS,
-    onDismiss: () -> Unit
-) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shape = MaterialTheme.shapes.small,
-        border = BorderStroke(width = 1.dp, color = type.borderColor)
-    ) {
-        Row {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(12.dp)
-            )
-            IconButton(
-                onClick = onDismiss,
-                modifier = Modifier.size(CloseButtonSize)
-            ) {
-                Icon(
-                    painter = painterResource(DesignSystemRes.drawable.ic_close),
-                    contentDescription = stringResource(DesignSystemRes.string.content_description_dismiss),
-                    modifier = Modifier.size(CloseIconSize)
-                )
-            }
-        }
-    }
-}
-
-/**
  * Renders [TopSnackbar] and dismisses it automatically after [SnackbarDuration]. Host it in a Box
  * aligned to the top of the screen, above the content.
  */
@@ -89,6 +48,43 @@ fun TopSnackbarHost(
     )
 }
 
+@Composable
+internal fun TopSnackbar(
+    modifier: Modifier = Modifier,
+    message: String,
+    type: TopSnackbarType = TopSnackbarType.SUCCESS,
+    onDismiss: () -> Unit
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(width = 2.dp, color = type.borderColor)
+    ) {
+        Row {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+            )
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier.size(CloseButtonSize)
+            ) {
+                Icon(
+                    painter = painterResource(DesignSystemRes.drawable.ic_close),
+                    contentDescription = stringResource(DesignSystemRes.string.content_description_dismiss),
+                    modifier = Modifier.size(CloseIconSize)
+                )
+            }
+        }
+    }
+}
+
 enum class TopSnackbarType {
     SUCCESS,
     ERROR;
@@ -104,7 +100,7 @@ enum class TopSnackbarType {
 
 private val CloseButtonSize = 40.dp
 private val CloseIconSize = 16.dp
-private const val SnackbarDuration = 3_000L
+private const val SnackbarDuration = 4_000L
 
 @Preview
 @Composable
