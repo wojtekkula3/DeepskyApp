@@ -9,6 +9,6 @@ internal fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<APODLoca
     val dbFile = appContext.getDatabasePath(APOD_DATABASE_NAME)
     return Room.databaseBuilder<APODLocalDatabase>(
         context = appContext,
-        name = dbFile.absolutePath,
+        name = dbFile.absolutePath
     )
 }

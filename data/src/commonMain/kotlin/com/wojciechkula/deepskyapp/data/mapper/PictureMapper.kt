@@ -11,5 +11,5 @@ internal fun PictureOfTheDayDto.toDomain() = PictureOfTheDayModel(
     mediaType = mediaType,
     serviceVersion = serviceVersion,
     title = title,
-    url = url,
+    url = url
 )

@@ -8,9 +8,7 @@ import com.wojciechkula.deepskyapp.domain.repository.FavouriteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-internal class FavouriteRepositoryImpl(
-    private val dao: FavouritePictureDao,
-) : FavouriteRepository {
+internal class FavouriteRepositoryImpl(private val dao: FavouritePictureDao) : FavouriteRepository {
 
     override fun getFavouritePictures(): Flow<List<FavouritePictureModel>> =
         dao.getFavouritePictures().map { entities -> entities.map { it.toDomain() } }

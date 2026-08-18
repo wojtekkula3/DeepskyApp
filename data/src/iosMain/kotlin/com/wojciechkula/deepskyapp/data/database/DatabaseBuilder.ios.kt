@@ -14,7 +14,7 @@ internal fun getDatabaseBuilder(): RoomDatabase.Builder<APODLocalDatabase> {
         inDomain = NSUserDomainMask,
         appropriateForURL = null,
         create = false,
-        error = null,
+        error = null
     )
     val dbFilePath = requireNotNull(documentsDirectory?.path) + "/" + APOD_DATABASE_NAME
     return Room.databaseBuilder<APODLocalDatabase>(name = dbFilePath)

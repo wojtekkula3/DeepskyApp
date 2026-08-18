@@ -14,11 +14,8 @@ import io.ktor.http.isSuccess
 
 private const val TAG = "PictureRepository"
 
-internal class PictureRepositoryImpl(
-    private val api: APODApi,
-    private val dateFormatter: DateFormatter,
-    private val logger: Logger,
-) : PictureRepository {
+internal class PictureRepositoryImpl(private val api: APODApi, private val dateFormatter: DateFormatter, private val logger: Logger) :
+    PictureRepository {
 
     override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> =
         try {
@@ -31,7 +28,9 @@ internal class PictureRepositoryImpl(
                 logger.e(TAG, "APOD request failed with HTTP ${response.status.value}")
                 Result.HttpError(response.status.value, response.status.description)
             }
-        } catch (throwable: Throwable) {
+            // Catching Throwable is the point: a repository turns *any* transport failure into a Result the
+            // caller can render, and the engines differ in what they throw (OkHttp wraps, Darwin does not).
+        } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
             logger.e(TAG, "APOD request failed: ${throwable.logDescription()}")
             Result.Exception(throwable)
         }

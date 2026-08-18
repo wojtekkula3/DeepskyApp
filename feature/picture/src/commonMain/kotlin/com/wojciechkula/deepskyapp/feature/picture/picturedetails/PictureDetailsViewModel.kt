@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 class PictureDetailsViewModel(
     private val date: String,
     private val getFavouritePictures: GetFavouritePicturesInteractor,
-    private val deleteFavouritePicture: DeleteFavouritePictureInteractor,
+    private val deleteFavouritePicture: DeleteFavouritePictureInteractor
 ) : StateActionsViewModel<PictureDetailsUiState, PictureDetailsUiAction>(PictureDetailsUiState()) {
 
     init {
@@ -44,6 +44,9 @@ class PictureDetailsViewModel(
             }
     }
 
+    // The exception is deliberately not carried into the state: a Ktor failure's message is the request
+    // URL, which holds the APOD api_key, so the screen shows a fixed message instead.
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private fun onDeletePressed() = launch {
         try {
             deleteFavouritePicture(date)

@@ -8,7 +8,7 @@ import io.ktor.client.statement.HttpResponse
 internal class APODApi(
     private val client: HttpClient,
     private val apiKey: String,
-    private val baseUrl: String = "https://api.nasa.gov/",
+    private val baseUrl: String = "https://api.nasa.gov/"
 ) {
     suspend fun getPictureOfTheDay(date: String): HttpResponse =
         client.get("${baseUrl}planetary/apod") {

@@ -7,6 +7,10 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+private const val CONNECT_TIMEOUT_MILLIS = 15_000L
+private const val REQUEST_TIMEOUT_MILLIS = 30_000L
+private const val SOCKET_TIMEOUT_MILLIS = 30_000L
+
 internal expect fun httpClientEngine(): HttpClientEngine
 
 internal fun createHttpClient(engine: HttpClientEngine): HttpClient =
@@ -17,8 +21,8 @@ internal fun createHttpClient(engine: HttpClientEngine): HttpClient =
         // Without explicit timeouts a blocked route hangs on the engine default and reports
         // "connect_timeout=unknown ms", which says nothing about how long it actually waited.
         install(HttpTimeout) {
-            connectTimeoutMillis = 15_000
-            requestTimeoutMillis = 30_000
-            socketTimeoutMillis = 30_000
+            connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
+            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
+            socketTimeoutMillis = SOCKET_TIMEOUT_MILLIS
         }
     }

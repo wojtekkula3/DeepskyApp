@@ -9,5 +9,5 @@ data class FavouritePictureModel(
     val mediaType: String,
     val serviceVersion: String,
     val title: String,
-    val url: String,
+    val url: String
 )
