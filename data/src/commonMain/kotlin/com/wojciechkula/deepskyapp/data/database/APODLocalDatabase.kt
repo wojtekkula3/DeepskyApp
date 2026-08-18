@@ -7,7 +7,10 @@ import androidx.room.RoomDatabaseConstructor
 import com.wojciechkula.deepskyapp.data.database.dao.FavouritePictureDao
 import com.wojciechkula.deepskyapp.data.database.entity.FavouritePictureEntity
 
-internal const val APOD_DATABASE_NAME = "apod_database.db"
+// No `.db` extension on purpose: this is the file name the released 1.2.1 app used. Keeping it means
+// Room opens the database those users already have and migrates it in place, instead of silently
+// starting an empty one beside it and leaving every saved favourite unreachable. Do not "tidy" this.
+internal const val APOD_DATABASE_NAME = "apod_database"
 
 @Database(entities = [FavouritePictureEntity::class], version = 2)
 @ConstructedBy(APODDatabaseConstructor::class)

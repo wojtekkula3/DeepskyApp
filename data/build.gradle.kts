@@ -39,6 +39,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.client.mock)
         }
+        getByName("androidHostTest").dependencies {
+            // LegacyFavouritesImportTest opens a real SQLite database; see the catalog comment.
+            implementation(libs.sqlite.bundledJvm)
+        }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
