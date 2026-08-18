@@ -69,7 +69,10 @@ fun PictureOfTheDay(viewModel: PictureOfTheDayViewModel = koinViewModel()) {
 }
 
 @Composable
-private fun PictureOfTheDayScreen(uiState: PictureOfTheDayUiState, uiEvent: (PictureOfTheDayUiEvent) -> Unit) {
+private fun PictureOfTheDayScreen(
+    uiState: PictureOfTheDayUiState,
+    uiEvent: (PictureOfTheDayUiEvent) -> Unit
+) {
     Scaffold { padding ->
         Column(
             modifier = Modifier
@@ -103,7 +106,10 @@ private fun PictureOfTheDayScreen(uiState: PictureOfTheDayUiState, uiEvent: (Pic
 }
 
 @Composable
-private fun MessageContent(message: String, onRetry: () -> Unit) {
+private fun MessageContent(
+    message: String,
+    onRetry: () -> Unit
+) {
     Text(
         text = message,
         style = MaterialTheme.typography.headlineSmall,

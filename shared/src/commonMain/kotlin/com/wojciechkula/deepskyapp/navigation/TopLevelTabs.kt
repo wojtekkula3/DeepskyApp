@@ -14,7 +14,10 @@ import com.wojciechkula.deepskyapp.shared.resources.tab_picture_of_the_day
 import org.jetbrains.compose.resources.StringResource
 
 /** The destinations reachable from the bottom bar, in bar order. */
-internal enum class TopLevelTab(val key: NavKey, val label: StringResource) {
+internal enum class TopLevelTab(
+    val key: NavKey,
+    val label: StringResource
+) {
     PictureOfTheDay(key = PictureOfTheDayKey, label = Res.string.tab_picture_of_the_day),
     Favourites(key = FavouritesKey, label = Res.string.tab_favourites)
 }

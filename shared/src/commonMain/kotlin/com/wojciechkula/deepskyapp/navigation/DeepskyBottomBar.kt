@@ -19,7 +19,11 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun DeepskyBottomBar(modifier: Modifier = Modifier, selectedTab: TopLevelTab, onTabSelected: (TopLevelTab) -> Unit) {
+internal fun DeepskyBottomBar(
+    modifier: Modifier = Modifier,
+    selectedTab: TopLevelTab,
+    onTabSelected: (TopLevelTab) -> Unit
+) {
     NavigationBar(modifier = modifier) {
         TopLevelTab.entries.forEach { tab ->
             val label = stringResource(tab.label)
