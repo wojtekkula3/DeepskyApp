@@ -1,0 +1,36 @@
+[*.{kt,kts}]
+# ktlint 1.x defaults to the `ktlint_official` code style, which is far stricter than the IDE this
+# project is written in: it alone accounted for ~190 of the 275 findings on the first run (expression
+# wrapping, function/class signature layout, blank lines before declarations). `android_studio` is the
+# style Android Studio's own formatter applies, so the linter and the IDE now agree.
+ktlint_code_style = android_studio
+
+indent_size = 4
+continuation_indent_size = 4
+insert_final_newline = true
+max_line_length = 135
+ij_kotlin_allow_trailing_comma = false
+ij_kotlin_allow_trailing_comma_on_call_site = false
+
+# Composable functions are PascalCase by design — that is the Compose API convention, not a deviation.
+ktlint_function_naming_ignore_when_annotated_with = Composable
+
+ktlint_class_signature_rule_force_multiline_when_parameter_count_greater_or_equal_than = 2
+
+# `function-signature` is off because it is prescriptive in a place where this project wants a free
+# hand. The rule governs two things at once: where parameters go, and where an expression body goes —
+# and its body-expression setting has no "either is fine" value, only `default` (pull `= <expr>` up onto
+# the signature line whenever the first line fits), `multiline` and `always`. Whichever is picked, the
+# other form fails the check, so `= try {` and
+# `=` + newline + `try {` could never both pass. Turning the rule off leaves that choice to whoever
+# writes the code, and `ktlintFormat` then stops rewriting signatures behind your back.
+# What still holds the line: `class-signature` above keeps a constructor of two or more parameters one
+# per line, `parameter-list-wrapping` keeps an already-wrapped parameter list one per line, and
+# `max_line_length` caps how wide a collapsed signature can get.
+ktlint_standard_function-signature = disabled
+
+# Kotlin Multiplatform names the file holding an `actual` declaration after the `expect` it implements
+# (`Logger.ios.kt` holds `IosLogger`), which is exactly what the filename rule forbids. The KMP
+# convention wins; the rule is off only for those files.
+[*.{android,ios}.kt]
+ktlint_standard_filename = disabled

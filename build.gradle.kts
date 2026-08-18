@@ -10,3 +10,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
 }
+
+apply(from = "gradle/ktlint.gradle.kts")
+apply(from = "gradle/detekt.gradle.kts")
