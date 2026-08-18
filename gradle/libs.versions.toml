@@ -84,6 +84,9 @@ jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:naviga
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+# The Android variant of sqlite-bundled ships .so files for Android ABIs only, so an Android *host*
+# (JVM) unit test that opens a real database needs the JVM variant's native library on its classpath.
+sqlite-bundledJvm = { module = "androidx.sqlite:sqlite-bundled-jvm", version.ref = "sqlite" }
 
 # Image loading & zoom
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }

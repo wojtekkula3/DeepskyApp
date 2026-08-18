@@ -6,7 +6,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 internal fun buildAPODDatabase(builder: RoomDatabase.Builder<APODLocalDatabase>): APODLocalDatabase =
     builder
         .setDriver(BundledSQLiteDriver())
-        // v2 added the unique index on `date`. The app is unreleased, so dropping the table is cheaper
-        // than a migration that would also have to de-duplicate rows written under v1.
-        .fallbackToDestructiveMigration(dropAllTables = true)
+        // Never fall back to a destructive migration: the app has shipped (tag 1.2.1), so dropping the
+        // table would delete the user's saved favourites. Every schema change gets a migration instead.
+        .addMigrations(MIGRATION_1_2)
         .build()
