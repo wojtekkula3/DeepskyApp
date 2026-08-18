@@ -38,6 +38,5 @@ abstract class StateActionsViewModel<State, Action>(initialState: State) : ViewM
         viewModelScope.launch { _actions.send(action) }
     }
 
-    protected fun launch(block: suspend CoroutineScope.() -> Unit): Job =
-        viewModelScope.launch(block = block)
+    protected fun launch(block: suspend CoroutineScope.() -> Unit): Job = viewModelScope.launch(block = block)
 }

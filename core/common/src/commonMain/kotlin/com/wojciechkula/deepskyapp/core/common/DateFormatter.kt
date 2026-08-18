@@ -11,8 +11,7 @@ private val ApodTimeZone: TimeZone = TimeZone.of("UTC-04:00")
 
 class DateFormatter(
     private val clock: Clock = Clock.System,
-    private val timeZone: TimeZone = ApodTimeZone,
+    private val timeZone: TimeZone = ApodTimeZone
 ) {
-    fun currentApodDate(): String =
-        clock.now().toLocalDateTime(timeZone).date.toString()
+    fun currentApodDate(): String = clock.now().toLocalDateTime(timeZone).date.toString()
 }

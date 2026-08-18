@@ -11,11 +11,7 @@ import androidx.compose.ui.unit.dp
 
 /** A bold label above its value, shared by the Picture of the Day and Picture Details description boxes. */
 @Composable
-internal fun LabelledText(
-    modifier: Modifier = Modifier,
-    label: String,
-    value: String
-) {
+internal fun LabelledText(modifier: Modifier = Modifier, label: String, value: String) {
     Column(modifier = modifier.padding(top = 8.dp)) {
         Text(label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
         Text(value, style = MaterialTheme.typography.bodyMedium)

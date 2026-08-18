@@ -28,6 +28,14 @@ import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
 import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_add_to_favourites
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_copyright
@@ -39,14 +47,6 @@ import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_not_available
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_try_again
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_remove_from_favourites
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
-import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.painterResource
@@ -54,9 +54,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PictureOfTheDay(
-    viewModel: PictureOfTheDayViewModel = koinViewModel()
-) {
+fun PictureOfTheDay(viewModel: PictureOfTheDayViewModel = koinViewModel()) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -71,10 +69,7 @@ fun PictureOfTheDay(
 }
 
 @Composable
-private fun PictureOfTheDayScreen(
-    uiState: PictureOfTheDayUiState,
-    uiEvent: (PictureOfTheDayUiEvent) -> Unit
-) {
+private fun PictureOfTheDayScreen(uiState: PictureOfTheDayUiState, uiEvent: (PictureOfTheDayUiEvent) -> Unit) {
     Scaffold { padding ->
         Column(
             modifier = Modifier

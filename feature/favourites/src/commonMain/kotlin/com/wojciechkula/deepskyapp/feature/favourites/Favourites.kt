@@ -34,10 +34,6 @@ import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_info
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
-import com.wojciechkula.deepskyapp.feature.favourites.resources.Res
-import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_content_description_about
-import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_empty
-import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_title
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Empty
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Success
@@ -45,16 +41,16 @@ import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenAbo
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenDetails
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.AboutPressed
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.ItemPressed
+import com.wojciechkula.deepskyapp.feature.favourites.resources.Res
+import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_content_description_about
+import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_empty
+import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun Favourites(
-    onOpenDetails: (date: String) -> Unit,
-    onOpenAbout: () -> Unit,
-    viewModel: FavouritesViewModel = koinViewModel()
-) {
+fun Favourites(onOpenDetails: (date: String) -> Unit, onOpenAbout: () -> Unit, viewModel: FavouritesViewModel = koinViewModel()) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
 
     ActionsEffect(viewModel.actions) { action ->
@@ -72,10 +68,7 @@ fun Favourites(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavouritesScreen(
-    uiState: FavouritesUiState,
-    uiEvent: (FavouritesUiEvent) -> Unit
-) {
+private fun FavouritesScreen(uiState: FavouritesUiState, uiEvent: (FavouritesUiEvent) -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -139,11 +132,7 @@ private fun FavouritesScreen(
 }
 
 @Composable
-private fun FavouriteCard(
-    modifier: Modifier = Modifier,
-    picture: FavouritePictureModel,
-    onClick: () -> Unit
-) {
+private fun FavouriteCard(modifier: Modifier = Modifier, picture: FavouritePictureModel, onClick: () -> Unit) {
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()

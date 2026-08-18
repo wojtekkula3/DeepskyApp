@@ -12,11 +12,13 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlin.time.Clock
-import kotlin.time.Duration.Companion.milliseconds
+
+private const val COUNTDOWN_TICK_MILLIS = 1_000
 
 class PictureOfTheDayViewModel(
     private val getPictureOfTheDay: GetPictureOfTheDayInteractor,
@@ -25,7 +27,7 @@ class PictureOfTheDayViewModel(
     private val deleteFavouritePicture: DeleteFavouritePictureInteractor,
     private val networkMonitor: NetworkMonitor,
     // Injectable so the countdown is deterministic in tests (the ticker formats from wall-clock time).
-    private val clock: Clock = Clock.System,
+    private val clock: Clock = Clock.System
 ) : StateActionsViewModel<PictureOfTheDayUiState, Nothing>(PictureOfTheDayUiState()) {
 
     private var resumed = false
@@ -106,7 +108,7 @@ class PictureOfTheDayViewModel(
         countdownJob = launch {
             while (isActive) {
                 updateState { copy(timeToNewPicture = formatTimeToNextApod(clock.now())) }
-                delay(1_000.milliseconds)
+                delay(COUNTDOWN_TICK_MILLIS.milliseconds)
             }
         }
     }
@@ -118,8 +120,11 @@ class PictureOfTheDayViewModel(
         if (favouriteToggleJob?.isActive == true) return
         favouriteToggleJob = launch {
             try {
-                if (currentState.isFavourite) deleteFavouritePicture(picture.date)
-                else addFavouritePicture(picture)
+                if (currentState.isFavourite) {
+                    deleteFavouritePicture(picture.date)
+                } else {
+                    addFavouritePicture(picture)
+                }
             } catch (_: Exception) {
                 // Original app only logged the failure; the favourite Flow drives isFavourite.
             }

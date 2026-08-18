@@ -13,5 +13,5 @@ internal data class PictureOfTheDayDto(
     @SerialName("media_type") val mediaType: String,
     @SerialName("service_version") val serviceVersion: String,
     val title: String,
-    val url: String,
+    val url: String
 )

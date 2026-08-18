@@ -12,16 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.wojciechkula.deepskyapp.feature.about.About
 import com.wojciechkula.deepskyapp.core.navigation.About as AboutKey
 import com.wojciechkula.deepskyapp.core.navigation.Favourites as FavouritesKey
 import com.wojciechkula.deepskyapp.core.navigation.NavKeySavedStateConfiguration
 import com.wojciechkula.deepskyapp.core.navigation.PictureDetails as PictureDetailsKey
 import com.wojciechkula.deepskyapp.core.navigation.PictureOfTheDay as PictureOfTheDayKey
+import com.wojciechkula.deepskyapp.feature.about.About
 import com.wojciechkula.deepskyapp.feature.favourites.Favourites
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDay
 
+// PascalCase follows Compose's own naming for constants (`DefaultDurationMillis` in
+// androidx.compose.animation).
+@Suppress("ktlint:standard:property-naming")
 private const val TransitionDurationMillis = 500
 
 /**

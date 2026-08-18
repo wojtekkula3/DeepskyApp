@@ -21,7 +21,7 @@ val DeepskyLightColorScheme: ColorScheme = lightColorScheme(
     primaryContainer = Blue700,
     secondary = Teal200,
     onSecondary = Black,
-    secondaryContainer = Teal700,
+    secondaryContainer = Teal700
 )
 
 val DeepskyDarkColorScheme: ColorScheme = darkColorScheme(
@@ -30,5 +30,5 @@ val DeepskyDarkColorScheme: ColorScheme = darkColorScheme(
     primaryContainer = Purple700,
     secondary = Teal200,
     onSecondary = Black,
-    secondaryContainer = Teal200,
+    secondaryContainer = Teal200
 )

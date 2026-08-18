@@ -100,6 +100,10 @@ enum class TopSnackbarType {
 
 private val CloseButtonSize = 40.dp
 private val CloseIconSize = 16.dp
+
+// PascalCase keeps this consistent with the two sizes above and with Compose itself, which names its own
+// constants this way (`DefaultDurationMillis` in androidx.compose.animation).
+@Suppress("ktlint:standard:property-naming")
 private const val SnackbarDuration = 4_000L
 
 @Preview

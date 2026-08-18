@@ -37,6 +37,13 @@ import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Loading
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.NotFound
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Success
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiAction.NavigateBack
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.BackPressed
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.DeleteConfirmedPressed
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
 import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_delete
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_delete_error
@@ -48,13 +55,6 @@ import com.wojciechkula.deepskyapp.feature.picture.resources.picture_details_not
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_copyright
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_date
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_explanation
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Loading
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.NotFound
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Success
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiAction.NavigateBack
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.BackPressed
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.DeleteConfirmedPressed
-import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.painterResource
@@ -63,11 +63,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun PictureDetails(
-    date: String,
-    onBack: () -> Unit,
-    viewModel: PictureDetailsViewModel = koinViewModel { parametersOf(date) }
-) {
+fun PictureDetails(date: String, onBack: () -> Unit, viewModel: PictureDetailsViewModel = koinViewModel { parametersOf(date) }) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
 
     ActionsEffect(viewModel.actions) { action ->
@@ -83,10 +79,7 @@ fun PictureDetails(
 }
 
 @Composable
-private fun PictureDetailsScreen(
-    uiState: PictureDetailsUiState,
-    uiEvent: (PictureDetailsUiEvent) -> Unit
-) {
+private fun PictureDetailsScreen(uiState: PictureDetailsUiState, uiEvent: (PictureDetailsUiEvent) -> Unit) {
     Scaffold { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -125,11 +118,7 @@ private fun PictureDetailsScreen(
 }
 
 @Composable
-private fun Snackbar(
-    modifier: Modifier = Modifier,
-    message: PictureDetailsMessage?,
-    onDismiss: () -> Unit
-) {
+private fun Snackbar(modifier: Modifier = Modifier, message: PictureDetailsMessage?, onDismiss: () -> Unit) {
     message?.let {
         TopSnackbarHost(
             modifier = modifier,
@@ -167,10 +156,7 @@ private fun MessageContent(message: String) {
 }
 
 @Composable
-private fun SuccessContent(
-    picture: FavouritePictureModel,
-    onDeleteConfirmed: () -> Unit
-) {
+private fun SuccessContent(picture: FavouritePictureModel, onDeleteConfirmed: () -> Unit) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Picture(picture)

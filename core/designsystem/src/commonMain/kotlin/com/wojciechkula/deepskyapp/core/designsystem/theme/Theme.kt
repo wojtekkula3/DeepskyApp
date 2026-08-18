@@ -5,13 +5,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DeepskyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit,
-) {
+fun DeepskyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = if (darkTheme) DeepskyDarkColorScheme else DeepskyLightColorScheme,
         typography = DeepskyTypography,
-        content = content,
+        content = content
     )
 }

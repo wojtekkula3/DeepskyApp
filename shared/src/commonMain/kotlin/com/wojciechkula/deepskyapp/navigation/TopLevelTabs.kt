@@ -1,3 +1,7 @@
+// The file is named for what it holds — the tabs *and* the back-stack semantics below — rather than for
+// the enum alone, so it does not match the single-declaration naming rule.
+@file:Suppress("MatchingDeclarationName")
+
 package com.wojciechkula.deepskyapp.navigation
 
 import androidx.navigation3.runtime.NavBackStack
