@@ -14,8 +14,11 @@ import io.ktor.http.isSuccess
 
 private const val TAG = "PictureRepository"
 
-internal class PictureRepositoryImpl(private val api: APODApi, private val dateFormatter: DateFormatter, private val logger: Logger) :
-    PictureRepository {
+internal class PictureRepositoryImpl(
+    private val api: APODApi,
+    private val dateFormatter: DateFormatter,
+    private val logger: Logger
+) : PictureRepository {
 
     override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> =
         try {

@@ -63,7 +63,11 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun PictureDetails(date: String, onBack: () -> Unit, viewModel: PictureDetailsViewModel = koinViewModel { parametersOf(date) }) {
+fun PictureDetails(
+    date: String,
+    onBack: () -> Unit,
+    viewModel: PictureDetailsViewModel = koinViewModel { parametersOf(date) }
+) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
 
     ActionsEffect(viewModel.actions) { action ->
@@ -79,7 +83,10 @@ fun PictureDetails(date: String, onBack: () -> Unit, viewModel: PictureDetailsVi
 }
 
 @Composable
-private fun PictureDetailsScreen(uiState: PictureDetailsUiState, uiEvent: (PictureDetailsUiEvent) -> Unit) {
+private fun PictureDetailsScreen(
+    uiState: PictureDetailsUiState,
+    uiEvent: (PictureDetailsUiEvent) -> Unit
+) {
     Scaffold { padding ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -118,7 +125,11 @@ private fun PictureDetailsScreen(uiState: PictureDetailsUiState, uiEvent: (Pictu
 }
 
 @Composable
-private fun Snackbar(modifier: Modifier = Modifier, message: PictureDetailsMessage?, onDismiss: () -> Unit) {
+private fun Snackbar(
+    modifier: Modifier = Modifier,
+    message: PictureDetailsMessage?,
+    onDismiss: () -> Unit
+) {
     message?.let {
         TopSnackbarHost(
             modifier = modifier,
@@ -156,7 +167,10 @@ private fun MessageContent(message: String) {
 }
 
 @Composable
-private fun SuccessContent(picture: FavouritePictureModel, onDeleteConfirmed: () -> Unit) {
+private fun SuccessContent(
+    picture: FavouritePictureModel,
+    onDeleteConfirmed: () -> Unit
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Picture(picture)

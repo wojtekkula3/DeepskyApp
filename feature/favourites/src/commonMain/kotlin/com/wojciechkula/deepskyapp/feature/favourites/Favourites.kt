@@ -50,7 +50,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun Favourites(onOpenDetails: (date: String) -> Unit, onOpenAbout: () -> Unit, viewModel: FavouritesViewModel = koinViewModel()) {
+fun Favourites(
+    onOpenDetails: (date: String) -> Unit,
+    onOpenAbout: () -> Unit,
+    viewModel: FavouritesViewModel = koinViewModel()
+) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
 
     ActionsEffect(viewModel.actions) { action ->
@@ -68,7 +72,10 @@ fun Favourites(onOpenDetails: (date: String) -> Unit, onOpenAbout: () -> Unit, v
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavouritesScreen(uiState: FavouritesUiState, uiEvent: (FavouritesUiEvent) -> Unit) {
+private fun FavouritesScreen(
+    uiState: FavouritesUiState,
+    uiEvent: (FavouritesUiEvent) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -132,7 +139,11 @@ private fun FavouritesScreen(uiState: FavouritesUiState, uiEvent: (FavouritesUiE
 }
 
 @Composable
-private fun FavouriteCard(modifier: Modifier = Modifier, picture: FavouritePictureModel, onClick: () -> Unit) {
+private fun FavouriteCard(
+    modifier: Modifier = Modifier,
+    picture: FavouritePictureModel,
+    onClick: () -> Unit
+) {
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()

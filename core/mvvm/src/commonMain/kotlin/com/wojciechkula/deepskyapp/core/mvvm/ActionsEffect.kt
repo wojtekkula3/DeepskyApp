@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.Flow
  * `rememberCoroutineScope()` instead.
  */
 @Composable
-fun <Action> ActionsEffect(actions: Flow<Action>, onAction: (Action) -> Unit) {
+fun <Action> ActionsEffect(
+    actions: Flow<Action>,
+    onAction: (Action) -> Unit
+) {
     val currentOnAction by rememberUpdatedState(onAction)
     LaunchedEffect(actions) {
         actions.collect { currentOnAction(it) }
