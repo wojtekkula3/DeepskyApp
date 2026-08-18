@@ -14,8 +14,10 @@ coil3 = "3.5.0"
 composeMultiplatform = "1.11.1"
 coroutines = "1.10.2"
 datetime = "0.7.1"
+detekt = "1.23.8"
 junit = "4.13.2"
 koin = "4.2.2"
+ktlint = "1.6.0"
 kotlin = "2.4.0"
 ksp = "2.3.9"
 ktor = "3.5.1"
@@ -95,6 +97,11 @@ zoomable = { module = "net.engawapg.lib:zoomable", version.ref = "zoomable" }
 
 # Logging
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+# Static analysis (resolved into their own configurations by gradle/ktlint.gradle.kts and
+# gradle/detekt.gradle.kts, which run the CLIs through JavaExec rather than a Gradle plugin)
+detekt-cli = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
+ktlint-cli = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
