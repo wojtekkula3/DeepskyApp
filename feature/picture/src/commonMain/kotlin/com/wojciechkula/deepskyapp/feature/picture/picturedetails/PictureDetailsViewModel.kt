@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.feature.picture.picturedetails
 
+import com.wojciechkula.deepskyapp.core.common.NetworkMonitor
 import com.wojciechkula.deepskyapp.core.mvvm.StateActionsViewModel
 import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetFavouritePicturesInteractor
@@ -14,11 +15,21 @@ import kotlinx.coroutines.flow.map
 class PictureDetailsViewModel(
     private val date: String,
     private val getFavouritePictures: GetFavouritePicturesInteractor,
-    private val deleteFavouritePicture: DeleteFavouritePictureInteractor
+    private val deleteFavouritePicture: DeleteFavouritePictureInteractor,
+    private val networkMonitor: NetworkMonitor
 ) : StateActionsViewModel<PictureDetailsUiState, PictureDetailsUiAction>(PictureDetailsUiState()) {
 
     init {
         observeFavouritePicture()
+        observeConnectivity()
+    }
+
+    // A favourite's text comes from the database and needs no network, so connectivity only decides what
+    // the media slot says.
+    private fun observeConnectivity() = launch {
+        networkMonitor.isConnected.collect { connected ->
+            updateState { copy(isOffline = !connected) }
+        }
     }
 
     fun handleUiEvent(event: PictureDetailsUiEvent) {

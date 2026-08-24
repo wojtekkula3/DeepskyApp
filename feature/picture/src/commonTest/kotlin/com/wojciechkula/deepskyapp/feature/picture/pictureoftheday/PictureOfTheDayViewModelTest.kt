@@ -15,6 +15,7 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
@@ -31,6 +32,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
@@ -89,6 +91,51 @@ class PictureOfTheDayViewModelTest {
         val vm = buildViewModel(networkMonitor = FakeNetworkMonitor(initial = false))
         advanceUntilIdle()
         assertEquals(NoInternet, vm.states.value.screenState)
+    }
+
+    @Test
+    fun mediaFailedWhileOfflineReplacesTheWholeScreen() = runTest(dispatcher) {
+        val networkMonitor = FakeNetworkMonitor(initial = true)
+        val vm = buildViewModel(networkMonitor = networkMonitor)
+        advanceUntilIdle()
+        assertIs<Success>(vm.states.value.screenState)
+
+        networkMonitor.connected.value = false
+        advanceUntilIdle()
+        // Connectivity alone must not discard a loaded picture; only a failed media load does.
+        assertIs<Success>(vm.states.value.screenState)
+
+        vm.handleUiEvent(MediaFailed)
+        advanceUntilIdle()
+
+        assertEquals(NoInternet, vm.states.value.screenState)
+    }
+
+    @Test
+    fun mediaFailedWhileConnectedKeepsTheContent() = runTest(dispatcher) {
+        val vm = buildViewModel(networkMonitor = FakeNetworkMonitor(initial = true))
+        advanceUntilIdle()
+
+        vm.handleUiEvent(MediaFailed)
+        advanceUntilIdle()
+
+        assertIs<Success>(vm.states.value.screenState)
+    }
+
+    @Test
+    fun isOfflineTracksTheNetworkMonitor() = runTest(dispatcher) {
+        val networkMonitor = FakeNetworkMonitor(initial = true)
+        val vm = buildViewModel(networkMonitor = networkMonitor)
+        advanceUntilIdle()
+        assertFalse(vm.states.value.isOffline)
+
+        networkMonitor.connected.value = false
+        advanceUntilIdle()
+        assertTrue(vm.states.value.isOffline)
+
+        networkMonitor.connected.value = true
+        advanceUntilIdle()
+        assertFalse(vm.states.value.isOffline)
     }
 
     @Test

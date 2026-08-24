@@ -4,6 +4,7 @@ import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 
 data class PictureDetailsUiState(
     val screenState: PictureDetailsScreenState = PictureDetailsScreenState.Loading,
+    val isOffline: Boolean = false,
     val snackbarMessage: PictureDetailsMessage? = null
 )
 

@@ -13,6 +13,7 @@ class AddFavouritePictureInteractor(private val repository: FavouriteRepository)
             hdUrl = picture.hdUrl,
             mediaType = picture.mediaType,
             serviceVersion = picture.serviceVersion,
+            thumbnailUrl = picture.thumbnailUrl,
             title = picture.title,
             url = picture.url
         )

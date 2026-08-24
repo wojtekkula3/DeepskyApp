@@ -8,6 +8,7 @@ data class FavouritePictureModel(
     val hdUrl: String,
     val mediaType: String,
     val serviceVersion: String,
+    val thumbnailUrl: String? = null,
     val title: String,
     val url: String
 )

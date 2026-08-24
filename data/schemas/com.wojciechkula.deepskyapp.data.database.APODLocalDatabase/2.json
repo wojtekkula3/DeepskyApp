@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ec9e21c8f99ae54e9a36ab8673689157",
+    "identityHash": "c7b85eec23bb6f4e5785eafdeed0d4b3",
     "entities": [
       {
         "tableName": "favourite_pictures",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `copyright` TEXT, `date` TEXT NOT NULL, `explanation` TEXT NOT NULL, `hdUrl` TEXT NOT NULL, `mediaType` TEXT NOT NULL, `serviceVersion` TEXT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `copyright` TEXT, `date` TEXT NOT NULL, `explanation` TEXT NOT NULL, `hdUrl` TEXT NOT NULL, `mediaType` TEXT NOT NULL, `serviceVersion` TEXT NOT NULL, `thumbnailUrl` TEXT, `title` TEXT NOT NULL, `url` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -50,6 +50,11 @@
             "notNull": true
           },
           {
+            "fieldPath": "thumbnailUrl",
+            "columnName": "thumbnailUrl",
+            "affinity": "TEXT"
+          },
+          {
             "fieldPath": "title",
             "columnName": "title",
             "affinity": "TEXT",
@@ -83,7 +88,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ec9e21c8f99ae54e9a36ab8673689157')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c7b85eec23bb6f4e5785eafdeed0d4b3')"
     ]
   }
 }

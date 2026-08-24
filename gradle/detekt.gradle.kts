@@ -15,6 +15,7 @@ val detektInputDirs = listOf(
     "androidApp/src/main",
     "core/common/src",
     "core/designsystem/src",
+    "core/media/src",
     "core/mvvm/src",
     "core/navigation/src",
     "data/src",

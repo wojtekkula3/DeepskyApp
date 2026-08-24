@@ -11,6 +11,7 @@ internal fun FavouritePictureModel.toEntity() = FavouritePictureEntity(
     hdUrl = hdUrl,
     mediaType = mediaType,
     serviceVersion = serviceVersion,
+    thumbnailUrl = thumbnailUrl,
     title = title,
     url = url
 )
@@ -23,6 +24,7 @@ internal fun FavouritePictureEntity.toDomain() = FavouritePictureModel(
     hdUrl = hdUrl,
     mediaType = mediaType,
     serviceVersion = serviceVersion,
+    thumbnailUrl = thumbnailUrl,
     title = title,
     url = url
 )

@@ -1,5 +1,7 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,21 +20,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
+import com.wojciechkula.deepskyapp.domain.model.mediaKind
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
+import com.wojciechkula.deepskyapp.feature.picture.PictureMedia
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
@@ -41,14 +47,11 @@ import com.wojciechkula.deepskyapp.feature.picture.resources.picture_add_to_favo
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_copyright
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_date
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_explanation
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_no_internet
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_load_error
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_new_picture_in
-import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_no_internet
-import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_not_available
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_try_again
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_remove_from_favourites
-import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -74,32 +77,47 @@ private fun PictureOfTheDayScreen(
     uiEvent: (PictureOfTheDayUiEvent) -> Unit
 ) {
     Scaffold { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            when (val screenState = uiState.screenState) {
-                Error -> MessageContent(
-                    message = stringResource(Res.string.picture_of_the_day_load_error),
-                    onRetry = { uiEvent(RetryPressed) }
-                )
+        when (val screenState = uiState.screenState) {
+            Error -> MessageContent(
+                message = stringResource(Res.string.picture_of_the_day_load_error),
+                onRetry = { uiEvent(RetryPressed) },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            )
 
-                is Success -> SuccessContent(
+            is Success -> Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SuccessContent(
                     picture = screenState.picture,
                     isFavourite = uiState.isFavourite,
+                    isOffline = uiState.isOffline,
                     timeToNewPicture = uiState.timeToNewPicture,
-                    onFavouriteClick = { uiEvent(FavouritePressed) }
+                    onFavouriteClick = { uiEvent(FavouritePressed) },
+                    onMediaFailed = { uiEvent(MediaFailed) }
                 )
+            }
 
-                NoInternet -> MessageContent(
-                    message = stringResource(Res.string.picture_of_the_day_no_internet),
-                    onRetry = { uiEvent(RetryPressed) }
-                )
+            NoInternet -> MessageContent(
+                message = stringResource(Res.string.picture_no_internet),
+                onRetry = { uiEvent(RetryPressed) },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            )
 
-                Loading -> CircularProgressIndicator(modifier = Modifier.padding(top = 64.dp))
+            Loading -> Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
     }
@@ -108,18 +126,25 @@ private fun PictureOfTheDayScreen(
 @Composable
 private fun MessageContent(
     message: String,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Text(
-        text = message,
-        style = MaterialTheme.typography.headlineSmall,
-        modifier = Modifier.padding(top = 64.dp)
-    )
-    Button(
-        onClick = onRetry,
-        modifier = Modifier.padding(top = 16.dp)
+    Column(
+        modifier = modifier.padding(horizontal = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Text(stringResource(Res.string.picture_of_the_day_try_again))
+        Text(
+            text = message,
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
+        )
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text(stringResource(Res.string.picture_of_the_day_try_again))
+        }
     }
 }
 
@@ -127,28 +152,24 @@ private fun MessageContent(
 private fun SuccessContent(
     picture: PictureOfTheDayModel,
     isFavourite: Boolean,
+    isOffline: Boolean,
     timeToNewPicture: String,
-    onFavouriteClick: () -> Unit
+    onFavouriteClick: () -> Unit,
+    onMediaFailed: () -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(24.dp)
     ) {
-        if (picture.mediaType == "image") {
-            AsyncImage(
-                model = picture.url,
-                contentDescription = picture.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .zoomable(rememberZoomState())
-            )
-        } else {
-            Text(
-                text = stringResource(Res.string.picture_of_the_day_not_available),
-                modifier = Modifier.padding(24.dp)
-            )
-        }
+        PictureMedia(
+            url = picture.url,
+            mediaType = picture.mediaType,
+            title = picture.title,
+            thumbnailUrl = picture.thumbnailUrl,
+            isOffline = isOffline,
+            onMediaFailed = onMediaFailed
+        )
     }
     ElevatedCard(
         modifier = Modifier
@@ -161,7 +182,7 @@ private fun SuccessContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(picture.title, style = MaterialTheme.typography.titleLarge)
-                if (picture.mediaType == "image") {
+                if (mediaKind(picture.mediaType, picture.url) != MediaKind.UNSUPPORTED) {
                     IconButton(onClick = onFavouriteClick) {
                         Icon(
                             painter = painterResource(DesignSystemRes.drawable.ic_favourite),
@@ -213,6 +234,17 @@ private val previewPicture = PictureOfTheDayModel(
     url = ""
 )
 
+// An empty url has no recognised extension, so this classifies as an embed with no thumbnail.
+private val previewVideo = previewPicture.copy(
+    mediaType = "video"
+)
+
+private val previewVideoFile = previewPicture.copy(
+    mediaType = "video",
+    url = "https://apod.nasa.gov/apod/image/2608/eso2612b.mp4",
+    title = "Preview Clip"
+)
+
 @Preview
 @Composable
 private fun PictureOfTheDaySuccessPreview() {
@@ -222,6 +254,37 @@ private fun PictureOfTheDaySuccessPreview() {
                 screenState = Success(previewPicture),
                 isFavourite = true,
                 timeToNewPicture = "8h 0min 0s"
+            ),
+            uiEvent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PictureOfTheDayVideoNoThumbnailPreview() {
+    DeepskyTheme {
+        PictureOfTheDayScreen(
+            uiState = PictureOfTheDayUiState(
+                screenState = Success(previewVideo),
+                isFavourite = true,
+                timeToNewPicture = "8h 0min 0s"
+            ),
+            uiEvent = {}
+        )
+    }
+}
+
+// A direct video file: the card shows the player's stand-in and the button that opens it full screen.
+@Preview
+@Composable
+private fun PictureOfTheDayVideoFilePreview() {
+    DeepskyTheme {
+        PictureOfTheDayScreen(
+            uiState = PictureOfTheDayUiState(
+                screenState = Success(previewVideoFile),
+                isFavourite = false,
+                timeToNewPicture = "3h 12min 5s"
             ),
             uiEvent = {}
         )

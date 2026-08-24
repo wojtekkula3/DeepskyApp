@@ -1,12 +1,15 @@
 package com.wojciechkula.deepskyapp.feature.favourites
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -31,9 +34,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_info
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
 import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
+import com.wojciechkula.deepskyapp.domain.model.MediaKind
+import com.wojciechkula.deepskyapp.domain.model.mediaKind
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Empty
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Success
@@ -48,6 +54,9 @@ import com.wojciechkula.deepskyapp.feature.favourites.resources.favourites_title
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+
+private val PlayBadgeSize = 40.dp
+private const val VIDEO_TILE_ASPECT_RATIO = 16f / 9f
 
 @Composable
 fun Favourites(
@@ -150,11 +159,7 @@ private fun FavouriteCard(
             .clickable(onClick = onClick)
     ) {
         Column {
-            AsyncImage(
-                model = picture.url,
-                contentDescription = picture.title,
-                modifier = Modifier.fillMaxWidth()
-            )
+            FavouriteThumbnail(picture = picture)
             Text(
                 text = picture.title,
                 fontWeight = FontWeight.Bold,
@@ -176,30 +181,113 @@ private fun FavouriteCard(
     }
 }
 
+@Composable
+private fun FavouriteThumbnail(picture: FavouritePictureModel) {
+    val kind = mediaKind(picture.mediaType, picture.url)
+    // An mp4 resolves through the video-frame fetcher on the singleton loader; an embed URL is a web
+    // page that would never decode, so APOD's own thumbnail stands in for it.
+    val model = if (kind == MediaKind.VIDEO_EMBED) picture.thumbnailUrl else picture.url
+    val isVideo = kind == MediaKind.VIDEO_FILE || kind == MediaKind.VIDEO_EMBED
+
+    Box(
+        // A video frame has no intrinsic size until it is extracted, and none at all if extraction
+        // fails, so the tile reserves its own space instead of collapsing to the badge.
+        modifier = if (isVideo) {
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(VIDEO_TILE_ASPECT_RATIO)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        } else {
+            Modifier
+        },
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = model,
+            contentDescription = picture.title,
+            modifier = Modifier.fillMaxWidth()
+        )
+        if (isVideo) {
+            Icon(
+                painter = painterResource(DesignSystemRes.drawable.ic_play),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(PlayBadgeSize)
+            )
+        }
+    }
+}
+
+private val previewImage = FavouritePictureModel(
+    id = 1L,
+    copyright = null,
+    date = "2026-07-10",
+    explanation = "e",
+    hdUrl = "",
+    mediaType = "image",
+    serviceVersion = "v1",
+    title = "Preview Favourite",
+    url = ""
+)
+
+// A direct video file: the tile reserves 16:9 for a frame that has to be extracted first.
+private val previewVideoFile = previewImage.copy(
+    id = 2L,
+    date = "2026-08-21",
+    mediaType = "video",
+    title = "Preview Clip",
+    url = "https://apod.nasa.gov/apod/image/2608/eso2612b.mp4"
+)
+
+// An embed: the frame cannot be extracted from a web page, so APOD's own thumbnail stands in.
+private val previewVideoEmbed = previewImage.copy(
+    id = 3L,
+    date = "2026-08-23",
+    mediaType = "video",
+    title = "Preview Embed",
+    url = "https://www.youtube.com/embed/UgxWkOXcdZU",
+    thumbnailUrl = "https://img.youtube.com/vi/UgxWkOXcdZU/0.jpg"
+)
+
 @Preview
 @Composable
 private fun FavouritesSuccessPreview() {
     DeepskyTheme {
         FavouritesScreen(
+            uiState = FavouritesUiState(screenState = Success(listOf(previewImage))),
+            uiEvent = {}
+        )
+    }
+}
+
+// The mixed grid is the interesting one: only here do the play badge and the reserved video tile show
+// up next to a picture tile that takes its height from the image.
+@Preview
+@Composable
+private fun FavouritesMixedMediaPreview() {
+    DeepskyTheme {
+        FavouritesScreen(
             uiState = FavouritesUiState(
-                screenState = Success(
-                    listOf(
-                        FavouritePictureModel(
-                            id = 1L,
-                            copyright = null,
-                            date = "2026-07-10",
-                            explanation = "e",
-                            hdUrl = "",
-                            mediaType = "image",
-                            serviceVersion = "v1",
-                            title = "Preview Favourite",
-                            url = ""
-                        )
-                    )
-                )
+                screenState = Success(listOf(previewImage, previewVideoFile, previewVideoEmbed))
             ),
             uiEvent = {}
         )
+    }
+}
+
+@Preview
+@Composable
+private fun FavouriteVideoTilePreview() {
+    DeepskyTheme {
+        FavouriteCard(picture = previewVideoFile, onClick = {})
+    }
+}
+
+@Preview
+@Composable
+private fun FavouritePictureTilePreview() {
+    DeepskyTheme {
+        FavouriteCard(picture = previewImage, onClick = {})
     }
 }
 

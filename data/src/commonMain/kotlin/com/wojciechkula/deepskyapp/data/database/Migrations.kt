@@ -13,7 +13,8 @@ private const val CREATE_FAVOURITE_PICTURES =
     "CREATE TABLE IF NOT EXISTS `favourite_pictures` (" +
         "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `copyright` TEXT, `date` TEXT NOT NULL, " +
         "`explanation` TEXT NOT NULL, `hdUrl` TEXT NOT NULL, `mediaType` TEXT NOT NULL, " +
-        "`serviceVersion` TEXT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL)"
+        "`serviceVersion` TEXT NOT NULL, `thumbnailUrl` TEXT, `title` TEXT NOT NULL, " +
+        "`url` TEXT NOT NULL)"
 
 private const val CREATE_UNIQUE_DATE_INDEX =
     "CREATE UNIQUE INDEX IF NOT EXISTS `index_favourite_pictures_date` " +
@@ -33,7 +34,8 @@ private const val COPY_FROM_LEGACY =
  * upgrade, and the old table is dropped.
  *
  * The index is created *before* the copy so `INSERT OR IGNORE` collapses the duplicate dates the old
- * app could produce. The `bitmap` BLOB is not carried over.
+ * app could produce. The `bitmap` BLOB is not carried over, and `thumbnailUrl` is left null: the old
+ * table had no such column, and APOD only reports a thumbnail for an embedded video.
  *
  * Version 1 always means the pre-KMP schema, so this needs no branching: a fresh install starts at
  * `user_version = 0` and goes through `onCreate` at version 2 instead, and the old app created its

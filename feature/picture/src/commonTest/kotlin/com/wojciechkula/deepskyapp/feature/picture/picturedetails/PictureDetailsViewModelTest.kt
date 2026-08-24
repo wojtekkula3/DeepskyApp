@@ -4,6 +4,7 @@ import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInter
 import com.wojciechkula.deepskyapp.domain.interactor.GetFavouritePicturesInteractor
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.feature.picture.FakeFavouriteRepository
+import com.wojciechkula.deepskyapp.feature.picture.FakeNetworkMonitor
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiAction.NavigateBack
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.BackPressed
@@ -22,6 +23,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -40,12 +42,31 @@ class PictureDetailsViewModelTest {
         hdUrl = "hd", mediaType = "image", serviceVersion = "v1", title = "t", url = "u",
     )
 
-    private fun buildViewModel(repo: FakeFavouriteRepository): PictureDetailsViewModel =
+    private fun buildViewModel(
+        repo: FakeFavouriteRepository,
+        networkMonitor: FakeNetworkMonitor = FakeNetworkMonitor(initial = true),
+    ): PictureDetailsViewModel =
         PictureDetailsViewModel(
             date = saved.date,
             getFavouritePictures = GetFavouritePicturesInteractor(repo),
             deleteFavouritePicture = DeleteFavouritePictureInteractor(repo),
+            networkMonitor = networkMonitor,
         )
+
+    @Test
+    fun isOfflineTracksTheNetworkMonitor() = runTest(dispatcher) {
+        val repo = FakeFavouriteRepository().apply { stored.value = listOf(saved) }
+        val networkMonitor = FakeNetworkMonitor(initial = true)
+        val vm = buildViewModel(repo, networkMonitor)
+        advanceUntilIdle()
+        assertFalse(vm.states.value.isOffline)
+
+        networkMonitor.connected.value = false
+        advanceUntilIdle()
+        // The stored text stays reachable offline; only the media slot reacts.
+        assertIs<Success>(vm.states.value.screenState)
+        assertTrue(vm.states.value.isOffline)
+    }
 
     @Test
     fun loadsPictureMatchingDate() = runTest(dispatcher) {

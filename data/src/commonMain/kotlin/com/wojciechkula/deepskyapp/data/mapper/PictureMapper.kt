@@ -10,6 +10,7 @@ internal fun PictureOfTheDayDto.toDomain() = PictureOfTheDayModel(
     hdUrl = hdUrl,
     mediaType = mediaType,
     serviceVersion = serviceVersion,
+    thumbnailUrl = thumbnailUrl,
     title = title,
     url = url
 )

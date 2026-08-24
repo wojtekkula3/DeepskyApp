@@ -1,11 +1,23 @@
 <resources>
     <string name="picture_of_the_day_load_error">Could not load today's picture</string>
-    <string name="picture_of_the_day_no_internet">No internet connection</string>
     <string name="picture_of_the_day_try_again">Try again</string>
-    <string name="picture_of_the_day_not_available">Picture is not available today</string>
     <string name="picture_of_the_day_new_picture_in">New picture in: %1$s</string>
     <string name="picture_add_to_favourites">Add to favourites</string>
     <string name="picture_remove_from_favourites">Remove from favourites</string>
+    <string name="picture_open_video">Watch the video</string>
+    <string name="picture_media_not_available">This media cannot be shown</string>
+    <string name="picture_video_enter_fullscreen">Watch full screen</string>
+    <string name="picture_video_exit_fullscreen">Leave full screen</string>
+    <string name="picture_video_play">Play</string>
+    <string name="picture_video_pause">Pause</string>
+    <string name="picture_video_rewind">Back five seconds</string>
+    <string name="picture_video_forward">Forward five seconds</string>
+    <string name="picture_video_mute">Mute</string>
+    <string name="picture_video_unmute">Unmute</string>
+    <string name="picture_video_seek_bar">Playback position</string>
+    <string name="picture_video_position">%1$s / %2$s</string>
+    <string name="picture_video_unknown_duration">--:--</string>
+    <string name="picture_no_internet">No internet connection. Please check your connection.</string>
     <string name="picture_label_copyright">Copyright:</string>
     <string name="picture_label_date">Date:</string>
     <string name="picture_label_explanation">Explanation:</string>

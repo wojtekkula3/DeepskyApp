@@ -14,5 +14,6 @@ internal class APODApi(
         client.get("${baseUrl}planetary/apod") {
             parameter("api_key", apiKey)
             parameter("date", date)
+            parameter("thumbs", true)
         }
 }

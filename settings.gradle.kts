@@ -31,6 +31,7 @@ dependencyResolutionManagement {
 include(":androidApp")
 include(":core:common")
 include(":core:designsystem")
+include(":core:media")
 include(":core:mvvm")
 include(":core:navigation")
 include(":data")

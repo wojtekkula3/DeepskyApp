@@ -12,6 +12,8 @@ internal data class PictureOfTheDayDto(
     @SerialName("hdurl") val hdUrl: String = "",
     @SerialName("media_type") val mediaType: String,
     @SerialName("service_version") val serviceVersion: String,
+    // Present only for an embedded video, and only when the request asks for `thumbs`.
+    @SerialName("thumbnail_url") val thumbnailUrl: String? = null,
     val title: String,
     val url: String
 )

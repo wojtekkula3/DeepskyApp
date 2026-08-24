@@ -52,6 +52,44 @@ private fun SQLiteConnection.tableNames(): List<String> =
 class MigrationsTest {
 
     @Test
+    fun `creates the thumbnail column and leaves a carried-over favourite null in it`() {
+        val connection = legacyVersionOne().apply { insertLegacy(date = "2026-08-03") }
+
+        MIGRATION_1_2.migrate(connection)
+
+        connection.prepare("SELECT date, thumbnailUrl FROM favourite_pictures").use { statement ->
+            assertTrue(statement.step())
+            assertEquals("2026-08-03", statement.getText(0))
+            // The pre-KMP table had no such column, and APOD only reports one for an embedded video.
+            assertTrue(statement.isNull(1))
+        }
+        connection.close()
+    }
+
+    @Test
+    fun `accepts a thumbnail written after the migration`() {
+        val connection = legacyVersionOne()
+        MIGRATION_1_2.migrate(connection)
+
+        connection.prepare(
+            "INSERT INTO favourite_pictures " +
+                "(copyright, date, explanation, hdUrl, mediaType, serviceVersion, thumbnailUrl, title, url) " +
+                "VALUES (NULL, '2026-08-23', 'e', '', 'video', 'v1', ?, 'Cassini', ?)"
+        ).use { statement ->
+            statement.bindText(1, "https://i.vimeocdn.com/video/62374077-d_640")
+            statement.bindText(2, "https://player.vimeo.com/video/11386048")
+            statement.step()
+        }
+
+        connection.prepare("SELECT thumbnailUrl FROM favourite_pictures WHERE date = '2026-08-23'")
+            .use { statement ->
+                assertTrue(statement.step())
+                assertEquals("https://i.vimeocdn.com/video/62374077-d_640", statement.getText(0))
+            }
+        connection.close()
+    }
+
+    @Test
     fun `carries a favourite saved by the pre-KMP app into the current table`() {
         val connection = legacyVersionOne().apply { insertLegacy(date = "2026-08-03") }
 

@@ -8,5 +8,5 @@ import org.koin.dsl.module
 
 val pictureModule: Module = module {
     viewModel { PictureOfTheDayViewModel(get(), get(), get(), get(), get()) }
-    viewModel { (date: String) -> PictureDetailsViewModel(date, get(), get()) }
+    viewModel { (date: String) -> PictureDetailsViewModel(date, get(), get(), get()) }
 }

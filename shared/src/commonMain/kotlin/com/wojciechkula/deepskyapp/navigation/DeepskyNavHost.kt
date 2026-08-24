@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.wojciechkula.deepskyapp.core.navigation.About as AboutKey
 import com.wojciechkula.deepskyapp.core.navigation.Favourites as FavouritesKey
@@ -49,6 +51,15 @@ internal fun DeepskyNavHost() {
     ) { padding ->
         NavDisplay(
             backStack = backStack,
+            // NavDisplay's default decorator list holds only the saveable-state one, so without this
+            // every entry shares the Activity's ViewModelStore: a ViewModel resolved without an
+            // entry-specific key is created once and reused, so PictureDetails kept showing whichever
+            // favourite was opened first and its database subscription outlived the screen. Passing a
+            // list replaces the default, so the saveable-state decorator has to be repeated here.
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
             // Every screen owns its own Scaffold, and `padding` offsets content without consuming the
             // window insets it was computed from — so without `consumeWindowInsets` the inner Scaffolds
             // measure the system bars again and apply the status-bar and navigation-bar insets a second

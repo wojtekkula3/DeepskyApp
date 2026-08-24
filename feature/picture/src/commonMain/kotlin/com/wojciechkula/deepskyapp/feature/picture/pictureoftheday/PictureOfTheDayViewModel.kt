@@ -9,6 +9,7 @@ import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInter
 import com.wojciechkula.deepskyapp.domain.interactor.GetPictureOfTheDayInteractor
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
@@ -42,6 +43,7 @@ class PictureOfTheDayViewModel(
 
     private fun observeConnectivity() = launch {
         networkMonitor.isConnected.collect { connected ->
+            updateState { copy(isOffline = !connected) }
             // Fetch only until the picture is loaded; keeps parity with the original reconnect guard.
             if (currentState.screenState !is Success) {
                 // Guard against a second connectivity emission starting a concurrent load whose result
@@ -76,8 +78,18 @@ class PictureOfTheDayViewModel(
 
             FavouritePressed -> onFavouriteClicked()
 
+            MediaFailed -> onMediaFailed()
+
             RetryPressed -> onRetryPressed()
         }
+    }
+
+    // Offline, the text around a picture is worth little without the picture, so the whole screen becomes
+    // the connectivity error and its existing retry re-fetches. Connected, a failed media load is the
+    // media's own problem and the slot reports it in place.
+    private fun onMediaFailed() {
+        if (!currentState.isOffline) return
+        updateState { copy(screenState = PictureOfTheDayScreenState.NoInternet) }
     }
 
     private fun onRetryPressed() {
