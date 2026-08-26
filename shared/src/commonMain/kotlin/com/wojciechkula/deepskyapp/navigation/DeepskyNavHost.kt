@@ -42,7 +42,7 @@ internal fun DeepskyNavHost() {
         bottomBar = {
             // Hidden on Details and About, as in the original app.
             if (selectedTab != null) {
-                DeepskyBottomBar(
+                FloatingBottomNavigation(
                     selectedTab = selectedTab,
                     onTabSelected = backStack::selectTab
                 )

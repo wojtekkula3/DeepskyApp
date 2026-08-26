@@ -20,6 +20,13 @@ data class ApodColors(
     val surfaceVariant: Color,
     val onSurfaceVariant: Color,
     val surfaceSelected: Color,
+    /**
+     * The floating navigation card. It is its own role because the two themes need opposite steps:
+     * light wants plain white *above* the off-white background, dark wants a surface lighter than
+     * both `background` and `surface` so the card separates from the page. No single existing role
+     * does both.
+     */
+    val navigationSurface: Color,
     val outline: Color,
     val favorite: Color,
     val onFavorite: Color,
@@ -37,6 +44,7 @@ private val DarkBaseline = darkColorScheme()
 
 private val LightPrimaryContainer = Color(0xFFEAF0FF)
 private val DarkSurfaceSelected = Color(0xFF2E3F6E)
+private val DarkSurfaceVariant = Color(0xFF2F3759)
 
 internal val ApodLightColors = ApodColors(
     primary = Color(0xFF4A63D6),
@@ -50,6 +58,7 @@ internal val ApodLightColors = ApodColors(
     surfaceVariant = Color(0xFFF1EEF9),
     onSurfaceVariant = Color(0xFF5F5E60),
     surfaceSelected = LightPrimaryContainer,
+    navigationSurface = White,
     outline = Color(0xFFE5E1EC),
     favorite = Color(0xFFE45868),
     onFavorite = White,
@@ -67,9 +76,10 @@ internal val ApodDarkColors = ApodColors(
     onBackground = Color(0xFFF2F5FF),
     surface = Color(0xFF282E4A),
     onSurface = Color(0xFFF2F5FF),
-    surfaceVariant = Color(0xFF2F3759),
+    surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = Color(0xFFC4C9DA),
     surfaceSelected = DarkSurfaceSelected,
+    navigationSurface = DarkSurfaceVariant,
     outline = Color(0xFF343B5C),
     favorite = Color(0xFFFF5B5E),
     onFavorite = White,
