@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.media.rememberUrlOpener
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.mediaKind
@@ -146,7 +145,7 @@ private fun EmbeddedVideoPoster(
                 .padding(24.dp)
                 .size(PlayBadgeSize),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = ApodTheme.colors.onSurfaceVariant
         )
     }
 }
@@ -184,7 +183,7 @@ private fun MediaMessage(
 @Preview
 @Composable
 private fun PictureMediaVideoFilePreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureMedia(
             url = "https://apod.nasa.gov/apod/image/2608/eso2612b.mp4",
             mediaType = "video",
@@ -198,7 +197,7 @@ private fun PictureMediaVideoFilePreview() {
 @Preview
 @Composable
 private fun PictureMediaVideoEmbedPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureMedia(
             url = "https://www.youtube.com/embed/UgxWkOXcdZU",
             mediaType = "video",
@@ -214,7 +213,7 @@ private fun PictureMediaVideoEmbedPreview() {
 @Preview
 @Composable
 private fun PictureMediaUnsupportedPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureMedia(
             url = "https://apod.nasa.gov/apod/ap241023.html",
             mediaType = "other",
@@ -228,7 +227,7 @@ private fun PictureMediaUnsupportedPreview() {
 @Preview
 @Composable
 private fun MediaFailureOfflinePreview() {
-    DeepskyTheme {
+    ApodTheme {
         MediaFailure(isOffline = true)
     }
 }
@@ -236,7 +235,7 @@ private fun MediaFailureOfflinePreview() {
 @Preview
 @Composable
 private fun MediaFailureUnavailablePreview() {
-    DeepskyTheme {
+    ApodTheme {
         MediaFailure(isOffline = false)
     }
 }

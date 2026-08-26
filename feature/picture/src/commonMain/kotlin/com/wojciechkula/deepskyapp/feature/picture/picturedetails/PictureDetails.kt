@@ -14,7 +14,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,7 +33,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarType
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_back
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_back
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.feature.picture.LabelledText
@@ -174,7 +173,7 @@ private fun MessageContent(
     ) {
         Text(
             text = message,
-            style = MaterialTheme.typography.titleMedium,
+            style = ApodTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
     }
@@ -259,7 +258,7 @@ private fun DescriptionBox(picture: FavouritePictureModel) {
             .padding(horizontal = 24.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Text(picture.title, style = MaterialTheme.typography.titleLarge)
+            Text(picture.title, style = ApodTheme.typography.titleLarge)
             picture.copyright?.let {
                 LabelledText(
                     label = stringResource(Res.string.picture_label_copyright),
@@ -290,7 +289,7 @@ private val previewPicture = FavouritePictureModel(
 @Preview
 @Composable
 private fun PictureDetailsSuccessPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureDetailsScreen(
             uiState = PictureDetailsUiState(screenState = Success(previewPicture)),
             uiEvent = {}
@@ -308,7 +307,7 @@ private val previewVideoFile = previewPicture.copy(
 @Preview
 @Composable
 private fun PictureDetailsVideoFilePreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureDetailsScreen(
             uiState = PictureDetailsUiState(screenState = Success(previewVideoFile)),
             uiEvent = {}
@@ -319,7 +318,7 @@ private fun PictureDetailsVideoFilePreview() {
 @Preview
 @Composable
 private fun PictureDetailsLoadingPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureDetailsScreen(
             uiState = PictureDetailsUiState(screenState = Loading),
             uiEvent = {}
@@ -330,7 +329,7 @@ private fun PictureDetailsLoadingPreview() {
 @Preview
 @Composable
 private fun PictureDetailsNotFoundPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureDetailsScreen(
             uiState = PictureDetailsUiState(screenState = NotFound),
             uiEvent = {}
@@ -341,7 +340,7 @@ private fun PictureDetailsNotFoundPreview() {
 @Preview
 @Composable
 private fun PictureDetailsSnackbarPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureDetailsScreen(
             uiState = PictureDetailsUiState(
                 screenState = Success(previewPicture),

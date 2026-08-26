@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -49,7 +48,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_pause
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_volume_off
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_volume_on
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.media.VideoPlayerState
 import com.wojciechkula.deepskyapp.core.media.rememberVideoPlayerState
 import com.wojciechkula.deepskyapp.core.media.seekBy
@@ -199,7 +198,7 @@ private fun FullscreenVideoContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.scrim)
+            .background(ApodTheme.colors.scrim)
     ) {
         state.Surface(
             modifier = Modifier
@@ -283,7 +282,7 @@ private fun VideoControls(
                 }
             ),
             color = OverlayContentColour,
-            style = MaterialTheme.typography.labelLarge
+            style = ApodTheme.typography.labelLarge
         )
         Row(
             modifier = Modifier
@@ -391,14 +390,14 @@ private class PreviewVideoPlayerState(
 
     @Composable
     override fun Surface(modifier: Modifier) {
-        Box(modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant))
+        Box(modifier = modifier.background(ApodTheme.colors.surfaceVariant))
     }
 }
 
 @Preview
 @Composable
 private fun VideoCardPreview() {
-    DeepskyTheme {
+    ApodTheme {
         VideoCard(
             state = PreviewVideoPlayerState(),
             onEnterFullscreen = {},
@@ -410,7 +409,7 @@ private fun VideoCardPreview() {
 @Preview
 @Composable
 private fun FullscreenVideoPlayingPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FullscreenVideoContent(
             state = PreviewVideoPlayerState(),
             onTogglePlayback = {},
@@ -422,7 +421,7 @@ private fun FullscreenVideoPlayingPreview() {
 @Preview
 @Composable
 private fun FullscreenVideoPausedPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FullscreenVideoContent(
             state = PreviewVideoPlayerState(isPlaying = false),
             onTogglePlayback = {},
@@ -434,7 +433,7 @@ private fun FullscreenVideoPausedPreview() {
 @Preview
 @Composable
 private fun FullscreenVideoUnmutedPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FullscreenVideoContent(
             state = PreviewVideoPlayerState(initiallyMuted = false),
             onTogglePlayback = {},
@@ -448,7 +447,7 @@ private fun FullscreenVideoUnmutedPreview() {
 @Preview
 @Composable
 private fun FullscreenVideoUnknownDurationPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FullscreenVideoContent(
             state = PreviewVideoPlayerState(positionMillis = 0L, durationMillis = 0L),
             onTogglePlayback = {},
@@ -461,7 +460,7 @@ private fun FullscreenVideoUnknownDurationPreview() {
 @Preview
 @Composable
 private fun FullscreenVideoLongClipPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FullscreenVideoContent(
             state = PreviewVideoPlayerState(positionMillis = 3_723_000L, durationMillis = 7_265_000L),
             onTogglePlayback = {},

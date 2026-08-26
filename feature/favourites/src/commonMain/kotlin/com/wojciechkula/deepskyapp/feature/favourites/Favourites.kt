@@ -18,10 +18,10 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,7 +35,7 @@ import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_info
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
@@ -104,7 +104,10 @@ private fun FavouritesScreen(
                             )
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = ApodTheme.colors.background
+                )
             )
         }
     ) { padding ->
@@ -164,7 +167,7 @@ private fun FavouriteCard(
                 text = picture.title,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge,
+                style = ApodTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
@@ -172,7 +175,7 @@ private fun FavouriteCard(
             Text(
                 text = picture.date,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
+                style = ApodTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 4.dp)
@@ -196,7 +199,7 @@ private fun FavouriteThumbnail(picture: FavouritePictureModel) {
             Modifier
                 .fillMaxWidth()
                 .aspectRatio(VIDEO_TILE_ASPECT_RATIO)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(ApodTheme.colors.surfaceVariant)
         } else {
             Modifier
         },
@@ -211,7 +214,7 @@ private fun FavouriteThumbnail(picture: FavouritePictureModel) {
             Icon(
                 painter = painterResource(DesignSystemRes.drawable.ic_play),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = ApodTheme.colors.onSurfaceVariant,
                 modifier = Modifier.size(PlayBadgeSize)
             )
         }
@@ -252,7 +255,7 @@ private val previewVideoEmbed = previewImage.copy(
 @Preview
 @Composable
 private fun FavouritesSuccessPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FavouritesScreen(
             uiState = FavouritesUiState(screenState = Success(listOf(previewImage))),
             uiEvent = {}
@@ -265,7 +268,7 @@ private fun FavouritesSuccessPreview() {
 @Preview
 @Composable
 private fun FavouritesMixedMediaPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FavouritesScreen(
             uiState = FavouritesUiState(
                 screenState = Success(listOf(previewImage, previewVideoFile, previewVideoEmbed))
@@ -278,7 +281,7 @@ private fun FavouritesMixedMediaPreview() {
 @Preview
 @Composable
 private fun FavouriteVideoTilePreview() {
-    DeepskyTheme {
+    ApodTheme {
         FavouriteCard(picture = previewVideoFile, onClick = {})
     }
 }
@@ -286,7 +289,7 @@ private fun FavouriteVideoTilePreview() {
 @Preview
 @Composable
 private fun FavouritePictureTilePreview() {
-    DeepskyTheme {
+    ApodTheme {
         FavouriteCard(picture = previewImage, onClick = {})
     }
 }
@@ -294,7 +297,7 @@ private fun FavouritePictureTilePreview() {
 @Preview
 @Composable
 private fun FavouritesEmptyPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FavouritesScreen(uiState = FavouritesUiState(screenState = Empty), uiEvent = {})
     }
 }
@@ -302,7 +305,7 @@ private fun FavouritesEmptyPreview() {
 @Preview
 @Composable
 private fun FavouritesLoadingPreview() {
-    DeepskyTheme {
+    ApodTheme {
         FavouritesScreen(uiState = FavouritesUiState(screenState = Loading), uiEvent = {})
     }
 }

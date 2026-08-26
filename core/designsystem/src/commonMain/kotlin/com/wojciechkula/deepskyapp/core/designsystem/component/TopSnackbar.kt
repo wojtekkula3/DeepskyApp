@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_dismiss
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_close
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -59,14 +58,14 @@ internal fun TopSnackbar(
         modifier = modifier
             .fillMaxWidth()
             .padding(24.dp),
-        color = MaterialTheme.colorScheme.surface,
-        shape = MaterialTheme.shapes.large,
+        color = ApodTheme.colors.surface,
+        shape = ApodTheme.shapes.large,
         border = BorderStroke(width = 2.dp, color = type.borderColor)
     ) {
         Row {
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodyMedium,
+                style = ApodTheme.typography.bodyMedium,
                 modifier = Modifier
                     .weight(1f)
                     .padding(16.dp)
@@ -93,8 +92,8 @@ enum class TopSnackbarType {
         @Composable
         @ReadOnlyComposable
         get() = when (this) {
-            SUCCESS -> MaterialTheme.colorScheme.primary
-            ERROR -> MaterialTheme.colorScheme.error
+            SUCCESS -> ApodTheme.colors.primary
+            ERROR -> ApodTheme.colors.error
         }
 }
 
@@ -109,7 +108,7 @@ private const val SnackbarDuration = 4_000L
 @Preview
 @Composable
 private fun TopSnackbarSuccessPreview() {
-    DeepskyTheme {
+    ApodTheme {
         TopSnackbar(
             message = "Picture saved to favourites",
             type = TopSnackbarType.SUCCESS,
@@ -121,7 +120,7 @@ private fun TopSnackbarSuccessPreview() {
 @Preview
 @Composable
 private fun TopSnackbarErrorPreview() {
-    DeepskyTheme {
+    ApodTheme {
         TopSnackbar(
             message = "Error while deleting the picture",
             type = TopSnackbarType.ERROR,

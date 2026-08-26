@@ -6,7 +6,7 @@ import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.media.addVideoFrameFetcher
 import com.wojciechkula.deepskyapp.core.media.videoFrameLoader
 import com.wojciechkula.deepskyapp.domain.model.isVideoFileUrl
@@ -32,7 +32,7 @@ fun App() {
             .crossfade(true)
             .build()
     }
-    DeepskyTheme {
+    ApodTheme {
         DeepskyNavHost()
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_back
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_back
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.feature.about.resources.Res
 import com.wojciechkula.deepskyapp.feature.about.resources.about_body
 import com.wojciechkula.deepskyapp.feature.about.resources.about_content_description_apod_logo
@@ -61,7 +60,7 @@ private fun AboutScreen(onBack: () -> Unit) {
             }
             Text(
                 text = stringResource(Res.string.about_title),
-                style = MaterialTheme.typography.headlineLarge,
+                style = ApodTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,7 +68,7 @@ private fun AboutScreen(onBack: () -> Unit) {
             )
             Text(
                 text = stringResource(Res.string.about_powered_by),
-                style = MaterialTheme.typography.headlineSmall,
+                style = ApodTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,7 +94,7 @@ private fun AboutScreen(onBack: () -> Unit) {
             }
             Text(
                 text = stringResource(Res.string.about_body),
-                style = MaterialTheme.typography.bodyLarge,
+                style = ApodTheme.typography.bodyLarge,
                 modifier = Modifier.padding(all = 18.dp)
             )
         }
@@ -105,7 +104,7 @@ private fun AboutScreen(onBack: () -> Unit) {
 @Preview
 @Composable
 private fun AboutPreview() {
-    DeepskyTheme {
+    ApodTheme {
         AboutScreen(onBack = {})
     }
 }

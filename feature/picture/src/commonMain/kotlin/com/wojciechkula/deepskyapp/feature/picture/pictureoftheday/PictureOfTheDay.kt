@@ -13,7 +13,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
-import com.wojciechkula.deepskyapp.core.designsystem.theme.DeepskyTheme
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.domain.model.mediaKind
@@ -136,7 +135,7 @@ private fun MessageContent(
     ) {
         Text(
             text = message,
-            style = MaterialTheme.typography.headlineSmall,
+            style = ApodTheme.typography.headlineSmall,
             textAlign = TextAlign.Center
         )
         Button(
@@ -181,7 +180,7 @@ private fun SuccessContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(picture.title, style = MaterialTheme.typography.titleLarge)
+                Text(picture.title, style = ApodTheme.typography.titleLarge)
                 if (mediaKind(picture.mediaType, picture.url) != MediaKind.UNSUPPORTED) {
                     IconButton(onClick = onFavouriteClick) {
                         Icon(
@@ -192,9 +191,9 @@ private fun SuccessContent(
                                 stringResource(Res.string.picture_add_to_favourites)
                             },
                             tint = if (isFavourite) {
-                                MaterialTheme.colorScheme.error
+                                ApodTheme.colors.favorite
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                ApodTheme.colors.onSurfaceVariant
                             }
                         )
                     }
@@ -216,8 +215,8 @@ private fun SuccessContent(
     if (timeToNewPicture.isNotEmpty()) {
         Text(
             text = stringResource(Res.string.picture_of_the_day_new_picture_in, timeToNewPicture),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = ApodTheme.typography.bodyMedium,
+            color = ApodTheme.colors.onSurfaceVariant,
             modifier = Modifier.padding(12.dp)
         )
     }
@@ -248,7 +247,7 @@ private val previewVideoFile = previewPicture.copy(
 @Preview
 @Composable
 private fun PictureOfTheDaySuccessPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureOfTheDayScreen(
             uiState = PictureOfTheDayUiState(
                 screenState = Success(previewPicture),
@@ -263,7 +262,7 @@ private fun PictureOfTheDaySuccessPreview() {
 @Preview
 @Composable
 private fun PictureOfTheDayVideoNoThumbnailPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureOfTheDayScreen(
             uiState = PictureOfTheDayUiState(
                 screenState = Success(previewVideo),
@@ -279,7 +278,7 @@ private fun PictureOfTheDayVideoNoThumbnailPreview() {
 @Preview
 @Composable
 private fun PictureOfTheDayVideoFilePreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureOfTheDayScreen(
             uiState = PictureOfTheDayUiState(
                 screenState = Success(previewVideoFile),
@@ -294,7 +293,7 @@ private fun PictureOfTheDayVideoFilePreview() {
 @Preview
 @Composable
 private fun PictureOfTheDayLoadingPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureOfTheDayScreen(uiState = PictureOfTheDayUiState(screenState = Loading), uiEvent = {})
     }
 }
@@ -302,7 +301,7 @@ private fun PictureOfTheDayLoadingPreview() {
 @Preview
 @Composable
 private fun PictureOfTheDayNoInternetPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureOfTheDayScreen(uiState = PictureOfTheDayUiState(screenState = NoInternet), uiEvent = {})
     }
 }
@@ -310,7 +309,7 @@ private fun PictureOfTheDayNoInternetPreview() {
 @Preview
 @Composable
 private fun PictureOfTheDayErrorPreview() {
-    DeepskyTheme {
+    ApodTheme {
         PictureOfTheDayScreen(uiState = PictureOfTheDayUiState(screenState = Error), uiEvent = {})
     }
 }
