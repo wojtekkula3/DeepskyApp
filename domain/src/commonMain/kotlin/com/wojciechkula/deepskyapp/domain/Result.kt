@@ -7,4 +7,5 @@ sealed interface Result<out D> {
         val message: String?
     ) : Result<Nothing>
     data class Exception(val throwable: Throwable) : Result<Nothing>
+    data object NetworkError : Result<Nothing>
 }

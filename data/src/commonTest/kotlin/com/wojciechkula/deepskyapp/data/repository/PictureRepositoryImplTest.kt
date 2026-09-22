@@ -17,6 +17,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -124,6 +125,15 @@ class PictureRepositoryImplTest {
         val exception = assertIs<Result.Exception>(result)
         val causeChain = generateSequence(exception.throwable) { it.cause }
         assertTrue(causeChain.any { it.message?.contains("network down") == true })
+    }
+
+    @Test
+    fun `maps a connection failure to Result_NetworkError`() = runTest {
+        val repository = repository { throw IOException("connection refused") }
+
+        val result = repository.getPictureOfTheDay()
+
+        assertEquals(Result.NetworkError, result)
     }
 
     @Test

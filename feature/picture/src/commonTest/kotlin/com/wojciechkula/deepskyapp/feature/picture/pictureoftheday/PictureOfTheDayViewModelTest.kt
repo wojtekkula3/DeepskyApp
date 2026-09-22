@@ -13,6 +13,7 @@ import com.wojciechkula.deepskyapp.feature.picture.FakePictureRepository
 import com.wojciechkula.deepskyapp.feature.picture.sampleApod
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.ServerUnreachable
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
@@ -150,6 +151,13 @@ class PictureOfTheDayViewModelTest {
         val vm = buildViewModel(pictureResult = Result.Exception(RuntimeException("net down")))
         advanceUntilIdle()
         assertEquals(Error, vm.states.value.screenState)
+    }
+
+    @Test
+    fun showsServerUnreachableScreenOnNetworkError() = runTest(dispatcher) {
+        val vm = buildViewModel(pictureResult = Result.NetworkError)
+        advanceUntilIdle()
+        assertEquals(ServerUnreachable, vm.states.value.screenState)
     }
 
     @Test

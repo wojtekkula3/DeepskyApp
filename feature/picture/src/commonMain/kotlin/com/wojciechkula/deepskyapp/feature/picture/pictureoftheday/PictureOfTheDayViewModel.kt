@@ -105,6 +105,7 @@ class PictureOfTheDayViewModel(
             // Never surface the raw throwable message: Ktor embeds the full request URL in it, which
             // carries the API key as a query parameter.
             is Result.HttpError, is Result.Exception -> PictureOfTheDayScreenState.Error
+            Result.NetworkError -> PictureOfTheDayScreenState.ServerUnreachable
         }
         updateState { copy(screenState = newScreenState) }
         if (newScreenState is Success) startCountdown()

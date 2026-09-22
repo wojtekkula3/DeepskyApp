@@ -14,6 +14,7 @@ sealed interface PictureOfTheDayScreenState {
     data class Success(val picture: PictureOfTheDayModel) : PictureOfTheDayScreenState
     data object Loading : PictureOfTheDayScreenState
     data object NoInternet : PictureOfTheDayScreenState
+    data object ServerUnreachable : PictureOfTheDayScreenState
 }
 
 sealed interface PictureOfTheDayUiEvent {

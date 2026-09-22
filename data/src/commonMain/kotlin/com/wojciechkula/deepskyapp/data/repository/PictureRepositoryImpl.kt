@@ -11,6 +11,7 @@ import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.domain.repository.PictureRepository
 import io.ktor.client.call.body
 import io.ktor.http.isSuccess
+import kotlinx.io.IOException
 
 private const val TAG = "PictureRepository"
 
@@ -35,6 +36,8 @@ internal class PictureRepositoryImpl(
             // caller can render, and the engines differ in what they throw (OkHttp wraps, Darwin does not).
         } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
             logger.e(TAG, "APOD request failed: ${throwable.logDescription()}")
-            Result.Exception(throwable)
+            if (throwable.isConnectionFailure()) Result.NetworkError else Result.Exception(throwable)
         }
+
+    private fun Throwable.isConnectionFailure(): Boolean = generateSequence(this) { it.cause }.any { it is IOException }
 }

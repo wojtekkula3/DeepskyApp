@@ -37,6 +37,7 @@ import com.wojciechkula.deepskyapp.feature.picture.PictureMedia
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.ServerUnreachable
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
@@ -51,6 +52,7 @@ import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_expla
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_no_internet
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_load_error
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_new_picture_in
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_server_unreachable
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_try_again
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_remove_from_favourites
 import org.jetbrains.compose.resources.painterResource
@@ -113,6 +115,14 @@ private fun PictureOfTheDayScreen(
 
             NoInternet -> MessageContent(
                 message = stringResource(Res.string.picture_no_internet),
+                onRetry = { uiEvent(RetryPressed) },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            )
+
+            ServerUnreachable -> MessageContent(
+                message = stringResource(Res.string.picture_of_the_day_server_unreachable),
                 onRetry = { uiEvent(RetryPressed) },
                 modifier = Modifier
                     .fillMaxSize()
@@ -325,5 +335,13 @@ private fun PictureOfTheDayNoInternetPreview() {
 private fun PictureOfTheDayErrorPreview() {
     ApodTheme {
         PictureOfTheDayScreen(uiState = PictureOfTheDayUiState(screenState = Error), uiEvent = {})
+    }
+}
+
+@Preview
+@Composable
+private fun PictureOfTheDayServerUnreachablePreview() {
+    ApodTheme {
+        PictureOfTheDayScreen(uiState = PictureOfTheDayUiState(screenState = ServerUnreachable), uiEvent = {})
     }
 }
