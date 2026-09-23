@@ -24,7 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -64,6 +68,7 @@ fun Favourites(
     onOpenDetails: (date: String) -> Unit,
     onOpenAbout: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(),
+    isEntering: Boolean = false,
     viewModel: FavouritesViewModel = koinViewModel()
 ) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
@@ -75,8 +80,15 @@ fun Favourites(
         }
     }
 
+    // The grid's first composition takes a few frames on a mid-range phone, so a list that arrives while
+    // the screen is still sliding in waits for the slide to end instead of stalling it.
+    var holdLoading by remember { mutableStateOf(uiState.screenState == Loading) }
+    LaunchedEffect(isEntering) {
+        if (!isEntering) holdLoading = false
+    }
+
     FavouritesScreen(
-        uiState = uiState,
+        uiState = if (holdLoading) uiState.copy(screenState = Loading) else uiState,
         uiEvent = viewModel::handleUiEvent,
         contentPadding = contentPadding
     )

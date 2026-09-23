@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.navigation.About as AboutKey
@@ -94,7 +95,9 @@ internal fun DeepskyNavHost() {
                         Favourites(
                             onOpenDetails = { date -> backStack.add(PictureDetailsKey(date)) },
                             onOpenAbout = { backStack.add(AboutKey) },
-                            contentPadding = contentPadding
+                            contentPadding = contentPadding,
+                            // Not isRunning: that only turns true on the first animation frame, after this composition.
+                            isEntering = LocalNavAnimatedContentScope.current.transition.run { currentState != targetState }
                         )
                     }
                 }
