@@ -1,8 +1,11 @@
 package com.wojciechkula.deepskyapp.navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,8 +37,6 @@ import com.wojciechkula.deepskyapp.feature.favourites.Favourites
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDay
 
-// PascalCase follows Compose's own naming for constants (`DefaultDurationMillis` in
-// androidx.compose.animation).
 @Suppress("ktlint:standard:property-naming")
 private const val TransitionDurationMillis = 500
 
@@ -46,7 +47,6 @@ private const val TransitionDurationMillis = 500
 @Composable
 internal fun DeepskyNavHost() {
     val backStack = rememberNavBackStack(NavKeySavedStateConfiguration, PictureOfTheDayKey)
-    val selectedTab = backStack.selectedTab
 
     // Not Scaffold's bottomBar: that slot lays the screen out above the card, so nothing draws behind it.
     Box(
@@ -67,8 +67,6 @@ internal fun DeepskyNavHost() {
             ),
             modifier = Modifier.fillMaxSize(),
             onBack = { backStack.removeLastOrNull() },
-            // The original app's enter_right_to_left / exit_right_to_left pair (a 500 ms horizontal
-            // slide), reversed on back.
             transitionSpec = {
                 slideInHorizontally(
                     animationSpec = tween(TransitionDurationMillis),
@@ -110,11 +108,14 @@ internal fun DeepskyNavHost() {
             }
         )
 
-        // Hidden on Details and About, as in the original app.
-        if (selectedTab != null) {
+        AnimatedVisibility(
+            visible = backStack.selectedTab != null,
+            modifier = Modifier.align(Alignment.BottomCenter),
+            enter = slideInVertically(tween(TransitionDurationMillis)) { height -> height },
+            exit = slideOutVertically(tween(TransitionDurationMillis)) { height -> height }
+        ) {
             FloatingBottomNavigation(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                selectedTab = selectedTab,
+                selectedTab = backStack.activeTab,
                 onTabSelected = backStack::selectTab
             )
         }

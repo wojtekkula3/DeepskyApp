@@ -27,6 +27,13 @@ internal val NavBackStack<NavKey>.selectedTab: TopLevelTab?
     get() = TopLevelTab.entries.firstOrNull { it.key == lastOrNull() }
 
 /**
+ * The tab the top entry was reached from — the top entry itself when it is a tab. Never `null`, so the
+ * bottom bar can keep showing it while it slides away under a pushed screen.
+ */
+internal val NavBackStack<NavKey>.activeTab: TopLevelTab
+    get() = asReversed().firstNotNullOf { key -> TopLevelTab.entries.firstOrNull { it.key == key } }
+
+/**
  * Rebuilds the back stack so [tab] sits on top with Picture of The Day underneath it. Back from the
  * second tab therefore returns to the start destination — as the original app's `launchSingleTop`
  * navigation did — and repeatedly tapping tabs cannot grow the stack.
