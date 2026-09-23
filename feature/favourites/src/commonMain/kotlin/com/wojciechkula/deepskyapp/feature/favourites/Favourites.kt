@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,6 +63,7 @@ private const val VIDEO_TILE_ASPECT_RATIO = 16f / 9f
 fun Favourites(
     onOpenDetails: (date: String) -> Unit,
     onOpenAbout: () -> Unit,
+    contentPadding: PaddingValues = PaddingValues(),
     viewModel: FavouritesViewModel = koinViewModel()
 ) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
@@ -75,7 +77,8 @@ fun Favourites(
 
     FavouritesScreen(
         uiState = uiState,
-        uiEvent = viewModel::handleUiEvent
+        uiEvent = viewModel::handleUiEvent,
+        contentPadding = contentPadding
     )
 }
 
@@ -83,7 +86,8 @@ fun Favourites(
 @Composable
 private fun FavouritesScreen(
     uiState: FavouritesUiState,
-    uiEvent: (FavouritesUiEvent) -> Unit
+    uiEvent: (FavouritesUiEvent) -> Unit,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     Scaffold(
         topBar = {
@@ -136,6 +140,7 @@ private fun FavouritesScreen(
                     .fillMaxSize()
                     .padding(padding)
                     .padding(horizontal = 24.dp),
+                contentPadding = contentPadding,
                 verticalItemSpacing = 8.dp,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {

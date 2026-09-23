@@ -8,6 +8,6 @@ object ApodShapes {
     val small = RoundedCornerShape(12.dp)
     val medium = RoundedCornerShape(16.dp)
     val large = RoundedCornerShape(24.dp)
-    val navigation = RoundedCornerShape(28.dp)
+    val navigation = RoundedCornerShape(48.dp)
     val iconButton = CircleShape
 }

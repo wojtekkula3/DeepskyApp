@@ -10,4 +10,6 @@ object ApodDimensions {
     val marginLarge = 24.dp
     val margin2xLarge = 32.dp
     val margin3xLarge = 40.dp
+
+    val floatingNavigationHeight = 72.dp
 }

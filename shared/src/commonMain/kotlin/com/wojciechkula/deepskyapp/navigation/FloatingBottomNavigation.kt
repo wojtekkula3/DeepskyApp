@@ -1,6 +1,9 @@
 package com.wojciechkula.deepskyapp.navigation
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,15 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
@@ -27,29 +27,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_image
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
+import kotlin.math.roundToInt
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-private val NavigationHeight = 72.dp
-private val NavigationBorderWidth = 1.dp
-private val IndicatorWidth = 56.dp
-private val IndicatorHeight = 32.dp
-private val IndicatorLabelSpacing = 4.dp
-private val IconSize = 24.dp
-private val MinimumTouchTargetSize = 48.dp
+private val NavigationBorderWidth = 0.5.dp
+private val IconLabelSpacing = 4.dp
+
+private val IndicatorSlideSpec = spring<Float>(stiffness = Spring.StiffnessMediumLow)
 
 /**
  * The bottom navigation as a card floating over the screen: inset from both side edges and lifted off
@@ -63,35 +59,57 @@ internal fun FloatingBottomNavigation(
     onTabSelected: (TopLevelTab) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val tabs = TopLevelTab.entries
+    val indicatorPosition by animateFloatAsState(
+        targetValue = selectedTab.ordinal.toFloat(),
+        animationSpec = IndicatorSlideSpec,
+        label = "indicatorPosition"
+    )
+
     Surface(
-        // The insets come first so the margins below are measured from the safe area, not from the
-        // screen edge — otherwise the card sits under the Android navigation bar or the iOS home
-        // indicator.
+        // Horizontal only: floatingNavigationBottomMargin already clears the bottom safe area.
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom))
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
             .padding(
                 start = ApodTheme.dimensions.marginLarge,
                 end = ApodTheme.dimensions.marginLarge,
-                bottom = ApodTheme.dimensions.marginMedium
+                bottom = ApodTheme.floatingNavigationBottomMargin
             )
             .fillMaxWidth()
-            .height(NavigationHeight),
+            .height(ApodTheme.dimensions.floatingNavigationHeight),
         shape = ApodTheme.shapes.navigation,
         color = ApodTheme.colors.navigationSurface,
         border = BorderStroke(NavigationBorderWidth, ApodTheme.colors.outline),
         shadowElevation = ApodTheme.elevation.floatingNavigation
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TopLevelTab.entries.forEach { tab ->
-                FloatingBottomNavigationItem(
-                    modifier = Modifier.weight(1f),
-                    tab = tab,
-                    selected = tab == selectedTab,
-                    onClick = { onTabSelected(tab) }
-                )
+        Box {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1f / tabs.size)
+                    .fillMaxHeight()
+                    // Moved at placement, so the slide re-places one box instead of recomposing the bar.
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        layout(placeable.width, placeable.height) {
+                            placeable.placeRelative((indicatorPosition * placeable.width).roundToInt(), 0)
+                        }
+                    }
+                    .padding(ApodTheme.dimensions.marginSmall)
+                    .background(
+                        color = ApodTheme.colors.primaryContainer,
+                        shape = ApodTheme.shapes.navigation
+                    )
+            )
+
+            Row {
+                tabs.forEach { tab ->
+                    FloatingBottomNavigationItem(
+                        modifier = Modifier.weight(1f),
+                        tab = tab,
+                        selected = tab == selectedTab,
+                        onClick = { onTabSelected(tab) }
+                    )
+                }
             }
         }
     }
@@ -106,48 +124,38 @@ private fun FloatingBottomNavigationItem(
 ) {
     val label = stringResource(tab.label)
     val contentColor by animateColorAsState(
-        targetValue = if (selected) ApodTheme.colors.primary else ApodTheme.colors.onSurfaceVariant
-    )
-    val indicatorColor by animateColorAsState(
-        targetValue = if (selected) ApodTheme.colors.primaryContainer else Color.Transparent
+        targetValue = if (selected) ApodTheme.colors.primary else ApodTheme.colors.onSurfaceVariant,
+        label = "contentColor"
     )
 
     Column(
-        // The label already names the item, so the icon carries no description of its own and the
-        // whole item is announced once, with its selected state.
+        // The icon has no description of its own, so the item is announced once, with its state.
         modifier = modifier
             .fillMaxHeight()
-            .defaultMinSize(minWidth = MinimumTouchTargetSize, minHeight = MinimumTouchTargetSize)
-            .clip(ApodTheme.shapes.large)
+            .padding(ApodTheme.dimensions.marginSmall)
             .selectable(
                 selected = selected,
+                // The sliding pill is the press feedback; a ripple on top of it reads as a grey flash.
+                interactionSource = null,
+                indication = null,
                 role = Role.Tab,
                 onClick = onClick
             )
             .semantics { contentDescription = label }
             .padding(horizontal = ApodTheme.dimensions.marginSmall),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(IndicatorLabelSpacing, Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(IconLabelSpacing, Alignment.CenterVertically)
     ) {
-        Box(
-            modifier = Modifier
-                .size(width = IndicatorWidth, height = IndicatorHeight)
-                .background(color = indicatorColor, shape = ApodTheme.shapes.iconButton),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier.size(IconSize),
-                painter = tab.painter(),
-                contentDescription = null,
-                tint = contentColor
-            )
-        }
+        Icon(
+            painter = tab.painter(),
+            contentDescription = null,
+            tint = contentColor
+        )
         Text(
             text = label,
             style = ApodTheme.typography.labelMedium,
             color = contentColor,
-            maxLines = 1,
-            textAlign = TextAlign.Center
+            maxLines = 1
         )
     }
 }

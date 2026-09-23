@@ -3,6 +3,7 @@ package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodDimensions
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
@@ -56,7 +58,10 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun PictureOfTheDay(viewModel: PictureOfTheDayViewModel = koinViewModel()) {
+fun PictureOfTheDay(
+    contentPadding: PaddingValues = PaddingValues(),
+    viewModel: PictureOfTheDayViewModel = koinViewModel()
+) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
@@ -66,14 +71,16 @@ fun PictureOfTheDay(viewModel: PictureOfTheDayViewModel = koinViewModel()) {
 
     PictureOfTheDayScreen(
         uiState = uiState,
-        uiEvent = viewModel::handleUiEvent
+        uiEvent = viewModel::handleUiEvent,
+        contentPadding = contentPadding
     )
 }
 
 @Composable
 private fun PictureOfTheDayScreen(
     uiState: PictureOfTheDayUiState,
-    uiEvent: (PictureOfTheDayUiEvent) -> Unit
+    uiEvent: (PictureOfTheDayUiEvent) -> Unit,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
     Scaffold { padding ->
         when (val screenState = uiState.screenState) {
@@ -85,11 +92,13 @@ private fun PictureOfTheDayScreen(
                     .padding(padding)
             )
 
+            // Inside the scroll, so the content keeps drawing behind whatever floats over the bottom.
             is Success -> Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .padding(contentPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SuccessContent(
@@ -215,9 +224,14 @@ private fun SuccessContent(
     if (timeToNewPicture.isNotEmpty()) {
         Text(
             text = stringResource(Res.string.picture_of_the_day_new_picture_in, timeToNewPicture),
+            modifier = Modifier.padding(
+                top = ApodDimensions.marginSmallMedium,
+                start = ApodDimensions.marginLarge,
+                end = ApodDimensions.marginLarge
+            ),
             style = ApodTheme.typography.bodyMedium,
-            color = ApodTheme.colors.onSurfaceVariant,
-            modifier = Modifier.padding(12.dp)
+            textAlign = TextAlign.Center,
+            color = ApodTheme.colors.onSurfaceVariant
         )
     }
 }

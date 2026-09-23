@@ -4,16 +4,26 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.navigation.About as AboutKey
 import com.wojciechkula.deepskyapp.core.navigation.Favourites as FavouritesKey
 import com.wojciechkula.deepskyapp.core.navigation.NavKeySavedStateConfiguration
@@ -38,17 +48,12 @@ internal fun DeepskyNavHost() {
     val backStack = rememberNavBackStack(NavKeySavedStateConfiguration, PictureOfTheDayKey)
     val selectedTab = backStack.selectedTab
 
-    Scaffold(
-        bottomBar = {
-            // Hidden on Details and About, as in the original app.
-            if (selectedTab != null) {
-                FloatingBottomNavigation(
-                    selectedTab = selectedTab,
-                    onTabSelected = backStack::selectTab
-                )
-            }
-        }
-    ) { padding ->
+    // Not Scaffold's bottomBar: that slot lays the screen out above the card, so nothing draws behind it.
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ApodTheme.colors.background)
+    ) {
         NavDisplay(
             backStack = backStack,
             // NavDisplay's default decorator list holds only the saveable-state one, so without this
@@ -60,13 +65,7 @@ internal fun DeepskyNavHost() {
                 rememberSaveableStateHolderNavEntryDecorator(),
                 rememberViewModelStoreNavEntryDecorator()
             ),
-            // Every screen owns its own Scaffold, and `padding` offsets content without consuming the
-            // window insets it was computed from — so without `consumeWindowInsets` the inner Scaffolds
-            // measure the system bars again and apply the status-bar and navigation-bar insets a second
-            // time, leaving a doubled gap at the top of every screen.
-            modifier = Modifier
-                .padding(padding)
-                .consumeWindowInsets(padding),
+            modifier = Modifier.fillMaxSize(),
             onBack = { backStack.removeLastOrNull() },
             // The original app's enter_right_to_left / exit_right_to_left pair (a 500 ms horizontal
             // slide), reversed on back.
@@ -89,12 +88,17 @@ internal fun DeepskyNavHost() {
                 )
             },
             entryProvider = entryProvider {
-                entry<PictureOfTheDayKey> { PictureOfTheDay() }
+                entry<PictureOfTheDayKey> {
+                    UnderFloatingNavigation { contentPadding -> PictureOfTheDay(contentPadding = contentPadding) }
+                }
                 entry<FavouritesKey> {
-                    Favourites(
-                        onOpenDetails = { date -> backStack.add(PictureDetailsKey(date)) },
-                        onOpenAbout = { backStack.add(AboutKey) }
-                    )
+                    UnderFloatingNavigation { contentPadding ->
+                        Favourites(
+                            onOpenDetails = { date -> backStack.add(PictureDetailsKey(date)) },
+                            onOpenAbout = { backStack.add(AboutKey) },
+                            contentPadding = contentPadding
+                        )
+                    }
                 }
                 entry<PictureDetailsKey> { key ->
                     PictureDetails(
@@ -105,5 +109,28 @@ internal fun DeepskyNavHost() {
                 entry<AboutKey> { About(onBack = { backStack.removeLastOrNull() }) }
             }
         )
+
+        // Hidden on Details and About, as in the original app.
+        if (selectedTab != null) {
+            FloatingBottomNavigation(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                selectedTab = selectedTab,
+                onTabSelected = backStack::selectTab
+            )
+        }
+    }
+}
+
+@Composable
+private fun UnderFloatingNavigation(content: @Composable (contentPadding: PaddingValues) -> Unit) {
+    Box(
+        // tappableElement stays unconsumed so content stops at the three-button bar instead of showing through its scrim.
+        modifier = Modifier.consumeWindowInsets(
+            WindowInsets.safeDrawing
+                .exclude(WindowInsets.tappableElement)
+                .only(WindowInsetsSides.Bottom)
+        )
+    ) {
+        content(PaddingValues(bottom = ApodTheme.floatingNavigationSpace))
     }
 }
