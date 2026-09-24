@@ -68,7 +68,7 @@ private fun AboutScreen(onBack: () -> Unit) {
             )
             Text(
                 text = stringResource(Res.string.about_powered_by),
-                style = ApodTheme.typography.headlineSmall,
+                style = ApodTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()

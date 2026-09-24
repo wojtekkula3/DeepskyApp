@@ -42,7 +42,6 @@ import kotlin.math.roundToInt
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-private val NavigationBorderWidth = 0.5.dp
 private val IconLabelSpacing = 4.dp
 
 private val IndicatorSlideSpec = spring<Float>(stiffness = Spring.StiffnessMediumLow)
@@ -79,7 +78,7 @@ internal fun FloatingBottomNavigation(
             .height(ApodTheme.dimensions.floatingNavigationHeight),
         shape = ApodTheme.shapes.navigation,
         color = ApodTheme.colors.navigationSurface,
-        border = BorderStroke(NavigationBorderWidth, ApodTheme.colors.outline),
+        border = BorderStroke(ApodTheme.dimensions.borderExtraSmall, ApodTheme.colors.outline),
         shadowElevation = ApodTheme.elevation.floatingNavigation
     ) {
         Box {

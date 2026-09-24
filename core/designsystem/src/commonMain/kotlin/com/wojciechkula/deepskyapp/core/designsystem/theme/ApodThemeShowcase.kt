@@ -89,7 +89,7 @@ private fun ColorSwatch(
         modifier = Modifier.fillMaxWidth(),
         color = color,
         shape = ApodTheme.shapes.small,
-        border = BorderStroke(1.dp, ApodTheme.colors.outline)
+        border = BorderStroke(ApodTheme.dimensions.borderSmall, ApodTheme.colors.outline)
     ) {
         Text(
             modifier = Modifier.padding(ApodTheme.dimensions.marginSmallMedium),
@@ -104,12 +104,15 @@ private fun ColorSwatch(
 private fun TypeSpecimens() {
     val typography = ApodTheme.typography
     Column(verticalArrangement = Arrangement.spacedBy(ApodTheme.dimensions.marginSmall)) {
+        TypeSpecimen(name = "headlineLarge", style = typography.headlineLarge)
         TypeSpecimen(name = "headlineMedium", style = typography.headlineMedium)
         TypeSpecimen(name = "titleLarge", style = typography.titleLarge)
         TypeSpecimen(name = "titleMedium", style = typography.titleMedium)
         TypeSpecimen(name = "titleSmall", style = typography.titleSmall)
         TypeSpecimen(name = "bodyLarge", style = typography.bodyLarge)
+        TypeSpecimen(name = "bodyLargeBold", style = typography.bodyLargeBold)
         TypeSpecimen(name = "bodyMedium", style = typography.bodyMedium)
+        TypeSpecimen(name = "bodyMediumBold", style = typography.bodyMediumBold)
         TypeSpecimen(name = "bodySmall", style = typography.bodySmall)
         TypeSpecimen(name = "labelLarge", style = typography.labelLarge)
         TypeSpecimen(name = "labelMedium", style = typography.labelMedium)

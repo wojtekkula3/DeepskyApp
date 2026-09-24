@@ -154,7 +154,7 @@ private fun MessageContent(
     ) {
         Text(
             text = message,
-            style = ApodTheme.typography.headlineSmall,
+            style = ApodTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
         Button(

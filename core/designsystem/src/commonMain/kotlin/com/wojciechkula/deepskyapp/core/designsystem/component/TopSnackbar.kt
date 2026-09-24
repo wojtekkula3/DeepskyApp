@@ -60,7 +60,7 @@ internal fun TopSnackbar(
             .padding(24.dp),
         color = ApodTheme.colors.surface,
         shape = ApodTheme.shapes.large,
-        border = BorderStroke(width = 2.dp, color = type.borderColor)
+        border = BorderStroke(width = ApodTheme.dimensions.borderMedium, color = type.borderColor)
     ) {
         Row {
             Text(

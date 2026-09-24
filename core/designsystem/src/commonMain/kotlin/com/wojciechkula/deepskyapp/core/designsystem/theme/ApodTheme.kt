@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 
 @Composable
@@ -17,13 +17,16 @@ fun ApodTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val typography = apodTypography()
+    val materialTypography = remember(typography) { typography.toMaterialTypography() }
     CompositionLocalProvider(
         LocalApodColors provides if (darkTheme) ApodDarkColors else ApodLightColors,
-        LocalApodElevation provides if (darkTheme) ApodDarkElevation else ApodLightElevation
+        LocalApodElevation provides if (darkTheme) ApodDarkElevation else ApodLightElevation,
+        LocalApodTypography provides typography
     ) {
         MaterialTheme(
             colorScheme = if (darkTheme) ApodDarkColorScheme else ApodLightColorScheme,
-            typography = apodTypography(),
+            typography = materialTypography,
             shapes = ApodMaterialShapes,
             content = content
         )
@@ -36,10 +39,10 @@ object ApodTheme {
         @ReadOnlyComposable
         get() = LocalApodColors.current
 
-    val typography: Typography
+    val typography: ApodTypography
         @Composable
         @ReadOnlyComposable
-        get() = MaterialTheme.typography
+        get() = LocalApodTypography.current
 
     val elevation: ApodElevation
         @Composable
