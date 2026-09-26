@@ -89,7 +89,7 @@ internal fun ErrorScreen(
 @Composable
 private fun ErrorIllustration() {
     Box(
-        modifier = Modifier.size(ApodTheme.dimensions.illustration),
+        modifier = Modifier.size(ApodTheme.dimensions.illustrationXLarge),
         contentAlignment = Alignment.Center
     ) {
         Icon(

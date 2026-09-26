@@ -32,7 +32,8 @@ data class ApodColors(
     val onFavorite: Color,
     val error: Color,
     val onError: Color,
-    val scrim: Color
+    val scrim: Color,
+    val onScrim: Color
 )
 
 private val White = Color(0xFFFFFFFF)
@@ -64,7 +65,8 @@ internal val ApodLightColors = ApodColors(
     onFavorite = White,
     error = LightBaseline.error,
     onError = LightBaseline.onError,
-    scrim = LightBaseline.scrim
+    scrim = LightBaseline.scrim,
+    onScrim = White
 )
 
 internal val ApodDarkColors = ApodColors(
@@ -85,7 +87,8 @@ internal val ApodDarkColors = ApodColors(
     onFavorite = White,
     error = DarkBaseline.error,
     onError = DarkBaseline.onError,
-    scrim = DarkBaseline.scrim
+    scrim = DarkBaseline.scrim,
+    onScrim = White
 )
 
 private fun ApodColors.toColorScheme(baseline: ColorScheme): ColorScheme = baseline.copy(

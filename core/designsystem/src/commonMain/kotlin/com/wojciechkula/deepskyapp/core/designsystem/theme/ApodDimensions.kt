@@ -17,7 +17,8 @@ object ApodDimensions {
     val iconLarge = 32.dp
     val iconExtraLarge = 48.dp
 
-    val illustration = 128.dp
+    val illustrationLarge = 96.dp
+    val illustrationXLarge = 128.dp
 
     val borderExtraSmall = 0.5.dp
     val borderSmall = 1.dp

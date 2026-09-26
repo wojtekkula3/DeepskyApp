@@ -76,6 +76,7 @@ private fun ColorSwatches() {
         ColorSwatch(name = "favorite", color = colors.favorite, onColor = colors.onFavorite)
         ColorSwatch(name = "outline", color = colors.outline, onColor = colors.onSurface)
         ColorSwatch(name = "error", color = colors.error, onColor = colors.onError)
+        ColorSwatch(name = "scrim", color = colors.scrim, onColor = colors.onScrim)
     }
 }
 
