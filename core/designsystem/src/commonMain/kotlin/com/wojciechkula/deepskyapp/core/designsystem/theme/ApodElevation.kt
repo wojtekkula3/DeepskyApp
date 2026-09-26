@@ -17,14 +17,14 @@ internal val ApodLightElevation = ApodElevation(
     detailsCard = 6.dp,
     galleryCard = 4.dp,
     floatingNavigation = 8.dp,
-    iconButton = 6.dp
+    iconButton = 8.dp
 )
 
 internal val ApodDarkElevation = ApodElevation(
     detailsCard = 4.dp,
     galleryCard = 3.dp,
     floatingNavigation = 6.dp,
-    iconButton = 5.dp
+    iconButton = 4.dp
 )
 
 internal val LocalApodElevation = staticCompositionLocalOf { ApodLightElevation }

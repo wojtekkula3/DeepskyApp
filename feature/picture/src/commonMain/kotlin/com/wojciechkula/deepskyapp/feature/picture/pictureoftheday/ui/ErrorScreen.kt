@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.wojciechkula.deepskyapp.core.designsystem.ApodColumnPreview
 import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.ContentCard
+import com.wojciechkula.deepskyapp.core.designsystem.component.ScreenTitleBar
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_cloud
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_priority_high
@@ -31,6 +33,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_no_internet
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_load_error
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_title
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_try_again
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -42,7 +45,7 @@ internal fun ErrorScreen(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        ScreenTitle()
+        ScreenTitleBar(title = stringResource(Res.string.picture_of_the_day_title))
         ContentCard(modifier = Modifier.padding(top = ApodTheme.dimensions.marginLarge)) {
             Column(
                 modifier = Modifier.padding(ApodTheme.dimensions.marginLarge),

@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -105,6 +106,9 @@ private fun ZoomablePicture(
         AsyncImage(
             model = url,
             contentDescription = title,
+            // Fit would take the height from the bitmap's own size, so an image narrower than the card
+            // gets side bars; FillWidth scales it to the card's width instead.
+            contentScale = ContentScale.FillWidth,
             onError = {
                 failed = true
                 onMediaFailed()
@@ -136,7 +140,8 @@ private fun EmbeddedVideoPoster(
             AsyncImage(
                 model = thumbnailUrl,
                 contentDescription = title,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
             )
         }
         Icon(

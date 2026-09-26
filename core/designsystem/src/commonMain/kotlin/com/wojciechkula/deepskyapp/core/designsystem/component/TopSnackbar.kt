@@ -14,8 +14,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.wojciechkula.deepskyapp.core.designsystem.ApodColumnPreview
+import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_dismiss
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_close
@@ -92,7 +93,7 @@ enum class TopSnackbarType {
         @Composable
         @ReadOnlyComposable
         get() = when (this) {
-            SUCCESS -> ApodTheme.colors.primary
+            SUCCESS -> ApodTheme.colors.success
             ERROR -> ApodTheme.colors.error
         }
 }
@@ -105,26 +106,22 @@ private val CloseIconSize = 16.dp
 @Suppress("ktlint:standard:property-naming")
 private const val SnackbarDuration = 4_000L
 
-@Preview
+@LightDarkPreview
 @Composable
-private fun TopSnackbarSuccessPreview() {
-    ApodTheme {
-        TopSnackbar(
-            message = "Picture saved to favourites",
-            type = TopSnackbarType.SUCCESS,
-            onDismiss = {}
-        )
-    }
+private fun TopSnackbarSuccessPreview() = ApodColumnPreview {
+    TopSnackbar(
+        message = "Picture saved to favourites",
+        type = TopSnackbarType.SUCCESS,
+        onDismiss = {}
+    )
 }
 
-@Preview
+@LightDarkPreview
 @Composable
-private fun TopSnackbarErrorPreview() {
-    ApodTheme {
-        TopSnackbar(
-            message = "Error while deleting the picture",
-            type = TopSnackbarType.ERROR,
-            onDismiss = {}
-        )
-    }
+private fun TopSnackbarErrorPreview() = ApodColumnPreview {
+    TopSnackbar(
+        message = "Error while deleting the picture",
+        type = TopSnackbarType.ERROR,
+        onDismiss = {}
+    )
 }

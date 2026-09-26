@@ -1,4 +1,4 @@
-package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.ui
+package com.wojciechkula.deepskyapp.core.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +12,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 
 @Composable
-internal fun ContentCard(
+fun ContentCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {

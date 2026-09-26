@@ -1,13 +1,9 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,11 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.wojciechkula.deepskyapp.core.designsystem.ApodColumnPreview
 import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.ContentCard
+import com.wojciechkula.deepskyapp.core.designsystem.component.FavouriteButton
+import com.wojciechkula.deepskyapp.core.designsystem.component.InfoRow
+import com.wojciechkula.deepskyapp.core.designsystem.component.ScreenTitleBar
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_calendar
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_copyright
-import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
-import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite_border
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
@@ -29,11 +27,11 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiState
 import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_add_to_favourites
-import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_label_copyright
-import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_label_date
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_copyright
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_label_date
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_new_picture_in
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_title
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_remove_from_favourites
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -46,7 +44,7 @@ internal fun SuccessScreen(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        ScreenTitle()
+        ScreenTitleBar(title = stringResource(Res.string.picture_of_the_day_title))
         MediaCard(picture, uiState, onMediaFailed)
         DetailsCard(picture, uiState, onFavouriteClick)
         if (uiState.timeToNewPicture.isNotEmpty()) {
@@ -71,19 +69,27 @@ private fun DetailsCard(
                     color = ApodTheme.colors.onSurface
                 )
                 if (mediaKind(picture.mediaType, picture.url) != MediaKind.UNSUPPORTED) {
-                    FavouriteButton(isFavourite = uiState.isFavourite, onClick = onFavouriteClick)
+                    FavouriteButton(
+                        isFavourite = uiState.isFavourite,
+                        contentDescription = if (uiState.isFavourite) {
+                            stringResource(Res.string.picture_remove_from_favourites)
+                        } else {
+                            stringResource(Res.string.picture_add_to_favourites)
+                        },
+                        onClick = onFavouriteClick
+                    )
                 }
             }
             picture.copyright?.let {
                 InfoRow(
-                    icon = DesignSystemRes.drawable.ic_copyright,
-                    label = stringResource(Res.string.picture_of_the_day_label_copyright),
+                    icon = painterResource(DesignSystemRes.drawable.ic_copyright),
+                    label = stringResource(Res.string.picture_label_copyright),
                     value = it.trim().replace("\n", " ")
                 )
             }
             InfoRow(
-                icon = DesignSystemRes.drawable.ic_calendar,
-                label = stringResource(Res.string.picture_of_the_day_label_date),
+                icon = painterResource(DesignSystemRes.drawable.ic_calendar),
+                label = stringResource(Res.string.picture_label_date),
                 value = picture.date
             )
             Text(
@@ -112,60 +118,6 @@ private fun MediaCard(
             isOffline = uiState.isOffline,
             onMediaFailed = onMediaFailed
         )
-    }
-}
-
-@Composable
-private fun FavouriteButton(
-    isFavourite: Boolean,
-    onClick: () -> Unit
-) {
-    IconButton(onClick = onClick) {
-        Icon(
-            painter = painterResource(
-                if (isFavourite) DesignSystemRes.drawable.ic_favourite else DesignSystemRes.drawable.ic_favourite_border
-            ),
-            contentDescription = if (isFavourite) {
-                stringResource(Res.string.picture_remove_from_favourites)
-            } else {
-                stringResource(Res.string.picture_add_to_favourites)
-            },
-            tint = if (isFavourite) ApodTheme.colors.favorite else ApodTheme.colors.onSurface
-        )
-    }
-}
-
-@Composable
-private fun InfoRow(
-    icon: DrawableResource,
-    label: String,
-    value: String
-) {
-    Column {
-        Row(
-            modifier = Modifier.padding(vertical = ApodTheme.dimensions.marginSmallMedium),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(ApodTheme.dimensions.marginSmall)
-        ) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = null,
-                tint = ApodTheme.colors.onSurfaceVariant
-            )
-            Text(
-                text = label,
-                style = ApodTheme.typography.bodyMediumBold,
-                color = ApodTheme.colors.onSurfaceVariant
-            )
-            Text(
-                text = value,
-                modifier = Modifier.weight(1f),
-                style = ApodTheme.typography.bodyMedium,
-                textAlign = TextAlign.End,
-                color = ApodTheme.colors.onSurface
-            )
-        }
-        HorizontalDivider(color = ApodTheme.colors.outline)
     }
 }
 
