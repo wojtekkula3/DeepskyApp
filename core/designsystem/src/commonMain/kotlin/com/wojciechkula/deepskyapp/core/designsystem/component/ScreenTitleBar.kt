@@ -21,8 +21,8 @@ import org.jetbrains.compose.resources.painterResource
 
 /**
  * A screen's headline [title] with an optional [navigationIcon] before it and [action] after it,
- * both expected to be `IconButton`s. The margin on a side with a button shrinks so the button's own
- * touch padding lines its icon up with the content below.
+ * both expected to be round outlined buttons like [BackButton]. The margin on a side with a button
+ * shrinks, and the button adds its own outer padding, so it lines up with the content below.
  */
 @Composable
 fun ScreenTitleBar(

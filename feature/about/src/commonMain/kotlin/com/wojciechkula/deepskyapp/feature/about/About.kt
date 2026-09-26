@@ -1,38 +1,27 @@
 package com.wojciechkula.deepskyapp.feature.about
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
-import com.wojciechkula.deepskyapp.core.designsystem.resources.content_description_back
-import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_back
+import androidx.compose.ui.platform.LocalLayoutDirection
+import com.wojciechkula.deepskyapp.core.designsystem.ApodScreenPreview
+import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.BackButton
+import com.wojciechkula.deepskyapp.core.designsystem.component.ScreenTitleBar
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.feature.about.resources.Res
-import com.wojciechkula.deepskyapp.feature.about.resources.about_body
-import com.wojciechkula.deepskyapp.feature.about.resources.about_content_description_apod_logo
-import com.wojciechkula.deepskyapp.feature.about.resources.about_content_description_nasa_logo
-import com.wojciechkula.deepskyapp.feature.about.resources.about_powered_by
-import com.wojciechkula.deepskyapp.feature.about.resources.about_title
-import com.wojciechkula.deepskyapp.feature.about.resources.apod_logo
-import com.wojciechkula.deepskyapp.feature.about.resources.nasa_logo
-import org.jetbrains.compose.resources.painterResource
+import com.wojciechkula.deepskyapp.feature.about.resources.about_screen_title
+import com.wojciechkula.deepskyapp.feature.about.ui.DescriptionCard
+import com.wojciechkula.deepskyapp.feature.about.ui.HeaderCard
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -43,68 +32,31 @@ fun About(onBack: () -> Unit) {
 @Composable
 private fun AboutScreen(onBack: () -> Unit) {
     Scaffold { padding ->
+        val layoutDirection = LocalLayoutDirection.current
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(
+                    start = padding.calculateStartPadding(layoutDirection),
+                    top = padding.calculateTopPadding(),
+                    end = padding.calculateEndPadding(layoutDirection)
+                )
                 .verticalScroll(rememberScrollState())
+                .padding(bottom = ApodTheme.dimensions.margin2xLarge)
         ) {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
-            ) {
-                Icon(
-                    painter = painterResource(DesignSystemRes.drawable.ic_back),
-                    contentDescription = stringResource(DesignSystemRes.string.content_description_back)
-                )
-            }
-            Text(
-                text = stringResource(Res.string.about_title),
-                style = ApodTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp)
+            ScreenTitleBar(
+                title = stringResource(Res.string.about_screen_title),
+                navigationIcon = { BackButton(onClick = onBack) }
             )
-            Text(
-                text = stringResource(Res.string.about_powered_by),
-                style = ApodTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(Res.drawable.nasa_logo),
-                    contentDescription = stringResource(Res.string.about_content_description_nasa_logo),
-                    modifier = Modifier.size(160.dp)
-                )
-                Image(
-                    painter = painterResource(Res.drawable.apod_logo),
-                    contentDescription = stringResource(Res.string.about_content_description_apod_logo),
-                    modifier = Modifier.size(120.dp)
-                )
-            }
-            Text(
-                text = stringResource(Res.string.about_body),
-                style = ApodTheme.typography.bodyLarge,
-                modifier = Modifier.padding(all = 18.dp)
-            )
+            Spacer(modifier = Modifier.height(ApodTheme.dimensions.marginSmall))
+            HeaderCard()
+            DescriptionCard(modifier = Modifier.padding(top = ApodTheme.dimensions.marginMedium))
         }
     }
 }
 
-@Preview
+@ScreenLightDarkPreview
 @Composable
-private fun AboutPreview() {
-    ApodTheme {
-        AboutScreen(onBack = {})
-    }
+private fun AboutPreview() = ApodScreenPreview {
+    AboutScreen(onBack = {})
 }
