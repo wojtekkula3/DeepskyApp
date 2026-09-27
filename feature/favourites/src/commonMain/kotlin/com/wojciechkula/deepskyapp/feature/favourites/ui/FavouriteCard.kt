@@ -10,10 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.ApodRowPreview
 import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.MediaLoadingBox
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_favourite
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
@@ -86,6 +92,7 @@ private fun FavouriteThumbnail(picture: FavouritePictureModel) {
     // An mp4 resolves through the video-frame fetcher on the singleton loader; an embed URL is a web
     // page that would never decode, so APOD's own thumbnail stands in for it.
     val model = if (kind == MediaKind.VIDEO_EMBED) picture.thumbnailUrl else picture.url
+    var isLoading by remember(model) { mutableStateOf(model != null) }
 
     if (kind == MediaKind.VIDEO_FILE || kind == MediaKind.VIDEO_EMBED) {
         // A video frame has no intrinsic size until it is extracted, and none at all if extraction
@@ -102,18 +109,24 @@ private fun FavouriteThumbnail(picture: FavouritePictureModel) {
                 model = model,
                 contentDescription = picture.title,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                onSuccess = { isLoading = false },
+                onError = { isLoading = false }
             )
-            PlayBadge()
+            if (isLoading) CircularProgressIndicator() else PlayBadge()
         }
     } else {
-        AsyncImage(
-            model = model,
-            contentDescription = picture.title,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(ApodTheme.shapes.medium)
-        )
+        MediaLoadingBox(isLoading = isLoading) {
+            AsyncImage(
+                model = model,
+                contentDescription = picture.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(ApodTheme.shapes.medium),
+                onSuccess = { isLoading = false },
+                onError = { isLoading = false }
+            )
+        }
     }
 }
 

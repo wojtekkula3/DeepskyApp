@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.wojciechkula.deepskyapp.core.designsystem.component.MediaLoadingBox
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
@@ -99,22 +100,29 @@ private fun ZoomablePicture(
 ) {
     // Keyed on url so a new entry gets a fresh attempt instead of inheriting the previous failure.
     var failed by remember(url) { mutableStateOf(false) }
+    var isLoading by remember(url) { mutableStateOf(true) }
 
     if (failed) {
         MediaFailure(isOffline = isOffline, modifier = modifier)
     } else {
-        AsyncImage(
-            model = url,
-            contentDescription = title,
-            // Fit would take the height from the bitmap's own size, so an image narrower than the card
-            // gets side bars; FillWidth scales it to the card's width instead.
-            contentScale = ContentScale.FillWidth,
-            onError = {
-                failed = true
-                onMediaFailed()
-            },
-            modifier = modifier.zoomable(rememberZoomState())
-        )
+        MediaLoadingBox(isLoading = isLoading, modifier = modifier) {
+            AsyncImage(
+                model = url,
+                contentDescription = title,
+                // Fit would take the height from the bitmap's own size, so an image narrower than the card
+                // gets side bars; FillWidth scales it to the card's width instead.
+                contentScale = ContentScale.FillWidth,
+                onSuccess = { isLoading = false },
+                onError = {
+                    isLoading = false
+                    failed = true
+                    onMediaFailed()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zoomable(rememberZoomState())
+            )
+        }
     }
 }
 
@@ -129,6 +137,7 @@ private fun EmbeddedVideoPoster(
     modifier: Modifier = Modifier
 ) {
     val openUrl = rememberUrlOpener()
+    var isThumbnailLoading by remember(thumbnailUrl) { mutableStateOf(thumbnailUrl != null) }
 
     Box(
         modifier = modifier.clickable(onClickLabel = stringResource(Res.string.picture_open_video)) {
@@ -137,21 +146,27 @@ private fun EmbeddedVideoPoster(
         contentAlignment = Alignment.Center
     ) {
         if (thumbnailUrl != null) {
-            AsyncImage(
-                model = thumbnailUrl,
-                contentDescription = title,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillWidth
+            MediaLoadingBox(isLoading = isThumbnailLoading) {
+                AsyncImage(
+                    model = thumbnailUrl,
+                    contentDescription = title,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth,
+                    onSuccess = { isThumbnailLoading = false },
+                    onError = { isThumbnailLoading = false }
+                )
+            }
+        }
+        if (!isThumbnailLoading) {
+            Icon(
+                painter = painterResource(DesignSystemRes.drawable.ic_play),
+                modifier = Modifier
+                    .padding(24.dp)
+                    .size(PlayBadgeSize),
+                contentDescription = null,
+                tint = ApodTheme.colors.onSurfaceVariant
             )
         }
-        Icon(
-            painter = painterResource(DesignSystemRes.drawable.ic_play),
-            modifier = Modifier
-                .padding(24.dp)
-                .size(PlayBadgeSize),
-            contentDescription = null,
-            tint = ApodTheme.colors.onSurfaceVariant
-        )
     }
 }
 
