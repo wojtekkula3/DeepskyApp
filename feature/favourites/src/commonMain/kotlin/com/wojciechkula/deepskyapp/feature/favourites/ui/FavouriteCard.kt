@@ -54,11 +54,12 @@ internal fun FavouriteCard(
         Column {
             Box {
                 FavouriteThumbnail(picture = picture)
-                FavouriteBadge(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(ApodTheme.dimensions.marginSmall)
-                )
+                // TODO Implement favourite interactive icon
+//                FavouriteBadge(
+//                    modifier = Modifier
+//                        .align(Alignment.TopEnd)
+//                        .padding(ApodTheme.dimensions.marginSmall)
+//                )
             }
             Column(modifier = Modifier.padding(ApodTheme.dimensions.marginSmallMedium)) {
                 Text(
@@ -116,6 +117,7 @@ private fun FavouriteThumbnail(picture: FavouritePictureModel) {
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Composable
 private fun FavouriteBadge(modifier: Modifier = Modifier) {
     Surface(
