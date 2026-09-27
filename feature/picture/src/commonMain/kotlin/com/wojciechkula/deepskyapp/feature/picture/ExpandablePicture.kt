@@ -26,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
@@ -127,7 +126,7 @@ private fun FullscreenPicture(
 ) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)
+        properties = fullscreenDialogProperties()
     ) {
         FullscreenPictureContent(url = url, hdUrl = hdUrl, title = title, onDismiss = onDismiss)
     }

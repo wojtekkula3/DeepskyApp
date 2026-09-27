@@ -37,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_backward_5_sec
@@ -173,12 +172,10 @@ private fun FullscreenVideo(
     onDismiss: () -> Unit
 ) {
     // A dialog rather than a screen-level overlay: dismissOnBackPress covers Android's system back on
-    // its own, so no back handler is needed here. Verified on the iOS simulator that an interop view
-    // draws correctly inside it — the dialog's content area there is the safe area, so its own dim
-    // shows through over the status bar and home indicator.
+    // its own, so no back handler is needed here.
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false)
+        properties = fullscreenDialogProperties()
     ) {
         FullscreenVideoContent(
             state = state,
