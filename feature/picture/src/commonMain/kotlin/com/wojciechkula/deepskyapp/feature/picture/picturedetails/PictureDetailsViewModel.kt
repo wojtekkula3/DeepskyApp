@@ -46,6 +46,7 @@ class PictureDetailsViewModel(
             .collect { match ->
                 when {
                     match != null -> updateState { copy(screenState = Success(match)) }
+
                     // Keep the last Success once we have one: the picture disappears from the list right
                     // after a delete, and blanking the screen before NavigateBack lands would flash.
                     // Before any Success, no match means the date simply is not a favourite (for example
