@@ -84,6 +84,7 @@ private fun MediaCard(
         // readable offline, so only the media slot reports the failure.
         PictureMedia(
             url = picture.url,
+            hdUrl = picture.hdUrl,
             mediaType = picture.mediaType,
             title = picture.title,
             thumbnailUrl = picture.thumbnailUrl,

@@ -11,6 +11,8 @@
     <string name="picture_remove_from_favourites">Remove from favourites</string>
     <string name="picture_open_video">Watch the video</string>
     <string name="picture_media_not_available">This media cannot be shown</string>
+    <string name="picture_image_enter_fullscreen">View full screen</string>
+    <string name="picture_image_exit_fullscreen">Close full screen</string>
     <string name="picture_video_enter_fullscreen">Watch full screen</string>
     <string name="picture_video_exit_fullscreen">Leave full screen</string>
     <string name="picture_video_play">Play</string>

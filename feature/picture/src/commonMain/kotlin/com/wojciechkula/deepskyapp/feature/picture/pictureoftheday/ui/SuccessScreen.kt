@@ -112,6 +112,7 @@ private fun MediaCard(
     ContentCard {
         PictureMedia(
             url = picture.url,
+            hdUrl = picture.hdUrl,
             mediaType = picture.mediaType,
             title = picture.title,
             thumbnailUrl = picture.thumbnailUrl,

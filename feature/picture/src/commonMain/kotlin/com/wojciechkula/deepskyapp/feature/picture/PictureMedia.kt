@@ -30,8 +30,6 @@ import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_media_not_available
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_no_internet
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_open_video
-import net.engawapg.lib.zoomable.rememberZoomState
-import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -51,6 +49,7 @@ private val PlayBadgeSize = 64.dp
 @Composable
 internal fun PictureMedia(
     url: String,
+    hdUrl: String,
     mediaType: String,
     title: String,
     thumbnailUrl: String?,
@@ -59,15 +58,15 @@ internal fun PictureMedia(
     onMediaFailed: () -> Unit = {}
 ) {
     when (mediaKind(mediaType, url)) {
-        MediaKind.IMAGE -> ZoomablePicture(
+        MediaKind.IMAGE -> ExpandablePicture(
             url = url,
+            hdUrl = hdUrl,
             title = title,
             isOffline = isOffline,
             onMediaFailed = onMediaFailed,
             modifier = modifier.fillMaxWidth()
         )
 
-        // No zoom on video: pinching a looping clip has no use here.
         MediaKind.VIDEO_FILE -> PlayableVideo(
             url = url,
             isOffline = isOffline,
@@ -87,42 +86,6 @@ internal fun PictureMedia(
             text = stringResource(Res.string.picture_media_not_available),
             modifier = modifier
         )
-    }
-}
-
-@Composable
-private fun ZoomablePicture(
-    url: String,
-    title: String,
-    isOffline: Boolean,
-    onMediaFailed: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    // Keyed on url so a new entry gets a fresh attempt instead of inheriting the previous failure.
-    var failed by remember(url) { mutableStateOf(false) }
-    var isLoading by remember(url) { mutableStateOf(true) }
-
-    if (failed) {
-        MediaFailure(isOffline = isOffline, modifier = modifier)
-    } else {
-        MediaLoadingBox(isLoading = isLoading, modifier = modifier) {
-            AsyncImage(
-                model = url,
-                contentDescription = title,
-                // Fit would take the height from the bitmap's own size, so an image narrower than the card
-                // gets side bars; FillWidth scales it to the card's width instead.
-                contentScale = ContentScale.FillWidth,
-                onSuccess = { isLoading = false },
-                onError = {
-                    isLoading = false
-                    failed = true
-                    onMediaFailed()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .zoomable(rememberZoomState())
-            )
-        }
     }
 }
 
@@ -206,6 +169,7 @@ private fun PictureMediaVideoFilePreview() {
     ApodTheme {
         PictureMedia(
             url = "https://apod.nasa.gov/apod/image/2608/eso2612b.mp4",
+            hdUrl = "",
             mediaType = "video",
             title = "Preview clip",
             thumbnailUrl = null,
@@ -220,6 +184,7 @@ private fun PictureMediaVideoEmbedPreview() {
     ApodTheme {
         PictureMedia(
             url = "https://www.youtube.com/embed/UgxWkOXcdZU",
+            hdUrl = "",
             mediaType = "video",
             title = "Preview embed",
             thumbnailUrl = null,
@@ -236,6 +201,7 @@ private fun PictureMediaUnsupportedPreview() {
     ApodTheme {
         PictureMedia(
             url = "https://apod.nasa.gov/apod/ap241023.html",
+            hdUrl = "",
             mediaType = "other",
             title = "Preview unsupported",
             thumbnailUrl = null,
