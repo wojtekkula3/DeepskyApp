@@ -1,90 +1,128 @@
-## 🚀 Deepsky App - What is this project about?
+# 🚀 Deepsky App
 
-The application is created for people who is interested in astronomy discoveries. Every day the new picture related to astronomy is popping up thanks to NASA - APOD service. In addition, every picture is presented with an explanation and title describing what is show no the user. Also, when some pictures has copyright data to it, application shows it.
+A daily window into the universe: Deepsky App shows NASA's **Astronomy Picture of the Day** (APOD) —
+a new image or video every day, with its title, explanation and copyright — and lets you keep the ones
+you like in a local **Favourites** list.
 
-"Picture of The Day" is available for 24h, but we can preserve it in the local storage by adding them to "The Favourite" list.
+<a href="https://play.google.com/store/apps/details?id=com.wojciechkula.deepskyapp">
+  <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
+</a>
 
-<b>Astronomy Picture of the Day (APOD) </b> is originated, written, coordinated, and edited since 1995 by Robert Nemiroff and Jerry Bonnell. The APOD archive contains the largest collection of annotated astronomical images on the internet. In real life, Robert and Jerry are two professional astronomers who spend most of their time researching the universe. Robert is a professor at Michigan Technological University in Houghton, Michigan, USA, while Jerry is a scientist at NASA's Goddard Space Flight Center in Greenbelt, Maryland USA.
+The app is written in **Kotlin Multiplatform** with **Compose Multiplatform**, so the same code — UI
+included — runs on Android and iOS. Only the **Android** app is published (on Google Play). The iOS
+app builds and runs from this repository, but it is not released on the App Store and there are no
+plans to release it.
 
-## How the design looks like?
+## 📱 Screenshots
 
-Picture of the day screen:
+| | Picture of the Day | Favourites | Picture details | About |
+|---|---|---|---|---|
+| **Light** | <img src="docs/screenshots/picture-of-the-day-light.png" width="200"> | <img src="docs/screenshots/favourites-light.png" width="200"> | <img src="docs/screenshots/details-light.png" width="200"> | <img src="docs/screenshots/about-light.png" width="200"> |
+| **Dark** | <img src="docs/screenshots/picture-of-the-day-dark.png" width="200"> | <img src="docs/screenshots/favourites-dark.png" width="200"> | <img src="docs/screenshots/details-dark.png" width="200"> | <img src="docs/screenshots/about-dark.png" width="200"> |
 
-<img src="https://user-images.githubusercontent.com/45050205/157853432-719c282b-2e7d-47e3-9d29-f6aefa767876.jpg" width="280">&nbsp;
-<img src="https://user-images.githubusercontent.com/45050205/157853439-281bf1d0-0aa5-402c-90a7-b31a18669c6e.jpg" width="280">&nbsp; &nbsp;<br>
+## ✨ Features
 
-My Favourite screen and one selected item:
+- **Picture of the Day** — today's APOD, refreshed automatically once NASA publishes the next one
+  (a new picture appears every day at 00:00 GMT-4).
+- **Images and videos** — pictures open full screen with pinch-to-zoom in HD; video APODs play inside
+  the app.
+- **Favourites** — save any picture to a local list and browse it as a grid (only the
+  metadata is stored; images are loaded again from NASA).
+- **Light and dark theme**, following the system setting.
+- **About** — who is behind APOD and how the app works.
 
-<img src="https://user-images.githubusercontent.com/45050205/157853465-68d3fb8b-5e08-4663-9ead-60f245cd6eea.jpg" width="280">&nbsp;
-<img src="https://user-images.githubusercontent.com/45050205/157853473-750ef72e-a5e3-404b-b997-71d472784652.jpg" width="280">&nbsp;
-<img src="https://user-images.githubusercontent.com/45050205/157853484-b6bc93a0-a58c-404f-ba81-54436205d971.jpg" width="280">&nbsp;
-<br>
+---
 
-## What technologies are used?
+## 🕰️ Version 1.x.x (legacy)
 
-Version 2.0 is a **Kotlin Multiplatform** rewrite: the app runs on **Android and iOS** from one shared
-codebase, and the whole UI — every screen, not just the business logic — is written once in
-**Compose Multiplatform**. The Android-only 1.x stack (Retrofit, Glide, PhotoView, Hilt, LiveData,
-XML layouts and the Navigation Component) is gone; it can still be read in git history under the tag
-`1.2.1`.
+The original app — **1.2.1**, the first published version — was an
+Android-only app in the classic style: **XML layouts** with View Binding, Fragments with the
+**Navigation Component**, **LiveData**, **Hilt**, **Retrofit** + Gson, **Glide** and **PhotoView**.
+
+None of that code is on the current branches. It is preserved under the git tag
+[`1.2.1`](../../tree/1.2.1):
+
+```bash
+git checkout 1.2.1
+```
+
+Users upgrading from 1.2.1 keep their saved favourites — the database is migrated in place.
+
+---
+
+## 🌌 Version 2.x.x (current)
+
+Version 2.0.0 is a complete rewrite. **Everything below describes version 2.x.x** — the Kotlin Multiplatform rewrite that lives on the
+current branches. For the 1.x.x app, see the section above.
+
+### 🛠️ Tech stack
 
 | Concern | Library |
 |---|---|
-| UI | Compose Multiplatform (Material 3) |
+| Language & platforms | Kotlin Multiplatform — Android + iOS |
+| UI | Compose Multiplatform (Material 3), shared by both platforms |
 | Navigation | Navigation 3 (`NavDisplay` + typed `NavKey` destinations) |
 | Presentation | MVI — `StateActionsViewModel` over `StateFlow` + a one-shot action channel |
 | Networking | Ktor Client (OkHttp on Android, Darwin on iOS) + kotlinx.serialization |
-| Persistence | Room KMP with SQLite bundled, hand-written migrations |
+| Persistence | Room KMP with bundled SQLite and hand-written migrations |
 | Dependency injection | Koin |
-| Images | Coil 3 (`AsyncImage`) + `zoomable` for pinch-to-zoom |
+| Images | Coil 3 + `zoomable` for pinch-to-zoom |
+| Video | Media3 ExoPlayer on Android, AVPlayer on iOS |
 | Logging | Timber on Android, `NSLog` on iOS, behind a shared `Logger` interface |
 | Concurrency | Kotlin Coroutines + Flow |
+| Quality | ktlint, detekt, `kotlin.test` on both platforms |
 
-**Clean Architecture** still separates the layers, and the module graph enforces it: features depend on
-`:domain`, never on each other, and `:core:*` modules are leaves.
+### 🧱 Architecture
+
+**Clean Architecture**, enforced by the module graph: features depend on `:domain` and never on each
+other, `:data` implements the `:domain` interfaces, and `:core:*` modules are leaves.
 
 ```
 :domain             # models, interactors, repository interfaces, sealed Result
 :data               # Ktor APOD client, Room database, mappers, repository implementations
 :core:common        # DateFormatter, Logger, NetworkMonitor
-:core:designsystem  # theme, TopSnackbar, shared vector icons
+:core:designsystem  # theme, shared components, vector icons
+:core:media         # video playback and video thumbnails
 :core:mvvm          # StateActionsViewModel + ActionsEffect (MVI plumbing)
 :core:navigation    # typed NavKey destinations
-:feature:picture    # Picture of the Day + Picture Details
+:feature:picture    # Picture of the Day + Picture details
 :feature:favourites # the favourites grid
-:feature:about      # the static About screen
-:shared             # navigation host, bottom bar, DI aggregation, iOS entry point
+:feature:about      # the About screen
+:shared             # navigation host, bottom bar, DI wiring, iOS entry point
 :androidApp         # Android entry point
-:iosApp             # iOS entry point (SwiftUI shell)
+iosApp/             # iOS entry point (SwiftUI shell, Xcode project)
 ```
 
-Favourites deliberately store **metadata only** — no bitmaps in the database — and Coil re-fetches the
-image, which is what let the old `Bitmap`→`ByteArray` TypeConverter go away. Users upgrading from 1.2.1
-keep their saved pictures: the database file name is unchanged and `MIGRATION_1_2` copies the rows out
-of the old table.
+### ▶️ Build and run
 
-Minimum Android version is **API 26 (Android 8.0)**; iOS targets are `iosArm64` and `iosSimulatorArm64`.
+**Requirements:** JDK 21, Android Studio (Android SDK 37); for iOS additionally a Mac with Xcode.
+Minimum Android version is **8.0 (API 26)**.
 
-## How to build and run it?
+1. Get a free APOD API key at <https://api.nasa.gov>.
+2. Put it in `local.properties`, in `~/.gradle/gradle.properties`, or in the `APOD_API_KEY`
+   environment variable:
 
-The APOD API key is read from `local.properties`, a Gradle property, or the `APOD_API_KEY` environment
-variable — get a free one at <https://api.nasa.gov>:
+   ```
+   APOD_API_KEY=your_key_here
+   ```
 
-```
-APOD_API_KEY=your_key_here
-```
+3. Build and run:
 
-```bash
-./gradlew :androidApp:installDebug   # Android
-./gradlew allTests                   # the whole suite, Android host + iOS simulator
-```
+   ```bash
+   ./gradlew :androidApp:installDebug   # Android: build and install on a connected device
+   ./gradlew allTests                   # all tests, Android host + iOS simulator
+   ./gradlew ktlint detekt              # static analysis
+   ```
 
-For iOS, open `iosApp/iosApp.xcodeproj` in Xcode and run the `iosApp` scheme.
+   For iOS, open `iosApp/iosApp.xcodeproj` in Xcode and run the `iosApp` scheme.
 
-## Who is the author?
+---
 
-👨‍💻 Implemented by: [Wojciech Kula] <br>
-🌌 Powered by: [NASA-APOD]
+## 👨‍💻 Author
 
-[NASA-APOD]: <https://apod.nasa.gov/apod/>
-[Wojciech Kula]: <https://www.linkedin.com/in/wojciechkula/>
+Implemented by [Wojciech Kula](https://www.linkedin.com/in/wojciechkula/) <br>
+Powered by [NASA APOD](https://apod.nasa.gov/apod/)
+
+> **Astronomy Picture of the Day** is originated, written, coordinated and edited since 1995 by Robert
+> Nemiroff and Jerry Bonnell. The APOD archive contains the largest collection of annotated
+> astronomical images on the internet.
