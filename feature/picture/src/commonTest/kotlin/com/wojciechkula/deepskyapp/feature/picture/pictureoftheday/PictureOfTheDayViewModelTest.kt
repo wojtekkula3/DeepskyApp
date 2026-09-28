@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 
+import com.wojciechkula.deepskyapp.core.common.DateFormatter
 import com.wojciechkula.deepskyapp.domain.Result
 import com.wojciechkula.deepskyapp.domain.interactor.AddFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.CheckIfPictureIsFavouriteInteractor
@@ -57,8 +58,8 @@ class PictureOfTheDayViewModelTest {
         favouriteRepo: FakeFavouriteRepository = FakeFavouriteRepository(),
         networkMonitor: FakeNetworkMonitor = FakeNetworkMonitor(initial = true),
         clock: Clock = MutableClock(Instant.parse("2026-07-12T12:00:00Z")),
+        pictureRepo: FakePictureRepository = FakePictureRepository(pictureResult),
     ): PictureOfTheDayViewModel {
-        val pictureRepo = FakePictureRepository(pictureResult)
         return PictureOfTheDayViewModel(
             getPictureOfTheDay = GetPictureOfTheDayInteractor(pictureRepo),
             checkIfPictureIsFavourite = CheckIfPictureIsFavouriteInteractor(favouriteRepo),
@@ -66,6 +67,7 @@ class PictureOfTheDayViewModelTest {
             deleteFavouritePicture = DeleteFavouritePictureInteractor(favouriteRepo),
             networkMonitor = networkMonitor,
             clock = clock,
+            dateFormatter = DateFormatter(clock),
         )
     }
 
@@ -211,16 +213,95 @@ class PictureOfTheDayViewModelTest {
         assertEquals(afterPause, vm.states.value.timeToNewPicture, "countdown should stop after Paused")
     }
 
+    // 03:59:59Z is 23:59:59 on 2026-07-12 in the GMT-4 APOD zone, one second before the next picture.
+    private val justBeforeApodMidnight = Instant.parse("2026-07-13T03:59:59Z")
+    private val nextDaysPicture = sampleApod.copy(date = "2026-07-13", title = "Next Day")
+
+    @Test
+    fun replacesThePictureOnceTheApodMidnightPasses() = runTest(dispatcher) {
+        val clock = MutableClock(justBeforeApodMidnight)
+        val pictureRepo = FakePictureRepository(Result.Success(sampleApod))
+        val vm = buildViewModel(clock = clock, pictureRepo = pictureRepo)
+        advanceUntilIdle()
+        pictureRepo.result = Result.Success(nextDaysPicture)
+
+        try {
+            vm.handleUiEvent(Resumed)
+            runCurrent()
+            assertEquals(sampleApod, (vm.states.value.screenState as Success).picture)
+
+            clock.instant += 1.seconds
+            advanceTimeBy(1.seconds)
+            runCurrent()
+
+            assertEquals(nextDaysPicture, (vm.states.value.screenState as Success).picture)
+        } finally {
+            vm.handleUiEvent(Paused)
+        }
+    }
+
+    @Test
+    fun keepsThePictureWhenTheNextOneIsNotPublishedYet() = runTest(dispatcher) {
+        val clock = MutableClock(justBeforeApodMidnight)
+        val pictureRepo = FakePictureRepository(Result.Success(sampleApod))
+        val vm = buildViewModel(clock = clock, pictureRepo = pictureRepo)
+        advanceUntilIdle()
+        pictureRepo.result = Result.HttpError(404, "not published yet")
+
+        try {
+            vm.handleUiEvent(Resumed)
+            clock.instant += 1.seconds
+            advanceTimeBy(1.seconds)
+            runCurrent()
+
+            assertEquals(sampleApod, (vm.states.value.screenState as Success).picture)
+        } finally {
+            vm.handleUiEvent(Paused)
+        }
+    }
+
+    @Test
+    fun retriesAMissingNextPictureAtMostOncePerMinute() = runTest(dispatcher) {
+        val clock = MutableClock(justBeforeApodMidnight)
+        val pictureRepo = FakePictureRepository(Result.Success(sampleApod))
+        val vm = buildViewModel(clock = clock, pictureRepo = pictureRepo)
+        advanceUntilIdle()
+        pictureRepo.result = Result.HttpError(404, "not published yet")
+        val callsBeforeMidnight = pictureRepo.calls
+
+        try {
+            vm.handleUiEvent(Resumed)
+            runCurrent()
+            repeat(59) {
+                clock.instant += 1.seconds
+                advanceTimeBy(1.seconds)
+                runCurrent()
+            }
+            assertEquals(callsBeforeMidnight + 1, pictureRepo.calls, "one attempt within the first minute")
+
+            repeat(2) {
+                clock.instant += 1.seconds
+                advanceTimeBy(1.seconds)
+                runCurrent()
+            }
+            assertEquals(callsBeforeMidnight + 2, pictureRepo.calls, "a second attempt once a minute has passed")
+        } finally {
+            vm.handleUiEvent(Paused)
+        }
+    }
+
     @Test
     fun retryReloadsAfterAnError() = runTest(dispatcher) {
         val pictureRepo = FakePictureRepository(Result.HttpError(500, "boom"))
+        val clock = MutableClock(Instant.parse("2026-07-12T12:00:00Z"))
         val vm = PictureOfTheDayViewModel(
             getPictureOfTheDay = GetPictureOfTheDayInteractor(pictureRepo),
             checkIfPictureIsFavourite = CheckIfPictureIsFavouriteInteractor(FakeFavouriteRepository()),
             addFavouritePicture = AddFavouritePictureInteractor(FakeFavouriteRepository()),
             deleteFavouritePicture = DeleteFavouritePictureInteractor(FakeFavouriteRepository()),
             networkMonitor = FakeNetworkMonitor(initial = true),
-            clock = MutableClock(Instant.parse("2026-07-12T12:00:00Z")),
+            clock = clock,
+            dateFormatter = DateFormatter(clock),
         )
         advanceUntilIdle()
         assertEquals(Error, vm.states.value.screenState)

@@ -12,7 +12,12 @@ import kotlinx.coroutines.flow.map
 class FakePictureRepository(
     var result: Result<PictureOfTheDayModel> = Result.Success(sampleApod),
 ) : PictureRepository {
-    override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> = result
+    var calls = 0
+
+    override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> {
+        calls++
+        return result
+    }
 }
 
 class FakeFavouriteRepository : FavouriteRepository {

@@ -1,5 +1,6 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 
+import com.wojciechkula.deepskyapp.core.common.DateFormatter
 import com.wojciechkula.deepskyapp.core.common.NetworkMonitor
 import com.wojciechkula.deepskyapp.core.mvvm.StateActionsViewModel
 import com.wojciechkula.deepskyapp.domain.Result
@@ -15,6 +16,8 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,6 +28,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 
 private const val COUNTDOWN_TICK_MILLIS = 1_000
+private val REFRESH_RETRY_INTERVAL = 1.minutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PictureOfTheDayViewModel(
@@ -33,14 +37,15 @@ class PictureOfTheDayViewModel(
     private val addFavouritePicture: AddFavouritePictureInteractor,
     private val deleteFavouritePicture: DeleteFavouritePictureInteractor,
     private val networkMonitor: NetworkMonitor,
-    // Injectable so the countdown is deterministic in tests (the ticker formats from wall-clock time).
-    private val clock: Clock = Clock.System
+    private val clock: Clock,
+    private val dateFormatter: DateFormatter
 ) : StateActionsViewModel<PictureOfTheDayUiState, Nothing>(PictureOfTheDayUiState()) {
 
     private var resumed = false
     private var countdownJob: Job? = null
     private var favouriteToggleJob: Job? = null
     private var loadJob: Job? = null
+    private var lastRefreshAttempt: Instant? = null
 
     init {
         observeConnectivity()
@@ -131,9 +136,25 @@ class PictureOfTheDayViewModel(
         if (countdownJob?.isActive == true) return
         countdownJob = launch {
             while (isActive) {
-                updateState { copy(timeToNewPicture = formatTimeToNextApod(clock.now())) }
+                val now = clock.now()
+                updateState { copy(timeToNewPicture = formatTimeToNextApod(now)) }
+                refreshIfOutdated(now)
                 delay(COUNTDOWN_TICK_MILLIS.milliseconds)
             }
+        }
+    }
+
+    // Keeps the old picture on screen: NASA may publish the new one late, and until then the API rejects
+    // the new date, which would otherwise turn a working screen into an error at midnight.
+    private fun refreshIfOutdated(now: Instant) {
+        val picture = (currentState.screenState as? Success)?.picture ?: return
+        if (picture.date == dateFormatter.currentApodDate()) return
+        if (loadJob?.isActive == true) return
+        lastRefreshAttempt?.let { if (now - it < REFRESH_RETRY_INTERVAL) return }
+        lastRefreshAttempt = now
+        loadJob = launch {
+            val result = getPictureOfTheDay()
+            if (result is Result.Success) updateState { copy(screenState = Success(result.data)) }
         }
     }
 
