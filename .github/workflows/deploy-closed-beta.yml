@@ -35,14 +35,18 @@ jobs:
       # The signing action writes a new file next to the unsigned one and only reports its name through
       # an output, so the upload copies it to a fixed name instead of guessing. Uploading the bundle at
       # its build path would ship the *unsigned* artifact, which Google Play rejects.
-      - name: Stage signed AAB
-        run: cp "${{ steps.sign.outputs.signedReleaseFile }}" deepsky-release.aab
+      - name: Stage signed AAB and R8 mapping
+        run: |
+          cp "${{ steps.sign.outputs.signedReleaseFile }}" deepsky-release.aab
+          cp androidApp/build/outputs/mapping/release/mapping.txt deepsky-mapping.txt
 
       - name: Upload Signed AAB Artifact
         uses: actions/upload-artifact@v7
         with:
           name: release-aab
-          path: deepsky-release.aab
+          path: |
+            deepsky-release.aab
+            deepsky-mapping.txt
 
   deploy:
     name: Deploy to Google Play Closed Beta
@@ -60,4 +64,5 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: com.wojciechkula.deepskyapp
           releaseFiles: deepsky-release.aab
+          mappingFile: deepsky-mapping.txt
           track: internal
