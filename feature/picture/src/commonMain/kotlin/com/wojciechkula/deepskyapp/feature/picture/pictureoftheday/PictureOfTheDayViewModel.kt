@@ -15,12 +15,18 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 
 private const val COUNTDOWN_TICK_MILLIS = 1_000
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PictureOfTheDayViewModel(
     private val getPictureOfTheDay: GetPictureOfTheDayInteractor,
     private val checkIfPictureIsFavourite: CheckIfPictureIsFavouriteInteractor,
@@ -57,10 +63,13 @@ class PictureOfTheDayViewModel(
         }
     }
 
+    // Keyed on the loaded picture's date, not on "today": the two differ once the APOD midnight passes.
     private fun observeFavouriteState() = launch {
-        checkIfPictureIsFavourite().collect { favourite ->
-            updateState { copy(isFavourite = favourite) }
-        }
+        states
+            .map { (it.screenState as? Success)?.picture?.date }
+            .distinctUntilChanged()
+            .flatMapLatest { date -> date?.let(checkIfPictureIsFavourite::invoke) ?: flowOf(false) }
+            .collect { favourite -> updateState { copy(isFavourite = favourite) } }
     }
 
     fun handleUiEvent(event: PictureOfTheDayUiEvent) {

@@ -13,5 +13,5 @@ val domainModule: Module = module {
     factory { GetFavouritePicturesInteractor(get()) }
     factory { AddFavouritePictureInteractor(get()) }
     factory { DeleteFavouritePictureInteractor(get()) }
-    factory { CheckIfPictureIsFavouriteInteractor(get(), get()) }
+    factory { CheckIfPictureIsFavouriteInteractor(get()) }
 }

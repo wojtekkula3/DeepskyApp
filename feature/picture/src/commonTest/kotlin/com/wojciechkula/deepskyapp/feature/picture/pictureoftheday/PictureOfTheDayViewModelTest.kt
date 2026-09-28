@@ -1,6 +1,5 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 
-import com.wojciechkula.deepskyapp.core.common.DateFormatter
 import com.wojciechkula.deepskyapp.domain.Result
 import com.wojciechkula.deepskyapp.domain.interactor.AddFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.CheckIfPictureIsFavouriteInteractor
@@ -46,14 +45,6 @@ class PictureOfTheDayViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
 
-    // DateFormatter fixed to sampleApod.date so CheckIfPictureIsFavourite queries "2026-07-12".
-    private val fixedDateFormatter = DateFormatter(
-        clock = object : Clock {
-            override fun now(): Instant = Instant.parse("2026-07-12T12:00:00Z")
-        },
-        timeZone = kotlinx.datetime.TimeZone.UTC,
-    )
-
     @BeforeTest fun setUp() { Dispatchers.setMain(dispatcher) }
     @AfterTest fun tearDown() { Dispatchers.resetMain() }
 
@@ -70,7 +61,7 @@ class PictureOfTheDayViewModelTest {
         val pictureRepo = FakePictureRepository(pictureResult)
         return PictureOfTheDayViewModel(
             getPictureOfTheDay = GetPictureOfTheDayInteractor(pictureRepo),
-            checkIfPictureIsFavourite = CheckIfPictureIsFavouriteInteractor(favouriteRepo, fixedDateFormatter),
+            checkIfPictureIsFavourite = CheckIfPictureIsFavouriteInteractor(favouriteRepo),
             addFavouritePicture = AddFavouritePictureInteractor(favouriteRepo),
             deleteFavouritePicture = DeleteFavouritePictureInteractor(favouriteRepo),
             networkMonitor = networkMonitor,
@@ -178,6 +169,18 @@ class PictureOfTheDayViewModelTest {
     }
 
     @Test
+    fun isFavouriteFollowsTheLoadedPictureDateRatherThanToday() = runTest(dispatcher) {
+        // The picture can be a day off "today", e.g. loaded after the APOD midnight when the screen opened before it.
+        val loaded = sampleApod.copy(date = "2026-07-13")
+        val favouriteRepo = FakeFavouriteRepository()
+        AddFavouritePictureInteractor(favouriteRepo)(loaded)
+        val vm = buildViewModel(pictureResult = Result.Success(loaded), favouriteRepo = favouriteRepo)
+        advanceUntilIdle()
+
+        assertTrue(vm.states.value.isFavourite)
+    }
+
+    @Test
     fun countdownTicksAfterResumeAndStopsOnPause() = runTest(dispatcher) {
         val clock = MutableClock(Instant.parse("2026-07-12T12:00:00Z"))
         val vm = buildViewModel(clock = clock)
@@ -213,7 +216,7 @@ class PictureOfTheDayViewModelTest {
         val pictureRepo = FakePictureRepository(Result.HttpError(500, "boom"))
         val vm = PictureOfTheDayViewModel(
             getPictureOfTheDay = GetPictureOfTheDayInteractor(pictureRepo),
-            checkIfPictureIsFavourite = CheckIfPictureIsFavouriteInteractor(FakeFavouriteRepository(), fixedDateFormatter),
+            checkIfPictureIsFavourite = CheckIfPictureIsFavouriteInteractor(FakeFavouriteRepository()),
             addFavouritePicture = AddFavouritePictureInteractor(FakeFavouriteRepository()),
             deleteFavouritePicture = DeleteFavouritePictureInteractor(FakeFavouriteRepository()),
             networkMonitor = FakeNetworkMonitor(initial = true),
