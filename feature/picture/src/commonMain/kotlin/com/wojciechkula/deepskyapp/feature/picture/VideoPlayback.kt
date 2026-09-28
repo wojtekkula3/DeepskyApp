@@ -89,7 +89,7 @@ internal fun PlayableVideo(
     var failed by remember(url) { mutableStateOf(false) }
 
     if (failed) {
-        MediaFailure(isOffline = isOffline, modifier = modifier)
+        MediaFailure(isOffline = isOffline, onRetry = { failed = false }, modifier = modifier)
         return
     }
 

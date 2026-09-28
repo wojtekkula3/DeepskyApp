@@ -2,11 +2,16 @@ package com.wojciechkula.deepskyapp.feature.picture
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +27,7 @@ import coil3.compose.AsyncImage
 import com.wojciechkula.deepskyapp.core.designsystem.component.MediaLoadingBox
 import com.wojciechkula.deepskyapp.core.designsystem.resources.DesignSystemRes
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_play
+import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_refresh
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.media.rememberUrlOpener
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
@@ -29,6 +35,7 @@ import com.wojciechkula.deepskyapp.domain.model.mediaKind
 import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_media_not_available
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_no_internet
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_try_again
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_open_video
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -136,16 +143,33 @@ private fun EmbeddedVideoPoster(
 @Composable
 internal fun MediaFailure(
     isOffline: Boolean,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    MediaMessage(
-        text = if (isOffline) {
-            stringResource(Res.string.picture_no_internet)
-        } else {
-            stringResource(Res.string.picture_media_not_available)
-        },
-        modifier = modifier
-    )
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        MediaMessage(
+            text = if (isOffline) {
+                stringResource(Res.string.picture_no_internet)
+            } else {
+                stringResource(Res.string.picture_media_not_available)
+            }
+        )
+        TextButton(
+            onClick = onRetry,
+            modifier = Modifier.padding(bottom = ApodTheme.dimensions.marginMedium)
+        ) {
+            Icon(
+                painter = painterResource(DesignSystemRes.drawable.ic_refresh),
+                contentDescription = null,
+                modifier = Modifier.size(ButtonDefaults.IconSize)
+            )
+            Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+            Text(text = stringResource(Res.string.picture_of_the_day_try_again))
+        }
+    }
 }
 
 @Composable
@@ -214,7 +238,7 @@ private fun PictureMediaUnsupportedPreview() {
 @Composable
 private fun MediaFailureOfflinePreview() {
     ApodTheme {
-        MediaFailure(isOffline = true)
+        MediaFailure(isOffline = true, onRetry = {})
     }
 }
 
@@ -222,6 +246,6 @@ private fun MediaFailureOfflinePreview() {
 @Composable
 private fun MediaFailureUnavailablePreview() {
     ApodTheme {
-        MediaFailure(isOffline = false)
+        MediaFailure(isOffline = false, onRetry = {})
     }
 }

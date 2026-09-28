@@ -70,7 +70,14 @@ internal fun ExpandablePicture(
     var fullscreen by rememberSaveable(url) { mutableStateOf(false) }
 
     if (failed) {
-        MediaFailure(isOffline = isOffline, modifier = modifier)
+        MediaFailure(
+            isOffline = isOffline,
+            onRetry = {
+                failed = false
+                isLoading = true
+            },
+            modifier = modifier
+        )
         return
     }
 
