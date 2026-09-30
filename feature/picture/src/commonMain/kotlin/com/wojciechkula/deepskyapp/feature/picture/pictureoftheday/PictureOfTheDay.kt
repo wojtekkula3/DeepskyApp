@@ -1,18 +1,12 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wojciechkula.deepskyapp.core.designsystem.ApodScreenPreview
 import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.ApodScaffold
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
@@ -40,7 +34,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PictureOfTheDay(
-    contentPadding: PaddingValues = PaddingValues(),
     viewModel: PictureOfTheDayViewModel = koinViewModel()
 ) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
@@ -52,24 +45,16 @@ fun PictureOfTheDay(
 
     PictureOfTheDayScreen(
         uiState = uiState,
-        uiEvent = viewModel::handleUiEvent,
-        contentPadding = contentPadding
+        uiEvent = viewModel::handleUiEvent
     )
 }
 
 @Composable
 private fun PictureOfTheDayScreen(
     uiState: PictureOfTheDayUiState,
-    uiEvent: (PictureOfTheDayUiEvent) -> Unit,
-    contentPadding: PaddingValues = PaddingValues()
+    uiEvent: (PictureOfTheDayUiEvent) -> Unit
 ) {
-    Scaffold { padding ->
-        val scrollableModifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(contentPadding)
-
+    ApodScaffold {
         when (val screenState = uiState.screenState) {
             is Success -> SuccessScreen(
                 picture = screenState.picture,
@@ -103,12 +88,7 @@ private fun PictureOfTheDayScreen(
                 modifier = scrollableModifier
             )
 
-            Loading -> LoadingScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(contentPadding)
-            )
+            Loading -> LoadingScreen(modifier = screenModifier)
         }
     }
 }

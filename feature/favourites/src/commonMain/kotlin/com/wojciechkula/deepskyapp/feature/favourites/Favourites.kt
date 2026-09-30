@@ -1,19 +1,16 @@
 package com.wojciechkula.deepskyapp.feature.favourites
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wojciechkula.deepskyapp.core.designsystem.ApodScreenPreview
 import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.ApodScaffold
+import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Empty
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Loading
@@ -33,7 +30,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun Favourites(
     onOpenDetails: (date: String) -> Unit,
     onOpenAbout: () -> Unit,
-    contentPadding: PaddingValues = PaddingValues(),
     isEntering: Boolean = false,
     viewModel: FavouritesViewModel = koinViewModel()
 ) {
@@ -55,21 +51,16 @@ fun Favourites(
 
     FavouritesScreen(
         uiState = if (holdLoading) uiState.copy(screenState = Loading) else uiState,
-        uiEvent = viewModel::handleUiEvent,
-        contentPadding = contentPadding
+        uiEvent = viewModel::handleUiEvent
     )
 }
 
 @Composable
 private fun FavouritesScreen(
     uiState: FavouritesUiState,
-    uiEvent: (FavouritesUiEvent) -> Unit,
-    contentPadding: PaddingValues = PaddingValues()
+    uiEvent: (FavouritesUiEvent) -> Unit
 ) {
-    Scaffold { padding ->
-        val screenModifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
+    ApodScaffold(contentEndPadding = ApodTheme.dimensions.marginMedium) {
         val onAboutClick = { uiEvent(AboutPressed) }
 
         when (val screenState = uiState.screenState) {
@@ -77,18 +68,18 @@ private fun FavouritesScreen(
                 pictures = screenState.pictures,
                 onAboutClick = onAboutClick,
                 onPictureClick = { date -> uiEvent(ItemPressed(date)) },
-                modifier = screenModifier,
-                contentPadding = contentPadding
+                modifier = lazyModifier,
+                contentPadding = lazyContentPadding
             )
 
             Empty -> EmptyScreen(
                 onAboutClick = onAboutClick,
-                modifier = screenModifier.padding(contentPadding)
+                modifier = screenModifier
             )
 
             Loading -> LoadingScreen(
                 onAboutClick = onAboutClick,
-                modifier = screenModifier.padding(contentPadding)
+                modifier = screenModifier
             )
         }
     }

@@ -1,21 +1,14 @@
 package com.wojciechkula.deepskyapp.feature.picture.picturedetails
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wojciechkula.deepskyapp.core.designsystem.ApodScreenPreview
 import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
+import com.wojciechkula.deepskyapp.core.designsystem.component.ApodScaffold
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarHost
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarType
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
@@ -63,53 +56,36 @@ private fun PictureDetailsScreen(
     uiState: PictureDetailsUiState,
     uiEvent: (PictureDetailsUiEvent) -> Unit
 ) {
-    Scaffold { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            val screenModifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-            val layoutDirection = LocalLayoutDirection.current
-            // The bottom inset goes inside the scroll, so content scrolls under the home indicator
-            // instead of being clipped by an empty strip above it.
-            val scrollableModifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = padding.calculateStartPadding(layoutDirection),
-                    top = padding.calculateTopPadding(),
-                    end = padding.calculateEndPadding(layoutDirection)
-                )
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = ApodTheme.dimensions.margin2xLarge)
-            val onBackClick = { uiEvent(BackPressed) }
+    ApodScaffold(contentEndPadding = ApodTheme.dimensions.margin2xLarge) {
+        val onBackClick = { uiEvent(BackPressed) }
 
-            when (val screenState = uiState.screenState) {
-                is Success -> SuccessScreen(
-                    picture = screenState.picture,
-                    uiState = uiState,
-                    onBackClick = onBackClick,
-                    onDeleteConfirmed = { uiEvent(DeleteConfirmedPressed) },
-                    modifier = scrollableModifier
-                )
+        when (val screenState = uiState.screenState) {
+            is Success -> SuccessScreen(
+                picture = screenState.picture,
+                uiState = uiState,
+                onBackClick = onBackClick,
+                onDeleteConfirmed = { uiEvent(DeleteConfirmedPressed) },
+                modifier = scrollableModifier
+            )
 
-                NotFound -> NotFoundScreen(
-                    onBackClick = onBackClick,
-                    modifier = scrollableModifier
-                )
+            NotFound -> NotFoundScreen(
+                onBackClick = onBackClick,
+                modifier = scrollableModifier
+            )
 
-                Loading -> LoadingScreen(
-                    onBackClick = onBackClick,
-                    modifier = screenModifier
-                )
-            }
-
-            Snackbar(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(padding),
-                message = uiState.snackbarMessage,
-                onDismiss = { uiEvent(SnackbarDismissed) }
+            Loading -> LoadingScreen(
+                onBackClick = onBackClick,
+                modifier = screenModifier
             )
         }
+
+        Snackbar(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(padding),
+            message = uiState.snackbarMessage,
+            onDismiss = { uiEvent(SnackbarDismissed) }
+        )
     }
 }
 

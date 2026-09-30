@@ -9,7 +9,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -27,6 +27,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
+import com.wojciechkula.deepskyapp.core.designsystem.layout.LocalBottomOverlaySpace
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.navigation.About as AboutKey
 import com.wojciechkula.deepskyapp.core.navigation.Favourites as FavouritesKey
@@ -66,7 +67,15 @@ internal fun DeepskyNavHost() {
                 rememberSaveableStateHolderNavEntryDecorator(),
                 rememberViewModelStoreNavEntryDecorator()
             ),
-            modifier = Modifier.fillMaxSize(),
+            // Only the three-button bar stays unconsumed, so each screen's Scaffold stops its viewport there
+            // instead of letting content show through the bar's scrim; the rest is bottomContentPadding's.
+            modifier = Modifier
+                .fillMaxSize()
+                .consumeWindowInsets(
+                    WindowInsets.safeDrawing
+                        .exclude(WindowInsets.tappableElement)
+                        .only(WindowInsetsSides.Bottom)
+                ),
             onBack = { backStack.removeLastOrNull() },
             transitionSpec = {
                 slideInHorizontally(
@@ -88,14 +97,13 @@ internal fun DeepskyNavHost() {
             },
             entryProvider = entryProvider {
                 entry<PictureOfTheDayKey> {
-                    UnderFloatingNavigation { contentPadding -> PictureOfTheDay(contentPadding = contentPadding) }
+                    UnderFloatingNavigation { PictureOfTheDay() }
                 }
                 entry<FavouritesKey> {
-                    UnderFloatingNavigation { contentPadding ->
+                    UnderFloatingNavigation {
                         Favourites(
                             onOpenDetails = { date -> backStack.add(PictureDetailsKey(date)) },
                             onOpenAbout = { backStack.add(AboutKey) },
-                            contentPadding = contentPadding,
                             // Not isRunning: that only turns true on the first animation frame, after this composition.
                             isEntering = LocalNavAnimatedContentScope.current.transition.run { currentState != targetState }
                         )
@@ -126,15 +134,6 @@ internal fun DeepskyNavHost() {
 }
 
 @Composable
-private fun UnderFloatingNavigation(content: @Composable (contentPadding: PaddingValues) -> Unit) {
-    Box(
-        // tappableElement stays unconsumed so content stops at the three-button bar instead of showing through its scrim.
-        modifier = Modifier.consumeWindowInsets(
-            WindowInsets.safeDrawing
-                .exclude(WindowInsets.tappableElement)
-                .only(WindowInsetsSides.Bottom)
-        )
-    ) {
-        content(PaddingValues(bottom = ApodTheme.floatingNavigationSpace))
-    }
+private fun UnderFloatingNavigation(content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalBottomOverlaySpace provides ApodTheme.floatingNavigationSpace, content = content)
 }

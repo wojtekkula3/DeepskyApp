@@ -3,8 +3,6 @@ package com.wojciechkula.deepskyapp.feature.favourites.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -12,7 +10,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
 import com.wojciechkula.deepskyapp.core.designsystem.ApodColumnPreview
 import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
@@ -28,14 +25,13 @@ internal fun SuccessScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues()
 ) {
-    val layoutDirection = LocalLayoutDirection.current
     // Horizontal and top margins go into the grid's content padding, not a modifier, so the lazy layout's
     // clip does not cut off the cards' shadows.
     val gridPadding = PaddingValues(
-        start = contentPadding.calculateStartPadding(layoutDirection) + ApodTheme.dimensions.marginMedium,
-        top = contentPadding.calculateTopPadding() + ApodTheme.dimensions.marginSmall,
-        end = contentPadding.calculateEndPadding(layoutDirection) + ApodTheme.dimensions.marginMedium,
-        bottom = contentPadding.calculateBottomPadding() + ApodTheme.dimensions.marginMedium
+        start = ApodTheme.dimensions.marginMedium,
+        top = ApodTheme.dimensions.marginSmall,
+        end = ApodTheme.dimensions.marginMedium,
+        bottom = contentPadding.calculateBottomPadding()
     )
 
     Column(modifier = modifier) {
