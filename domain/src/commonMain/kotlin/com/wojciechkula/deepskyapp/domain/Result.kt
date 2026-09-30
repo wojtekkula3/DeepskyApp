@@ -8,4 +8,5 @@ sealed interface Result<out D> {
     ) : Result<Nothing>
     data class Exception(val throwable: Throwable) : Result<Nothing>
     data object NetworkError : Result<Nothing>
+    data object ServerNotResponding : Result<Nothing>
 }

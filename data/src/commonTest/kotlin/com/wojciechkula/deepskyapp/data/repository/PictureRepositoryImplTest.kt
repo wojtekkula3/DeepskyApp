@@ -9,6 +9,9 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
@@ -130,6 +133,35 @@ class PictureRepositoryImplTest {
     @Test
     fun `maps a connection failure to Result_NetworkError`() = runTest {
         val repository = repository { throw IOException("connection refused") }
+
+        val result = repository.getPictureOfTheDay()
+
+        assertEquals(Result.NetworkError, result)
+    }
+
+    @Test
+    fun `maps a request timeout to Result_ServerNotResponding`() = runTest {
+        val repository = repository { throw HttpRequestTimeoutException("https://api.nasa.gov", 30_000L) }
+
+        val result = repository.getPictureOfTheDay()
+
+        assertEquals(Result.ServerNotResponding, result)
+    }
+
+    @Test
+    fun `maps a socket timeout to Result_ServerNotResponding`() = runTest {
+        val repository = repository { throw SocketTimeoutException("read timed out") }
+
+        val result = repository.getPictureOfTheDay()
+
+        assertEquals(Result.ServerNotResponding, result)
+    }
+
+    @Test
+    fun `maps a connect timeout to Result_NetworkError even though its cause is a socket timeout`() = runTest {
+        val repository = repository {
+            throw ConnectTimeoutException("Connect timeout has expired", SocketTimeoutException("connect timed out"))
+        }
 
         val result = repository.getPictureOfTheDay()
 

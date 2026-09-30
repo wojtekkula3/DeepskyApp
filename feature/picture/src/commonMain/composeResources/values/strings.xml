@@ -4,6 +4,7 @@
     <string name="picture_of_the_day_generic_error">Something went wrong. Please try again.</string>
     <string name="picture_label_copyright">Copyright</string>
     <string name="picture_label_date">Date</string>
+    <string name="picture_of_the_day_server_error">NASA's servers are having problems right now. Please try again in a while.</string>
     <string name="picture_of_the_day_server_unreachable">Could not reach NASA's servers. Check your network connection and try again.</string>
     <string name="picture_of_the_day_try_again">Try again</string>
     <string name="picture_of_the_day_new_picture_in">New picture in: %1$s</string>

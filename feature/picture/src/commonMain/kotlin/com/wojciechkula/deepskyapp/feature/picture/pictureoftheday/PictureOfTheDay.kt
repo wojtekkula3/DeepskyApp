@@ -16,6 +16,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.ServerError
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.ServerUnreachable
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
@@ -32,6 +33,7 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.ui.previewVid
 import com.wojciechkula.deepskyapp.feature.picture.resources.Res
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_no_internet
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_generic_error
+import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_server_error
 import com.wojciechkula.deepskyapp.feature.picture.resources.picture_of_the_day_server_unreachable
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -85,6 +87,12 @@ private fun PictureOfTheDayScreen(
 
             NoInternet -> ErrorScreen(
                 message = stringResource(Res.string.picture_no_internet),
+                onRetry = { uiEvent(RetryPressed) },
+                modifier = scrollableModifier
+            )
+
+            ServerError -> ErrorScreen(
+                message = stringResource(Res.string.picture_of_the_day_server_error),
                 onRetry = { uiEvent(RetryPressed) },
                 modifier = scrollableModifier
             )
@@ -163,6 +171,12 @@ private fun PictureOfTheDayNoInternetPreview() {
 @Composable
 private fun PictureOfTheDayErrorPreview() {
     PictureOfTheDayPreview(uiState = PictureOfTheDayUiState(screenState = Error))
+}
+
+@ScreenLightDarkPreview
+@Composable
+private fun PictureOfTheDayServerErrorPreview() {
+    PictureOfTheDayPreview(uiState = PictureOfTheDayUiState(screenState = ServerError))
 }
 
 @ScreenLightDarkPreview

@@ -29,6 +29,7 @@ import kotlinx.coroutines.isActive
 
 private const val COUNTDOWN_TICK_MILLIS = 1_000
 private val REFRESH_RETRY_INTERVAL = 1.minutes
+private val SERVER_ERROR_CODES = 500..599
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PictureOfTheDayViewModel(
@@ -119,6 +120,10 @@ class PictureOfTheDayViewModel(
 
             // Never surface the raw throwable message: Ktor embeds the full request URL in it, which
             // carries the API key as a query parameter.
+            is Result.HttpError if result.code in SERVER_ERROR_CODES -> PictureOfTheDayScreenState.ServerError
+
+            Result.ServerNotResponding -> PictureOfTheDayScreenState.ServerError
+
             is Result.HttpError, is Result.Exception -> PictureOfTheDayScreenState.Error
 
             Result.NetworkError -> PictureOfTheDayScreenState.ServerUnreachable

@@ -13,6 +13,7 @@ import com.wojciechkula.deepskyapp.feature.picture.FakePictureRepository
 import com.wojciechkula.deepskyapp.feature.picture.sampleApod
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.ServerError
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.ServerUnreachable
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
@@ -133,10 +134,19 @@ class PictureOfTheDayViewModelTest {
     }
 
     @Test
-    fun showsErrorScreenOnHttpError() = runTest(dispatcher) {
-        val vm = buildViewModel(pictureResult = Result.HttpError(500, "boom"))
+    fun showsErrorScreenOnClientHttpError() = runTest(dispatcher) {
+        val vm = buildViewModel(pictureResult = Result.HttpError(429, "Too Many Requests"))
         advanceUntilIdle()
         assertEquals(Error, vm.states.value.screenState)
+    }
+
+    @Test
+    fun showsServerErrorScreenOnServerHttpError() = runTest(dispatcher) {
+        listOf(500, 503, 599).forEach { code ->
+            val vm = buildViewModel(pictureResult = Result.HttpError(code, "boom"))
+            advanceUntilIdle()
+            assertEquals(ServerError, vm.states.value.screenState, "HTTP $code")
+        }
     }
 
     @Test
@@ -144,6 +154,13 @@ class PictureOfTheDayViewModelTest {
         val vm = buildViewModel(pictureResult = Result.Exception(RuntimeException("net down")))
         advanceUntilIdle()
         assertEquals(Error, vm.states.value.screenState)
+    }
+
+    @Test
+    fun showsServerErrorScreenWhenServerIsNotResponding() = runTest(dispatcher) {
+        val vm = buildViewModel(pictureResult = Result.ServerNotResponding)
+        advanceUntilIdle()
+        assertEquals(ServerError, vm.states.value.screenState)
     }
 
     @Test
@@ -304,7 +321,7 @@ class PictureOfTheDayViewModelTest {
             dateFormatter = DateFormatter(clock),
         )
         advanceUntilIdle()
-        assertEquals(Error, vm.states.value.screenState)
+        assertEquals(ServerError, vm.states.value.screenState)
 
         pictureRepo.result = Result.Success(sampleApod)
         vm.handleUiEvent(RetryPressed)

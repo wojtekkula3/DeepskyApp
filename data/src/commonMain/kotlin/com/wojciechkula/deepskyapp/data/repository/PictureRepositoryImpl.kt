@@ -10,6 +10,9 @@ import com.wojciechkula.deepskyapp.domain.Result
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.domain.repository.PictureRepository
 import io.ktor.client.call.body
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.http.isSuccess
 import kotlinx.io.IOException
 
@@ -36,8 +39,20 @@ internal class PictureRepositoryImpl(
             // caller can render, and the engines differ in what they throw (OkHttp wraps, Darwin does not).
         } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
             logger.e(TAG, "APOD request failed: ${throwable.logDescription()}")
-            if (throwable.isConnectionFailure()) Result.NetworkError else Result.Exception(throwable)
+            when {
+                throwable.isServerNotResponding() -> Result.ServerNotResponding
+                throwable.isConnectionFailure() -> Result.NetworkError
+                else -> Result.Exception(throwable)
+            }
         }
 
-    private fun Throwable.isConnectionFailure(): Boolean = generateSequence(this) { it.cause }.any { it is IOException }
+    private fun Throwable.causeChain(): Sequence<Throwable> = generateSequence(this) { it.cause }
+
+    private fun Throwable.isConnectionFailure(): Boolean = causeChain().any { it is IOException }
+
+    // A connected request that got no answer. OkHttp wraps a connect timeout's SocketTimeoutException in a
+    // ConnectTimeoutException, so that one must be ruled out first; Darwin reports every timeout as a socket one.
+    private fun Throwable.isServerNotResponding(): Boolean =
+        causeChain().none { it is ConnectTimeoutException } &&
+            causeChain().any { it is HttpRequestTimeoutException || it is SocketTimeoutException }
 }
