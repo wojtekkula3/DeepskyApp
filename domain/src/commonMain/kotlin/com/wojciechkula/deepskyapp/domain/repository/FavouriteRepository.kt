@@ -8,4 +8,6 @@ interface FavouriteRepository {
     fun isFavourite(date: String): Flow<Boolean>
     suspend fun addFavouritePicture(picture: FavouritePictureModel): Long
     suspend fun deleteFavouritePicture(date: String): Int
+    suspend fun getLegacyFavouritePictures(): List<FavouritePictureModel>
+    suspend fun updateFavouritePicture(picture: FavouritePictureModel): Int
 }

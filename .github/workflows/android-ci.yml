@@ -23,9 +23,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create local.properties
-        run: echo "APOD_API_KEY=${{ secrets.APOD_API_KEY }}" > local.properties
-
       - name: Run Detekt
         run: ./gradlew --no-daemon --build-cache detekt
       - name: Upload Detekt Results
@@ -46,9 +43,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create local.properties
-        run: echo "APOD_API_KEY=${{ secrets.APOD_API_KEY }}" > local.properties
-
       - name: Run Lint
         run: ./gradlew --no-daemon --build-cache ktlint
       - name: Upload Lint Results
@@ -69,9 +63,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create local.properties
-        run: echo "APOD_API_KEY=${{ secrets.APOD_API_KEY }}" > local.properties
-
       # `test` only reaches :androidApp, which holds no tests — every test in this project lives in a
       # KMP module and runs as `testAndroidHostTest`. This is the whole suite on the JVM; the iOS half
       # of the same common code is covered by the `ios-test` job below.
@@ -104,9 +95,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create local.properties
-        run: echo "APOD_API_KEY=${{ secrets.APOD_API_KEY }}" > local.properties
-
       - name: Run Tests
         run: ./gradlew --no-daemon --build-cache iosSimulatorArm64Test
       - name: Upload Test Results
@@ -129,9 +117,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create local.properties
-        run: echo "APOD_API_KEY=${{ secrets.APOD_API_KEY }}" > local.properties
-
       - name: Assemble Debug APK
         run: ./gradlew --no-daemon --build-cache :androidApp:assembleDebug
 

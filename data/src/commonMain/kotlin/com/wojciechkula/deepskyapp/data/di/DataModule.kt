@@ -13,9 +13,9 @@ import org.koin.dsl.module
 // Platform-specific database + DAO (Android needs a Context; iOS does not).
 expect fun platformModule(): Module
 
-fun dataModule(apiKey: String): Module = module {
+val dataModule: Module = module {
     single { createHttpClient(httpClientEngine()) }
-    single { APODApi(client = get(), apiKey = apiKey) }
+    single { APODApi(client = get()) }
     single<PictureRepository> {
         PictureRepositoryImpl(api = get(), dateFormatter = get(), logger = get())
     }

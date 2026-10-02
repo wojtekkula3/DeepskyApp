@@ -147,8 +147,9 @@ private fun FullscreenPictureContent(
     onDismiss: () -> Unit
 ) {
     val zoomState = rememberZoomState()
-    // APOD leaves hdurl out for some entries, and the DTO turns that into a blank string.
-    val sharperUrl = hdUrl.takeIf { it.isNotBlank() && it != url }
+    // Legacy favourites can hold a blank hdurl. An hdurl equal to url still loads: the card decoded it
+    // only at card size.
+    val sharperUrl = hdUrl.takeIf { it.isNotBlank() }
     var isLoading by remember(url, sharperUrl) { mutableStateOf(true) }
     // Without the bitmap's size the zoom bounds are the whole screen, so a panned image could slide off
     // into the letterbox. Both copies share an aspect ratio, so either one's size will do.

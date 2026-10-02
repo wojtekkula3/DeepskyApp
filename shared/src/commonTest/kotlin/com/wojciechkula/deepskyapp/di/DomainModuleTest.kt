@@ -7,6 +7,7 @@ import com.wojciechkula.deepskyapp.domain.interactor.CheckIfPictureIsFavouriteIn
 import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetFavouritePicturesInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetPictureOfTheDayInteractor
+import com.wojciechkula.deepskyapp.domain.interactor.RepairLegacyFavouritesInteractor
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.domain.repository.FavouriteRepository
@@ -19,10 +20,12 @@ import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 private class FakePictureRepository : PictureRepository {
-    override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> =
+    override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> = getPicture("2026-07-10")
+
+    override suspend fun getPicture(date: String): Result<PictureOfTheDayModel> =
         Result.Success(
             PictureOfTheDayModel(
-                date = "2026-07-10",
+                date = date,
                 explanation = "",
                 hdUrl = "",
                 mediaType = "image",
@@ -38,6 +41,8 @@ private class FakeFavouriteRepository : FavouriteRepository {
     override fun isFavourite(date: String): Flow<Boolean> = flowOf(false)
     override suspend fun addFavouritePicture(picture: FavouritePictureModel): Long = 0L
     override suspend fun deleteFavouritePicture(date: String): Int = 0
+    override suspend fun getLegacyFavouritePictures(): List<FavouritePictureModel> = emptyList()
+    override suspend fun updateFavouritePicture(picture: FavouritePictureModel): Int = 0
 }
 
 class DomainModuleTest {
@@ -61,6 +66,7 @@ class DomainModuleTest {
         assertNotNull(koin.get<AddFavouritePictureInteractor>())
         assertNotNull(koin.get<DeleteFavouritePictureInteractor>())
         assertNotNull(koin.get<CheckIfPictureIsFavouriteInteractor>())
+        assertNotNull(koin.get<RepairLegacyFavouritesInteractor>())
 
         koin.close()
     }

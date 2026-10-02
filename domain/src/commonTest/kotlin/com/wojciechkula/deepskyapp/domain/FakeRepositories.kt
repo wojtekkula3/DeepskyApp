@@ -11,7 +11,15 @@ class FakePictureRepository(
     var result: Result<PictureOfTheDayModel> =
         Result.Success(samplePotd()),
 ) : PictureRepository {
+    var resultsByDate: Map<String, Result<PictureOfTheDayModel>> = emptyMap()
+    val requestedDates = mutableListOf<String>()
+
     override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> = result
+
+    override suspend fun getPicture(date: String): Result<PictureOfTheDayModel> {
+        requestedDates += date
+        return resultsByDate[date] ?: result
+    }
 }
 
 class FakeFavouriteRepository : FavouriteRepository {
@@ -35,6 +43,16 @@ class FakeFavouriteRepository : FavouriteRepository {
         val before = favourites.value.size
         favourites.value = favourites.value.filterNot { it.date == date }
         return before - favourites.value.size
+    }
+
+    var legacy: List<FavouritePictureModel> = emptyList()
+    val updated = mutableListOf<FavouritePictureModel>()
+
+    override suspend fun getLegacyFavouritePictures(): List<FavouritePictureModel> = legacy
+
+    override suspend fun updateFavouritePicture(picture: FavouritePictureModel): Int {
+        updated += picture
+        return 1
     }
 }
 

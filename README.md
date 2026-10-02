@@ -46,7 +46,11 @@ None of that code is on the current branches. It is preserved under the git tag
 git checkout 1.2.1
 ```
 
-Users upgrading from 1.2.1 keep their saved favourites — the database is migrated in place.
+The 1.x.x app talks to NASA's legacy `api.nasa.gov/planetary/apod` endpoint, which NASA retired in favour of
+a new feed and takes offline on 2026-12-01 — a build of `1.2.1` no longer shows real pictures.
+
+Users upgrading from 1.2.1 keep their saved favourites — the database is migrated in place, and their
+pictures and descriptions are fetched again from the new feed the first time the app is online.
 
 ---
 
@@ -54,6 +58,8 @@ Users upgrading from 1.2.1 keep their saved favourites — the database is migra
 
 Version 2.0.0 is a complete rewrite. **Everything below describes version 2.x.x** — the Kotlin Multiplatform rewrite that lives on the
 current branches. For the 1.x.x app, see the section above.
+
+Pictures come from NASA's APOD feed at `science.nasa.gov/wp-json/wp/v2/apod-basic`, which needs no API key.
 
 ### 🛠️ Tech stack
 
@@ -98,30 +104,22 @@ iosApp/             # iOS entry point (SwiftUI shell, Xcode project)
 **Requirements:** JDK 21, Android Studio (Android SDK 37); for iOS additionally a Mac with Xcode.
 Minimum Android version is **8.0 (API 26)**.
 
-1. Get a free APOD API key at <https://api.nasa.gov>.
-2. Put it in `local.properties`, in `~/.gradle/gradle.properties`, or in the `APOD_API_KEY`
-   environment variable:
+Build and run:
 
-   ```
-   APOD_API_KEY=your_key_here
-   ```
+```bash
+./gradlew :androidApp:installDebug   # Android: build and install on a connected device
+./gradlew allTests                   # all tests, Android host + iOS simulator
+./gradlew ktlint detekt              # static analysis
+```
 
-3. Build and run:
-
-   ```bash
-   ./gradlew :androidApp:installDebug   # Android: build and install on a connected device
-   ./gradlew allTests                   # all tests, Android host + iOS simulator
-   ./gradlew ktlint detekt              # static analysis
-   ```
-
-   For iOS, open `iosApp/iosApp.xcodeproj` in Xcode and run the `iosApp` scheme.
+For iOS, open `iosApp/iosApp.xcodeproj` in Xcode and run the `iosApp` scheme.
 
 ---
 
 ## 👨‍💻 Author
 
 Implemented by [Wojciech Kula](https://www.linkedin.com/in/wojciechkula/) <br>
-Powered by [NASA APOD](https://apod.nasa.gov/apod/)
+Powered by [NASA APOD](https://science.nasa.gov/apod/)
 
 > **Astronomy Picture of the Day** is originated, written, coordinated and edited since 1995 by Robert
 > Nemiroff and Jerry Bonnell. The APOD archive contains the largest collection of annotated

@@ -5,6 +5,7 @@ import com.wojciechkula.deepskyapp.domain.interactor.CheckIfPictureIsFavouriteIn
 import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetFavouritePicturesInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetPictureOfTheDayInteractor
+import com.wojciechkula.deepskyapp.domain.interactor.RepairLegacyFavouritesInteractor
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -14,4 +15,5 @@ val domainModule: Module = module {
     factory { AddFavouritePictureInteractor(get()) }
     factory { DeleteFavouritePictureInteractor(get()) }
     factory { CheckIfPictureIsFavouriteInteractor(get()) }
+    factory { RepairLegacyFavouritesInteractor(get(), get()) }
 }

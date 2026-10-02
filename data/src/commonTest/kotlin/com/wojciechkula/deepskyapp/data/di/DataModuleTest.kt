@@ -19,6 +19,8 @@ private class FakeFavouritePictureDao : FavouritePictureDao {
     override fun getByDate(date: String): Flow<List<FavouritePictureEntity>> = rows
     override suspend fun add(entity: FavouritePictureEntity): Long = 0L
     override suspend fun delete(date: String): Int = 0
+    override suspend fun getSavedFromOtherService(currentServiceVersion: String): List<FavouritePictureEntity> = emptyList()
+    override suspend fun update(entity: FavouritePictureEntity): Int = 0
 }
 
 private class NoopLogger : Logger {
@@ -32,7 +34,7 @@ class DataModuleTest {
     fun dataModule_resolves_both_repositories() {
         val app = koinApplication {
             modules(
-                dataModule(apiKey = "test-key"),
+                dataModule,
                 module {
                     single<FavouritePictureDao> { FakeFavouritePictureDao() }
                     single { DateFormatter() }

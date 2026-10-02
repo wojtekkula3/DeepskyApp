@@ -11,4 +11,6 @@ class FakeFavouriteRepository : FavouriteRepository {
     override fun isFavourite(date: String): Flow<Boolean> = MutableStateFlow(false)
     override suspend fun addFavouritePicture(picture: FavouritePictureModel): Long = 1L
     override suspend fun deleteFavouritePicture(date: String): Int = 1
+    override suspend fun getLegacyFavouritePictures(): List<FavouritePictureModel> = emptyList()
+    override suspend fun updateFavouritePicture(picture: FavouritePictureModel): Int = 0
 }

@@ -5,4 +5,5 @@ import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 
 interface PictureRepository {
     suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel>
+    suspend fun getPicture(date: String): Result<PictureOfTheDayModel>
 }

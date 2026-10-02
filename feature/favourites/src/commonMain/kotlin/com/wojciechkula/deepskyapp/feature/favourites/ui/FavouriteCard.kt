@@ -90,7 +90,7 @@ internal fun FavouriteCard(
 private fun FavouriteThumbnail(picture: FavouritePictureModel) {
     val kind = mediaKind(picture.mediaType, picture.url)
     // An mp4 resolves through the video-frame fetcher on the singleton loader; an embed URL is a web
-    // page that would never decode, so APOD's own thumbnail stands in for it.
+    // page that would never decode, so the stored thumbnail stands in for it.
     val model = if (kind == MediaKind.VIDEO_EMBED) picture.thumbnailUrl else picture.url
     var isLoading by remember(model) { mutableStateOf(model != null) }
 

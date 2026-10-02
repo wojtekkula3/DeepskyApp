@@ -22,6 +22,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.domain.model.mediaKind
+import com.wojciechkula.deepskyapp.feature.picture.ExplanationText
 import com.wojciechkula.deepskyapp.feature.picture.PictureMedia
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiState
@@ -92,12 +93,9 @@ private fun DetailsCard(
                 label = stringResource(Res.string.picture_label_date),
                 value = picture.date
             )
-            Text(
-                text = picture.explanation,
-                modifier = Modifier.padding(top = ApodTheme.dimensions.marginMedium),
-                style = ApodTheme.typography.bodyMedium,
-                color = ApodTheme.colors.onSurface,
-                textAlign = TextAlign.Justify
+            ExplanationText(
+                explanation = picture.explanation,
+                modifier = Modifier.padding(top = ApodTheme.dimensions.marginMedium)
             )
         }
     }

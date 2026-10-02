@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.wojciechkula.deepskyapp.data.database.entity.FavouritePictureEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -21,4 +22,11 @@ internal interface FavouritePictureDao {
 
     @Query("DELETE FROM favourite_pictures WHERE date = :date")
     suspend fun delete(date: String): Int
+
+    @Query("SELECT * FROM favourite_pictures WHERE serviceVersion != :currentServiceVersion")
+    suspend fun getSavedFromOtherService(currentServiceVersion: String): List<FavouritePictureEntity>
+
+    // An update, unlike the REPLACE insert, cannot bring back a row deleted while it was being refetched.
+    @Update
+    suspend fun update(entity: FavouritePictureEntity): Int
 }

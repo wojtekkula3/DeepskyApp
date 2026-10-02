@@ -12,3 +12,16 @@ data class FavouritePictureModel(
     val title: String,
     val url: String
 )
+
+internal fun PictureOfTheDayModel.toFavourite(id: Long? = null) = FavouritePictureModel(
+    id = id,
+    copyright = copyright,
+    date = date,
+    explanation = explanation,
+    hdUrl = hdUrl,
+    mediaType = mediaType,
+    serviceVersion = serviceVersion,
+    thumbnailUrl = thumbnailUrl,
+    title = title,
+    url = url
+)

@@ -1,6 +1,7 @@
 package com.wojciechkula.deepskyapp.data.repository
 
 import com.wojciechkula.deepskyapp.data.database.dao.FavouritePictureDao
+import com.wojciechkula.deepskyapp.data.mapper.APOD_BASIC_SERVICE_VERSION
 import com.wojciechkula.deepskyapp.data.mapper.toDomain
 import com.wojciechkula.deepskyapp.data.mapper.toEntity
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
@@ -21,4 +22,11 @@ internal class FavouriteRepositoryImpl(private val dao: FavouritePictureDao) : F
 
     override suspend fun deleteFavouritePicture(date: String): Int =
         dao.delete(date)
+
+    // The legacy API's rows (migrated from 1.2.1) carry its service_version, "v1".
+    override suspend fun getLegacyFavouritePictures(): List<FavouritePictureModel> =
+        dao.getSavedFromOtherService(APOD_BASIC_SERVICE_VERSION).map { it.toDomain() }
+
+    override suspend fun updateFavouritePicture(picture: FavouritePictureModel): Int =
+        dao.update(picture.toEntity())
 }

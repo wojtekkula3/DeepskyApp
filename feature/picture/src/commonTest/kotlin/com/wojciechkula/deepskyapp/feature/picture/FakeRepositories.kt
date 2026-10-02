@@ -18,6 +18,8 @@ class FakePictureRepository(
         calls++
         return result
     }
+
+    override suspend fun getPicture(date: String): Result<PictureOfTheDayModel> = result
 }
 
 class FakeFavouriteRepository : FavouriteRepository {
@@ -44,6 +46,10 @@ class FakeFavouriteRepository : FavouriteRepository {
         stored.value = stored.value.filterNot { it.date == date }
         return deleteResult
     }
+
+    override suspend fun getLegacyFavouritePictures(): List<FavouritePictureModel> = emptyList()
+
+    override suspend fun updateFavouritePicture(picture: FavouritePictureModel): Int = 0
 }
 
 val sampleApod = PictureOfTheDayModel(

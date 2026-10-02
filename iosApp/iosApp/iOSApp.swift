@@ -3,11 +3,11 @@ import Shared
 
 @main
 struct iOSApp: App {
-    // Koin has to be running before the first Compose frame resolves a ViewModel. The APOD key is
-    // baked into the shared framework by the :shared generateApodApiKey task, so there is nothing
-    // to pass in here.
+    // Koin has to be running before the first Compose frame resolves a ViewModel, and before the repair resolves
+    // its dependencies.
     init() {
         InitKoin_iosKt.doInitKoin()
+        LegacyFavouritesRepairKt.startLegacyFavouritesRepair()
     }
 
     var body: some Scene {

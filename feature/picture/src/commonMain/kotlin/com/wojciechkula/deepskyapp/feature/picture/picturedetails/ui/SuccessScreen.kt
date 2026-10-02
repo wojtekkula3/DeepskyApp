@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import com.wojciechkula.deepskyapp.core.designsystem.ApodColumnPreview
 import com.wojciechkula.deepskyapp.core.designsystem.LightDarkPreview
 import com.wojciechkula.deepskyapp.core.designsystem.component.BackButton
@@ -28,6 +27,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_calendar
 import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_copyright
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
+import com.wojciechkula.deepskyapp.feature.picture.ExplanationText
 import com.wojciechkula.deepskyapp.feature.picture.PictureMedia
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiState
@@ -125,12 +125,9 @@ private fun DetailsCard(
                 label = stringResource(Res.string.picture_label_date),
                 value = picture.date
             )
-            Text(
-                text = picture.explanation,
-                modifier = Modifier.padding(top = ApodTheme.dimensions.marginMedium),
-                style = ApodTheme.typography.bodyMedium,
-                color = ApodTheme.colors.onSurface,
-                textAlign = TextAlign.Justify
+            ExplanationText(
+                explanation = picture.explanation,
+                modifier = Modifier.padding(top = ApodTheme.dimensions.marginMedium)
             )
         }
     }

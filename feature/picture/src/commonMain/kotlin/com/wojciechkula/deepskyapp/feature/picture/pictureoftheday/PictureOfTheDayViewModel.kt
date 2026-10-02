@@ -118,8 +118,7 @@ class PictureOfTheDayViewModel(
         val newScreenState = when (val result = getPictureOfTheDay()) {
             is Result.Success -> Success(result.data)
 
-            // Never surface the raw throwable message: Ktor embeds the full request URL in it, which
-            // carries the API key as a query parameter.
+            // Never surface the raw throwable message: Ktor embeds the full request URL in it.
             is Result.HttpError if result.code in SERVER_ERROR_CODES -> PictureOfTheDayScreenState.ServerError
 
             Result.ServerNotResponding -> PictureOfTheDayScreenState.ServerError

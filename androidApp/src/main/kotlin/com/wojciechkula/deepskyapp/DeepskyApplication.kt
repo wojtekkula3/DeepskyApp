@@ -3,6 +3,7 @@ package com.wojciechkula.deepskyapp
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.wojciechkula.deepskyapp.di.initKoin
+import com.wojciechkula.deepskyapp.di.startLegacyFavouritesRepair
 import timber.log.Timber
 
 class DeepskyApplication : Application() {
@@ -12,5 +13,6 @@ class DeepskyApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
         initKoin(context = this)
+        startLegacyFavouritesRepair()
     }
 }

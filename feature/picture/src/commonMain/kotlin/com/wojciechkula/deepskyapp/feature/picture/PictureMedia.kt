@@ -45,8 +45,9 @@ private val PlayBadgeSize = 64.dp
 /**
  * Renders an APOD entry's media.
  *
- * [thumbnailUrl] is APOD's own `thumbnail_url`, the only thumbnail source that covers every embed
- * provider; it is null for a direct video file, whose poster comes from an extracted frame instead.
+ * [thumbnailUrl] is an embed's poster — YouTube's thumbnail, or the one the legacy API gave an older
+ * favourite. It is null for other embed providers, which show only the play badge, and for a direct video
+ * file, whose poster comes from an extracted frame instead.
  *
  * [isOffline] decides what a failed load says, because neither player nor image loader reports a cause
  * we could trust: connectivity is asked at the moment of failure instead. [onMediaFailed] lets a caller

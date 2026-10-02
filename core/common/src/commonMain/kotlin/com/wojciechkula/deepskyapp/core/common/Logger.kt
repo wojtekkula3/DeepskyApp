@@ -15,5 +15,5 @@ interface Logger {
     )
 }
 
-/** The type of a failure, without its message: the message can contain the APOD `api_key`. */
+/** The type of a failure, without its message: a Ktor failure's message is the full request URL. */
 fun Throwable.logDescription(): String = this::class.simpleName ?: "Throwable"

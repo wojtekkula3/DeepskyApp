@@ -4,7 +4,7 @@ import com.wojciechkula.deepskyapp.core.common.DateFormatter
 import com.wojciechkula.deepskyapp.core.common.Logger
 import com.wojciechkula.deepskyapp.core.common.logDescription
 import com.wojciechkula.deepskyapp.data.api.APODApi
-import com.wojciechkula.deepskyapp.data.api.dto.PictureOfTheDayDto
+import com.wojciechkula.deepskyapp.data.api.dto.ApodBasicDto
 import com.wojciechkula.deepskyapp.data.mapper.toDomain
 import com.wojciechkula.deepskyapp.domain.Result
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
@@ -14,6 +14,7 @@ import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.http.isSuccess
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.io.IOException
 
 private const val TAG = "PictureRepository"
@@ -24,19 +25,24 @@ internal class PictureRepositoryImpl(
     private val logger: Logger
 ) : PictureRepository {
 
-    override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> =
+    override suspend fun getPictureOfTheDay(): Result<PictureOfTheDayModel> = getPicture(dateFormatter.currentApodDate())
+
+    override suspend fun getPicture(date: String): Result<PictureOfTheDayModel> =
         try {
-            val response = api.getPictureOfTheDay(dateFormatter.currentApodDate())
+            val response = api.getPicture(date)
             if (response.status.isSuccess()) {
-                Result.Success(response.body<PictureOfTheDayDto>().toDomain())
+                Result.Success(response.body<ApodBasicDto>().toDomain())
             } else {
                 // Both failure branches map to the same Error state in the UI, so without a log line a
-                // rejected key is indistinguishable from a dead network.
+                // rejected request is indistinguishable from a dead network.
                 logger.e(TAG, "APOD request failed with HTTP ${response.status.value}")
                 Result.HttpError(response.status.value, response.status.description)
             }
             // Catching Throwable is the point: a repository turns *any* transport failure into a Result the
             // caller can render, and the engines differ in what they throw (OkHttp wraps, Darwin does not).
+            // Cancellation is the exception: swallowing it would keep a cancelled caller running.
+        } catch (cancellation: CancellationException) {
+            throw cancellation
         } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
             logger.e(TAG, "APOD request failed: ${throwable.logDescription()}")
             when {
