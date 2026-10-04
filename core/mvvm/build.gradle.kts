@@ -24,6 +24,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.compose.runtime)
             api(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {

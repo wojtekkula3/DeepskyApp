@@ -62,6 +62,7 @@ internal fun PictureMedia(
     title: String,
     thumbnailUrl: String?,
     isOffline: Boolean,
+    onMediaOpenClick: (OpenedMedia) -> Unit,
     modifier: Modifier = Modifier,
     onMediaFailed: () -> Unit = {}
 ) {
@@ -71,6 +72,7 @@ internal fun PictureMedia(
             hdUrl = hdUrl,
             title = title,
             isOffline = isOffline,
+            onFullscreenClick = { onMediaOpenClick(OpenedMedia.PICTURE) },
             onMediaFailed = onMediaFailed,
             modifier = modifier.fillMaxWidth()
         )
@@ -78,6 +80,7 @@ internal fun PictureMedia(
         MediaKind.VIDEO_FILE -> PlayableVideo(
             url = url,
             isOffline = isOffline,
+            onFullscreenClick = { onMediaOpenClick(OpenedMedia.VIDEO_FILE) },
             onMediaFailed = onMediaFailed,
             modifier = modifier.fillMaxWidth()
         )
@@ -86,6 +89,7 @@ internal fun PictureMedia(
             url = url,
             title = title,
             thumbnailUrl = thumbnailUrl,
+            onClick = { onMediaOpenClick(OpenedMedia.VIDEO_EMBED) },
             modifier = modifier.fillMaxWidth()
         )
 
@@ -105,6 +109,7 @@ private fun EmbeddedVideoPoster(
     url: String,
     title: String,
     thumbnailUrl: String?,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val openUrl = rememberUrlOpener()
@@ -112,6 +117,7 @@ private fun EmbeddedVideoPoster(
 
     Box(
         modifier = modifier.clickable(onClickLabel = stringResource(Res.string.picture_open_video)) {
+            onClick()
             openUrl(url)
         },
         contentAlignment = Alignment.Center
@@ -198,7 +204,8 @@ private fun PictureMediaVideoFilePreview() {
             mediaType = "video",
             title = "Preview clip",
             thumbnailUrl = null,
-            isOffline = false
+            isOffline = false,
+            onMediaOpenClick = {}
         )
     }
 }
@@ -213,7 +220,8 @@ private fun PictureMediaVideoEmbedPreview() {
             mediaType = "video",
             title = "Preview embed",
             thumbnailUrl = null,
-            isOffline = false
+            isOffline = false,
+            onMediaOpenClick = {}
         )
     }
 }
@@ -230,7 +238,8 @@ private fun PictureMediaUnsupportedPreview() {
             mediaType = "other",
             title = "Preview unsupported",
             thumbnailUrl = null,
-            isOffline = false
+            isOffline = false,
+            onMediaOpenClick = {}
         )
     }
 }

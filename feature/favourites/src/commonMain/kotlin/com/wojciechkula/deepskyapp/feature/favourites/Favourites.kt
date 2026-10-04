@@ -12,6 +12,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
 import com.wojciechkula.deepskyapp.core.designsystem.component.ApodScaffold
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
+import com.wojciechkula.deepskyapp.core.mvvm.TrackScreen
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Empty
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesScreenState.Success
@@ -34,6 +35,7 @@ fun Favourites(
     viewModel: FavouritesViewModel = koinViewModel()
 ) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
+    TrackScreen(viewModel)
 
     ActionsEffect(viewModel.actions) { action ->
         when (action) {

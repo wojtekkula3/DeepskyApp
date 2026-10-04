@@ -9,6 +9,7 @@ import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiAction.NavigateBack
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.BackPressed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.DeleteConfirmedPressed
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.MediaOpenPressed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
 import kotlinx.coroutines.flow.map
 
@@ -16,8 +17,9 @@ class PictureDetailsViewModel(
     private val date: String,
     private val getFavouritePictures: GetFavouritePicturesInteractor,
     private val deleteFavouritePicture: DeleteFavouritePictureInteractor,
-    private val networkMonitor: NetworkMonitor
-) : StateActionsViewModel<PictureDetailsUiState, PictureDetailsUiAction>(PictureDetailsUiState()) {
+    private val networkMonitor: NetworkMonitor,
+    private val analyticsHandler: PictureDetailsAnalyticsStateHandler
+) : StateActionsViewModel<PictureDetailsUiState, PictureDetailsUiAction>(PictureDetailsUiState(), analyticsHandler) {
 
     init {
         observeFavouritePicture()
@@ -37,6 +39,7 @@ class PictureDetailsViewModel(
             BackPressed -> action(NavigateBack)
             DeleteConfirmedPressed -> onDeletePressed()
             SnackbarDismissed -> updateState { copy(snackbarMessage = null) }
+            is MediaOpenPressed -> analyticsHandler.onMediaOpenPressed(event.media)
         }
     }
 
@@ -61,6 +64,7 @@ class PictureDetailsViewModel(
     private fun onDeletePressed() = launch {
         try {
             deleteFavouritePicture(date)
+            analyticsHandler.onFavouriteRemoved()
             action(NavigateBack)
         } catch (exception: Exception) {
             updateState { copy(snackbarMessage = PictureDetailsMessage.DeleteFailed) }

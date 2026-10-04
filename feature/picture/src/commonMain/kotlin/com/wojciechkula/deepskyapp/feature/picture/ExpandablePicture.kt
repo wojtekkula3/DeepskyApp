@@ -61,6 +61,7 @@ internal fun ExpandablePicture(
     hdUrl: String,
     title: String,
     isOffline: Boolean,
+    onFullscreenClick: () -> Unit,
     onMediaFailed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -100,7 +101,10 @@ internal fun ExpandablePicture(
         }
         if (!isLoading) {
             EnterFullscreenButton(
-                onClick = { fullscreen = true },
+                onClick = {
+                    fullscreen = true
+                    onFullscreenClick()
+                },
                 modifier = Modifier.align(Alignment.BottomEnd)
             )
         }

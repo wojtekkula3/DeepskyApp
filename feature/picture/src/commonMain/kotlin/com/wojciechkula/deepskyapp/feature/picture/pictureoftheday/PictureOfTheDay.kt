@@ -7,6 +7,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wojciechkula.deepskyapp.core.designsystem.ApodScreenPreview
 import com.wojciechkula.deepskyapp.core.designsystem.ScreenLightDarkPreview
 import com.wojciechkula.deepskyapp.core.designsystem.component.ApodScaffold
+import com.wojciechkula.deepskyapp.core.mvvm.TrackScreen
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
@@ -15,6 +16,7 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaOpenPressed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
@@ -37,6 +39,7 @@ fun PictureOfTheDay(
     viewModel: PictureOfTheDayViewModel = koinViewModel()
 ) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
+    TrackScreen(viewModel)
 
     LifecycleResumeEffect(Unit) {
         viewModel.handleUiEvent(Resumed)
@@ -60,6 +63,7 @@ private fun PictureOfTheDayScreen(
                 picture = screenState.picture,
                 uiState = uiState,
                 onFavouriteClick = { uiEvent(FavouritePressed) },
+                onMediaOpenClick = { media -> uiEvent(MediaOpenPressed(media)) },
                 onMediaFailed = { uiEvent(MediaFailed) },
                 modifier = scrollableModifier
             )

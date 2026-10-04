@@ -82,6 +82,7 @@ private val SeekIconSize = 32.dp
 internal fun PlayableVideo(
     url: String,
     isOffline: Boolean,
+    onFullscreenClick: () -> Unit,
     onMediaFailed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -138,7 +139,10 @@ internal fun PlayableVideo(
     } else {
         VideoCard(
             state = state,
-            onEnterFullscreen = { fullscreen = true },
+            onEnterFullscreen = {
+                fullscreen = true
+                onFullscreenClick()
+            },
             modifier = modifier
         )
     }

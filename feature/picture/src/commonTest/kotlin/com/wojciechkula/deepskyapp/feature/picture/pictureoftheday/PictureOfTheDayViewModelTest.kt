@@ -7,9 +7,13 @@ import com.wojciechkula.deepskyapp.domain.interactor.CheckIfPictureIsFavouriteIn
 import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetPictureOfTheDayInteractor
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
+import com.wojciechkula.deepskyapp.feature.picture.FakeAnalytics
 import com.wojciechkula.deepskyapp.feature.picture.FakeFavouriteRepository
 import com.wojciechkula.deepskyapp.feature.picture.FakeNetworkMonitor
 import com.wojciechkula.deepskyapp.feature.picture.FakePictureRepository
+import com.wojciechkula.deepskyapp.feature.picture.LoggedEvent
+import com.wojciechkula.deepskyapp.feature.picture.LoggedScreenView
+import com.wojciechkula.deepskyapp.feature.picture.OpenedMedia
 import com.wojciechkula.deepskyapp.feature.picture.sampleApod
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Error
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.NoInternet
@@ -21,6 +25,7 @@ import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheD
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaOpenPressed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -46,6 +51,7 @@ import kotlin.time.Instant
 class PictureOfTheDayViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
+    private val analytics = FakeAnalytics()
 
     @BeforeTest fun setUp() { Dispatchers.setMain(dispatcher) }
     @AfterTest fun tearDown() { Dispatchers.resetMain() }
@@ -69,6 +75,7 @@ class PictureOfTheDayViewModelTest {
             networkMonitor = networkMonitor,
             clock = clock,
             dateFormatter = DateFormatter(clock),
+            analyticsHandler = PictureOfTheDayAnalyticsStateHandler(analytics),
         )
     }
 
@@ -318,7 +325,7 @@ class PictureOfTheDayViewModelTest {
             deleteFavouritePicture = DeleteFavouritePictureInteractor(FakeFavouriteRepository()),
             networkMonitor = FakeNetworkMonitor(initial = true),
             clock = clock,
-            dateFormatter = DateFormatter(clock),
+            dateFormatter = DateFormatter(clock),            analyticsHandler = PictureOfTheDayAnalyticsStateHandler(analytics),
         )
         advanceUntilIdle()
         assertEquals(ServerError, vm.states.value.screenState)
@@ -369,5 +376,85 @@ class PictureOfTheDayViewModelTest {
         advanceUntilIdle()
 
         assertTrue(favouriteRepo.stored.value.isEmpty())
+    }
+
+    @Test
+    fun loadedPictureLogsItsScreenView() = runTest(dispatcher) {
+        buildViewModel()
+        advanceUntilIdle()
+
+        assertEquals(listOf(LoggedScreenView("picture_of_the_day", "PictureOfTheDay")), analytics.screenViews)
+    }
+
+    @Test
+    fun failedLoadLogsTheErrorScreenView() = runTest(dispatcher) {
+        buildViewModel(pictureResult = Result.NetworkError)
+        advanceUntilIdle()
+
+        assertEquals(
+            listOf(LoggedScreenView("picture_of_the_day_server_unreachable", "PictureOfTheDay")),
+            analytics.screenViews,
+        )
+    }
+
+    @Test
+    fun removingAFavouriteLogsFavouriteRemovedButAddingDoesNot() = runTest(dispatcher) {
+        val vm = buildViewModel()
+        advanceUntilIdle()
+
+        vm.handleUiEvent(FavouritePressed)
+        advanceUntilIdle()
+        assertTrue(analytics.events.isEmpty())
+
+        vm.handleUiEvent(FavouritePressed)
+        advanceUntilIdle()
+        assertEquals(
+            listOf(LoggedEvent("favourite_removed", mapOf("source" to "picture_of_the_day"))),
+            analytics.events,
+        )
+    }
+
+    @Test
+    fun failedRemovalLogsNothing() = runTest(dispatcher) {
+        val favouriteRepo = FakeFavouriteRepository()
+        AddFavouritePictureInteractor(favouriteRepo)(sampleApod)
+        favouriteRepo.throwOnDelete = true
+        val vm = buildViewModel(favouriteRepo = favouriteRepo)
+        advanceUntilIdle()
+
+        vm.handleUiEvent(FavouritePressed)
+        advanceUntilIdle()
+
+        assertTrue(analytics.events.isEmpty())
+    }
+
+    @Test
+    fun openingThePictureLogsPictureZoomClicked() = runTest(dispatcher) {
+        val vm = buildViewModel()
+        advanceUntilIdle()
+
+        vm.handleUiEvent(MediaOpenPressed(OpenedMedia.PICTURE))
+
+        assertEquals(
+            listOf(LoggedEvent("picture_zoom_clicked", mapOf("source" to "picture_of_the_day"))),
+            analytics.events,
+        )
+    }
+
+    @Test
+    fun openingAVideoLogsVideoOpenClickedWithItsType() = runTest(dispatcher) {
+        val vm = buildViewModel()
+        advanceUntilIdle()
+
+        vm.handleUiEvent(MediaOpenPressed(OpenedMedia.VIDEO_FILE))
+        vm.handleUiEvent(MediaOpenPressed(OpenedMedia.VIDEO_EMBED))
+
+        assertEquals(
+            listOf(
+                LoggedEvent("video_open_clicked", mapOf("source" to "picture_of_the_day", "video_type" to "file")),
+                LoggedEvent("video_open_clicked", mapOf("source" to "picture_of_the_day", "video_type" to "embed")),
+            ),
+            analytics.events,
+        )
     }
 }

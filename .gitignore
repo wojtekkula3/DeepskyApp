@@ -23,3 +23,6 @@ node_modules/
 
 # Claude-generated specs/plans/progress — kept local, not committed
 docs/superpowers/
+
+# Firebase config — CI restores it from the GOOGLE_SERVICES_JSON secret
+androidApp/google-services.json

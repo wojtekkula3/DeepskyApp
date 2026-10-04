@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -27,6 +28,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
+import com.wojciechkula.deepskyapp.core.common.Analytics
 import com.wojciechkula.deepskyapp.core.designsystem.layout.LocalBottomOverlaySpace
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.navigation.About as AboutKey
@@ -38,6 +40,7 @@ import com.wojciechkula.deepskyapp.feature.about.About
 import com.wojciechkula.deepskyapp.feature.favourites.Favourites
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetails
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDay
+import org.koin.compose.koinInject
 
 @Suppress("ktlint:standard:property-naming")
 private const val TransitionDurationMillis = 500
@@ -47,8 +50,13 @@ private const val TransitionDurationMillis = 500
  * they take navigation as lambdas, so only this module knows the keys.
  */
 @Composable
-internal fun DeepskyNavHost() {
+internal fun DeepskyNavHost(analytics: Analytics = koinInject()) {
     val backStack = rememberNavBackStack(NavKeySavedStateConfiguration, PictureOfTheDayKey)
+    val currentKey = backStack.lastOrNull()
+
+    LaunchedEffect(currentKey) {
+        currentKey?.screenInfo()?.let { analytics.logScreenView(it.screenName, it.screenClass) }
+    }
 
     // Not Scaffold's bottomBar: that slot lays the screen out above the card, so nothing draws behind it.
     Box(

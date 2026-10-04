@@ -28,6 +28,7 @@ import com.wojciechkula.deepskyapp.core.designsystem.resources.ic_copyright
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
 import com.wojciechkula.deepskyapp.feature.picture.ExplanationText
+import com.wojciechkula.deepskyapp.feature.picture.OpenedMedia
 import com.wojciechkula.deepskyapp.feature.picture.PictureMedia
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiState
@@ -49,6 +50,7 @@ internal fun SuccessScreen(
     uiState: PictureDetailsUiState,
     onBackClick: () -> Unit,
     onDeleteConfirmed: () -> Unit,
+    onMediaOpenClick: (OpenedMedia) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -59,7 +61,7 @@ internal fun SuccessScreen(
             navigationIcon = { BackButton(onClick = onBackClick) }
         )
         Spacer(modifier = Modifier.height(ApodTheme.dimensions.marginSmall))
-        MediaCard(picture, uiState)
+        MediaCard(picture, uiState, onMediaOpenClick)
         DetailsCard(picture, onFavouriteClick = { showDeleteDialog = true })
     }
 
@@ -77,7 +79,8 @@ internal fun SuccessScreen(
 @Composable
 private fun MediaCard(
     picture: FavouritePictureModel,
-    uiState: PictureDetailsUiState
+    uiState: PictureDetailsUiState,
+    onMediaOpenClick: (OpenedMedia) -> Unit
 ) {
     ContentCard {
         // No onMediaFailed here on purpose: a favourite's text comes from the database and stays
@@ -88,7 +91,8 @@ private fun MediaCard(
             mediaType = picture.mediaType,
             title = picture.title,
             thumbnailUrl = picture.thumbnailUrl,
-            isOffline = uiState.isOffline
+            isOffline = uiState.isOffline,
+            onMediaOpenClick = onMediaOpenClick
         )
     }
 }
@@ -167,7 +171,8 @@ private fun SuccessScreenPreview(picture: FavouritePictureModel) = ApodColumnPre
         picture = picture,
         uiState = PictureDetailsUiState(screenState = PictureDetailsScreenState.Success(picture)),
         onBackClick = {},
-        onDeleteConfirmed = {}
+        onDeleteConfirmed = {},
+        onMediaOpenClick = {}
     )
 }
 

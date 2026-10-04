@@ -13,12 +13,14 @@ import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarHost
 import com.wojciechkula.deepskyapp.core.designsystem.component.TopSnackbarType
 import com.wojciechkula.deepskyapp.core.designsystem.theme.ApodTheme
 import com.wojciechkula.deepskyapp.core.mvvm.ActionsEffect
+import com.wojciechkula.deepskyapp.core.mvvm.TrackScreen
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Loading
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.NotFound
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiAction.NavigateBack
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.BackPressed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.DeleteConfirmedPressed
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.MediaOpenPressed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.ui.LoadingScreen
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.ui.NotFoundScreen
@@ -38,6 +40,7 @@ fun PictureDetails(
     viewModel: PictureDetailsViewModel = koinViewModel { parametersOf(date) }
 ) {
     val uiState by viewModel.states.collectAsStateWithLifecycle()
+    TrackScreen(viewModel)
 
     ActionsEffect(viewModel.actions) { action ->
         when (action) {
@@ -65,6 +68,7 @@ private fun PictureDetailsScreen(
                 uiState = uiState,
                 onBackClick = onBackClick,
                 onDeleteConfirmed = { uiEvent(DeleteConfirmedPressed) },
+                onMediaOpenClick = { media -> uiEvent(MediaOpenPressed(media)) },
                 modifier = scrollableModifier
             )
 

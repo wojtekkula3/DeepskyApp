@@ -11,6 +11,7 @@ import com.wojciechkula.deepskyapp.domain.interactor.GetPictureOfTheDayInteracto
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.FavouritePressed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaFailed
+import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.MediaOpenPressed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Paused
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.Resumed
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiEvent.RetryPressed
@@ -39,8 +40,9 @@ class PictureOfTheDayViewModel(
     private val deleteFavouritePicture: DeleteFavouritePictureInteractor,
     private val networkMonitor: NetworkMonitor,
     private val clock: Clock,
-    private val dateFormatter: DateFormatter
-) : StateActionsViewModel<PictureOfTheDayUiState, Nothing>(PictureOfTheDayUiState()) {
+    private val dateFormatter: DateFormatter,
+    private val analyticsHandler: PictureOfTheDayAnalyticsStateHandler
+) : StateActionsViewModel<PictureOfTheDayUiState, Nothing>(PictureOfTheDayUiState(), analyticsHandler) {
 
     private var resumed = false
     private var countdownJob: Job? = null
@@ -96,6 +98,8 @@ class PictureOfTheDayViewModel(
             MediaFailed -> onMediaFailed()
 
             RetryPressed -> onRetryPressed()
+
+            is MediaOpenPressed -> analyticsHandler.onMediaOpenPressed(event.media)
         }
     }
 
@@ -171,6 +175,7 @@ class PictureOfTheDayViewModel(
             try {
                 if (currentState.isFavourite) {
                     deleteFavouritePicture(picture.date)
+                    analyticsHandler.onFavouriteRemoved()
                 } else {
                     addFavouritePicture(picture)
                 }

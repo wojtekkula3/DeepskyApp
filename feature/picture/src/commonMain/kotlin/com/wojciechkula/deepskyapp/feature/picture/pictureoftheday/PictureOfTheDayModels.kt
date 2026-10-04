@@ -1,6 +1,7 @@
 package com.wojciechkula.deepskyapp.feature.picture.pictureoftheday
 
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
+import com.wojciechkula.deepskyapp.feature.picture.OpenedMedia
 
 data class PictureOfTheDayUiState(
     val screenState: PictureOfTheDayScreenState = PictureOfTheDayScreenState.Loading,
@@ -26,4 +27,5 @@ sealed interface PictureOfTheDayUiEvent {
     data object Paused : PictureOfTheDayUiEvent
     data object Resumed : PictureOfTheDayUiEvent
     data object RetryPressed : PictureOfTheDayUiEvent
+    data class MediaOpenPressed(val media: OpenedMedia) : PictureOfTheDayUiEvent
 }

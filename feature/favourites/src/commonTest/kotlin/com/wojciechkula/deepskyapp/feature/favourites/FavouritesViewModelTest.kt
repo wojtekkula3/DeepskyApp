@@ -27,6 +27,7 @@ import kotlin.test.assertIs
 class FavouritesViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
+    private val analytics = FakeAnalytics()
 
     @BeforeTest fun setUp() { Dispatchers.setMain(dispatcher) }
     @AfterTest fun tearDown() { Dispatchers.resetMain() }
@@ -41,7 +42,7 @@ class FavouritesViewModelTest {
         val repo = FakeFavouriteRepository().apply {
             stored.value = listOf(picture("2026-07-08"), picture("2026-07-10"), picture("2026-07-09"))
         }
-        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo))
+        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo), FavouritesAnalyticsStateHandler(analytics))
         advanceUntilIdle()
         val screenState = vm.states.value.screenState
         assertIs<Success>(screenState)
@@ -51,7 +52,7 @@ class FavouritesViewModelTest {
     @Test
     fun showsEmptyWhenNoFavourites() = runTest(dispatcher) {
         val repo = FakeFavouriteRepository()
-        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo))
+        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo), FavouritesAnalyticsStateHandler(analytics))
         advanceUntilIdle()
         assertEquals(Empty, vm.states.value.screenState)
     }
@@ -59,7 +60,7 @@ class FavouritesViewModelTest {
     @Test
     fun pictureClickedEmitsOpenDetails() = runTest(dispatcher) {
         val repo = FakeFavouriteRepository().apply { stored.value = listOf(picture("2026-07-10")) }
-        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo))
+        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo), FavouritesAnalyticsStateHandler(analytics))
         advanceUntilIdle()
 
         val action = async { vm.actions.first() }
@@ -72,7 +73,7 @@ class FavouritesViewModelTest {
     @Test
     fun aboutClickedEmitsOpenAbout() = runTest(dispatcher) {
         val repo = FakeFavouriteRepository()
-        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo))
+        val vm = FavouritesViewModel(GetFavouritePicturesInteractor(repo), FavouritesAnalyticsStateHandler(analytics))
         advanceUntilIdle()
 
         val action = async { vm.actions.first() }
@@ -80,5 +81,29 @@ class FavouritesViewModelTest {
         advanceUntilIdle()
 
         assertEquals(OpenAbout, action.await())
+    }
+
+    @Test
+    fun loadedListLogsItsScreenView() = runTest(dispatcher) {
+        val repo = FakeFavouriteRepository().apply { stored.value = listOf(picture("2026-07-10")) }
+        FavouritesViewModel(GetFavouritePicturesInteractor(repo), FavouritesAnalyticsStateHandler(analytics))
+        advanceUntilIdle()
+
+        assertEquals(listOf(LoggedScreenView("favourites", "Favourites")), analytics.screenViews)
+    }
+
+    @Test
+    fun removingTheLastFavouriteLogsTheEmptyScreenView() = runTest(dispatcher) {
+        val repo = FakeFavouriteRepository().apply { stored.value = listOf(picture("2026-07-10")) }
+        FavouritesViewModel(GetFavouritePicturesInteractor(repo), FavouritesAnalyticsStateHandler(analytics))
+        advanceUntilIdle()
+
+        repo.stored.value = emptyList()
+        advanceUntilIdle()
+
+        assertEquals(
+            listOf(LoggedScreenView("favourites", "Favourites"), LoggedScreenView("favourites_empty", "Favourites")),
+            analytics.screenViews,
+        )
     }
 }

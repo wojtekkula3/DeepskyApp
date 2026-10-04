@@ -23,6 +23,7 @@ import com.wojciechkula.deepskyapp.domain.model.MediaKind
 import com.wojciechkula.deepskyapp.domain.model.PictureOfTheDayModel
 import com.wojciechkula.deepskyapp.domain.model.mediaKind
 import com.wojciechkula.deepskyapp.feature.picture.ExplanationText
+import com.wojciechkula.deepskyapp.feature.picture.OpenedMedia
 import com.wojciechkula.deepskyapp.feature.picture.PictureMedia
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayScreenState
 import com.wojciechkula.deepskyapp.feature.picture.pictureoftheday.PictureOfTheDayUiState
@@ -41,12 +42,13 @@ internal fun SuccessScreen(
     picture: PictureOfTheDayModel,
     uiState: PictureOfTheDayUiState,
     onFavouriteClick: () -> Unit,
+    onMediaOpenClick: (OpenedMedia) -> Unit,
     onMediaFailed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         ScreenTitleBar(title = stringResource(Res.string.picture_of_the_day_title))
-        MediaCard(picture, uiState, onMediaFailed)
+        MediaCard(picture, uiState, onMediaOpenClick, onMediaFailed)
         DetailsCard(picture, uiState, onFavouriteClick)
         if (uiState.timeToNewPicture.isNotEmpty()) {
             Timer(uiState)
@@ -105,6 +107,7 @@ private fun DetailsCard(
 private fun MediaCard(
     picture: PictureOfTheDayModel,
     uiState: PictureOfTheDayUiState,
+    onMediaOpenClick: (OpenedMedia) -> Unit,
     onMediaFailed: () -> Unit
 ) {
     ContentCard {
@@ -115,6 +118,7 @@ private fun MediaCard(
             title = picture.title,
             thumbnailUrl = picture.thumbnailUrl,
             isOffline = uiState.isOffline,
+            onMediaOpenClick = onMediaOpenClick,
             onMediaFailed = onMediaFailed
         )
     }
@@ -149,6 +153,7 @@ private fun SuccessScreenPreview(isFavourite: Boolean) = ApodColumnPreview(
             timeToNewPicture = "8h 0min 0s"
         ),
         onFavouriteClick = {},
+        onMediaOpenClick = {},
         onMediaFailed = {}
     )
 }

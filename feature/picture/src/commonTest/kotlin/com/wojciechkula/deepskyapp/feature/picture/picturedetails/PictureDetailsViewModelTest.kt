@@ -3,13 +3,18 @@ package com.wojciechkula.deepskyapp.feature.picture.picturedetails
 import com.wojciechkula.deepskyapp.domain.interactor.DeleteFavouritePictureInteractor
 import com.wojciechkula.deepskyapp.domain.interactor.GetFavouritePicturesInteractor
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
+import com.wojciechkula.deepskyapp.feature.picture.FakeAnalytics
 import com.wojciechkula.deepskyapp.feature.picture.FakeFavouriteRepository
 import com.wojciechkula.deepskyapp.feature.picture.FakeNetworkMonitor
+import com.wojciechkula.deepskyapp.feature.picture.LoggedEvent
+import com.wojciechkula.deepskyapp.feature.picture.LoggedScreenView
+import com.wojciechkula.deepskyapp.feature.picture.OpenedMedia
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsScreenState.Success
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiAction.NavigateBack
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.BackPressed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.DeleteConfirmedPressed
 import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.SnackbarDismissed
+import com.wojciechkula.deepskyapp.feature.picture.picturedetails.PictureDetailsUiEvent.MediaOpenPressed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -33,6 +38,7 @@ import kotlin.test.assertTrue
 class PictureDetailsViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
+    private val analytics = FakeAnalytics()
 
     @BeforeTest fun setUp() { Dispatchers.setMain(dispatcher) }
     @AfterTest fun tearDown() { Dispatchers.resetMain() }
@@ -51,6 +57,7 @@ class PictureDetailsViewModelTest {
             getFavouritePictures = GetFavouritePicturesInteractor(repo),
             deleteFavouritePicture = DeleteFavouritePictureInteractor(repo),
             networkMonitor = networkMonitor,
+            analyticsHandler = PictureDetailsAnalyticsStateHandler(analytics),
         )
 
     @Test
@@ -144,5 +151,70 @@ class PictureDetailsViewModelTest {
         advanceUntilIdle()
 
         assertEquals(NavigateBack, action.await())
+    }
+
+    @Test
+    fun loadedFavouriteLogsItsScreenView() = runTest(dispatcher) {
+        buildViewModel(FakeFavouriteRepository().apply { stored.value = listOf(saved) })
+        advanceUntilIdle()
+
+        assertEquals(listOf(LoggedScreenView("picture_details", "PictureDetails")), analytics.screenViews)
+    }
+
+    @Test
+    fun missingFavouriteLogsTheNotFoundScreenView() = runTest(dispatcher) {
+        buildViewModel(FakeFavouriteRepository())
+        advanceUntilIdle()
+
+        assertEquals(listOf(LoggedScreenView("picture_details_not_found", "PictureDetails")), analytics.screenViews)
+    }
+
+    @Test
+    fun deleteConfirmedLogsFavouriteRemoved() = runTest(dispatcher) {
+        val vm = buildViewModel(FakeFavouriteRepository().apply { stored.value = listOf(saved) })
+        advanceUntilIdle()
+
+        vm.handleUiEvent(DeleteConfirmedPressed)
+        advanceUntilIdle()
+
+        assertEquals(listOf(LoggedEvent("favourite_removed", mapOf("source" to "picture_details"))), analytics.events)
+    }
+
+    @Test
+    fun failedDeleteLogsNothing() = runTest(dispatcher) {
+        val repo = FakeFavouriteRepository().apply {
+            stored.value = listOf(saved)
+            throwOnDelete = true
+        }
+        val vm = buildViewModel(repo)
+        advanceUntilIdle()
+
+        vm.handleUiEvent(DeleteConfirmedPressed)
+        advanceUntilIdle()
+
+        assertTrue(analytics.events.isEmpty())
+    }
+
+    @Test
+    fun openingThePictureLogsPictureZoomClicked() = runTest(dispatcher) {
+        val vm = buildViewModel(FakeFavouriteRepository().apply { stored.value = listOf(saved) })
+        advanceUntilIdle()
+
+        vm.handleUiEvent(MediaOpenPressed(OpenedMedia.PICTURE))
+
+        assertEquals(listOf(LoggedEvent("picture_zoom_clicked", mapOf("source" to "picture_details"))), analytics.events)
+    }
+
+    @Test
+    fun openingAVideoLogsVideoOpenClickedWithItsType() = runTest(dispatcher) {
+        val vm = buildViewModel(FakeFavouriteRepository().apply { stored.value = listOf(saved) })
+        advanceUntilIdle()
+
+        vm.handleUiEvent(MediaOpenPressed(OpenedMedia.VIDEO_EMBED))
+
+        assertEquals(
+            listOf(LoggedEvent("video_open_clicked", mapOf("source" to "picture_details", "video_type" to "embed"))),
+            analytics.events,
+        )
     }
 }

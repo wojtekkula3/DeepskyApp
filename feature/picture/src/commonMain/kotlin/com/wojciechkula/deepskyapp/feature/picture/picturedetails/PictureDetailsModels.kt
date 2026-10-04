@@ -1,6 +1,7 @@
 package com.wojciechkula.deepskyapp.feature.picture.picturedetails
 
 import com.wojciechkula.deepskyapp.domain.model.FavouritePictureModel
+import com.wojciechkula.deepskyapp.feature.picture.OpenedMedia
 
 data class PictureDetailsUiState(
     val screenState: PictureDetailsScreenState = PictureDetailsScreenState.Loading,
@@ -22,6 +23,7 @@ sealed interface PictureDetailsUiEvent {
     data object BackPressed : PictureDetailsUiEvent
     data object DeleteConfirmedPressed : PictureDetailsUiEvent
     data object SnackbarDismissed : PictureDetailsUiEvent
+    data class MediaOpenPressed(val media: OpenedMedia) : PictureDetailsUiEvent
 }
 
 sealed interface PictureDetailsUiAction {

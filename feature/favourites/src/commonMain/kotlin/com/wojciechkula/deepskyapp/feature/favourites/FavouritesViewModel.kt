@@ -9,8 +9,10 @@ import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiAction.OpenDet
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.AboutPressed
 import com.wojciechkula.deepskyapp.feature.favourites.FavouritesUiEvent.ItemPressed
 
-class FavouritesViewModel(private val getFavouritePictures: GetFavouritePicturesInteractor) :
-    StateActionsViewModel<FavouritesUiState, FavouritesUiAction>(FavouritesUiState()) {
+class FavouritesViewModel(
+    private val getFavouritePictures: GetFavouritePicturesInteractor,
+    analyticsHandler: FavouritesAnalyticsStateHandler
+) : StateActionsViewModel<FavouritesUiState, FavouritesUiAction>(FavouritesUiState(), analyticsHandler) {
 
     init {
         observeFavouritePictures()

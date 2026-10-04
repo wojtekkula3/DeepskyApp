@@ -18,9 +18,13 @@ import kotlinx.coroutines.launch
  * one-shot [Action]s (navigation / side effects) via [actions]. Screens send user intents through a
  * screen-specific `handleUiEvent` function declared by each subclass.
  *
- * Use [Nothing] as [Action] for screens that have no one-shot actions.
+ * Use [Nothing] as [Action] for screens that have no one-shot actions. An [analyticsStateHandler] is
+ * fed every state and logs the screen's `screen_view` whenever its mapped name changes.
  */
-abstract class StateActionsViewModel<State, Action>(initialState: State) : ViewModel() {
+abstract class StateActionsViewModel<State, Action>(
+    initialState: State,
+    private val analyticsStateHandler: AnalyticsStateHandler<State>? = null
+) : ViewModel() {
 
     private val _states = MutableStateFlow(initialState)
     val states: StateFlow<State> = _states.asStateFlow()
@@ -29,6 +33,22 @@ abstract class StateActionsViewModel<State, Action>(initialState: State) : ViewM
     val actions: Flow<Action> = _actions.receiveAsFlow()
 
     protected val currentState: State get() = _states.value
+
+    init {
+        analyticsStateHandler?.let { handler ->
+            launch { states.collect(handler::onStateChanged) }
+        }
+    }
+
+    /** Re-logs the current `screen_view` when the screen is shown again; called by [TrackScreen]. */
+    fun onScreenDisplayed() {
+        analyticsStateHandler?.onScreenDisplayed(currentState)
+    }
+
+    /** Stops logging state changes until the screen is shown again; called by [TrackScreen]. */
+    fun onScreenHidden() {
+        analyticsStateHandler?.onScreenHidden()
+    }
 
     protected fun updateState(reducer: State.() -> State) {
         _states.update(reducer)
