@@ -4,7 +4,11 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.googleServices)
+}
+
+// google-services.json is git-ignored, so a clone of the public repository builds without analytics.
+if (file("google-services.json").exists()) {
+    apply(plugin = libs.plugins.googleServices.get().pluginId)
 }
 
 kotlin {

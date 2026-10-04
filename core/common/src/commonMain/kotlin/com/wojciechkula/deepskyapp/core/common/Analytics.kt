@@ -18,3 +18,16 @@ interface Analytics {
         parameters: Map<String, String> = emptyMap()
     )
 }
+
+/** Logs nothing: iOS has no Firebase yet, and an Android build without google-services.json has no Firebase app. */
+class NoOpAnalytics : Analytics {
+    override fun logScreenView(
+        screenName: String,
+        screenClass: String
+    ) = Unit
+
+    override fun logEvent(
+        name: String,
+        parameters: Map<String, String>
+    ) = Unit
+}

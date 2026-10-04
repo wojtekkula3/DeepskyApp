@@ -114,6 +114,9 @@ Build and run:
 
 For iOS, open `iosApp/iosApp.xcodeproj` in Xcode and run the `iosApp` scheme.
 
+The Android app reports usage to Firebase Analytics only when `androidApp/google-services.json` is present.
+That file is not in the repository, so a clone builds and runs normally with analytics turned off.
+
 ---
 
 ## 👨‍💻 Author

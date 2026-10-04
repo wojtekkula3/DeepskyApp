@@ -3,9 +3,9 @@ package com.wojciechkula.deepskyapp.data.di
 import com.wojciechkula.deepskyapp.core.common.Analytics
 import com.wojciechkula.deepskyapp.core.common.AndroidLogger
 import com.wojciechkula.deepskyapp.core.common.AndroidNetworkMonitor
-import com.wojciechkula.deepskyapp.core.common.FirebaseAnalyticsTracker
 import com.wojciechkula.deepskyapp.core.common.Logger
 import com.wojciechkula.deepskyapp.core.common.NetworkMonitor
+import com.wojciechkula.deepskyapp.core.common.androidAnalytics
 import com.wojciechkula.deepskyapp.data.database.APODLocalDatabase
 import com.wojciechkula.deepskyapp.data.database.buildAPODDatabase
 import com.wojciechkula.deepskyapp.data.database.getDatabaseBuilder
@@ -17,6 +17,6 @@ actual fun platformModule(): Module = module {
     single { buildAPODDatabase(getDatabaseBuilder(androidContext())) }
     single { get<APODLocalDatabase>().favouritePictureDao() }
     single<NetworkMonitor> { AndroidNetworkMonitor(androidContext()) }
-    single<Analytics> { FirebaseAnalyticsTracker() }
+    single<Analytics> { androidAnalytics(androidContext()) }
     single<Logger> { AndroidLogger() }
 }
