@@ -35,7 +35,7 @@ android {
         applicationId = "com.wojciechkula.deepskyapp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 14
+        versionCode = 15
         versionName = "2.0.1"
     }
     packaging {

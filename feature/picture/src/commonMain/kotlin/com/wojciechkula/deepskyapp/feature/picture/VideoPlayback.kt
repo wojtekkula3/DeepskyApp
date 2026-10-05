@@ -181,6 +181,7 @@ private fun FullscreenVideo(
         onDismissRequest = onDismiss,
         properties = fullscreenDialogProperties()
     ) {
+        LightNavigationBarIcons()
         FullscreenVideoContent(
             state = state,
             onTogglePlayback = onTogglePlayback,

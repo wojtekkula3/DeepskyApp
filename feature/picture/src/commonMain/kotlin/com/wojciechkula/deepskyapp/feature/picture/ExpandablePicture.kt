@@ -3,12 +3,15 @@ package com.wojciechkula.deepskyapp.feature.picture
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.tappableElement
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.minimumInteractiveComponentSize
@@ -139,6 +142,7 @@ private fun FullscreenPicture(
         onDismissRequest = onDismiss,
         properties = fullscreenDialogProperties()
     ) {
+        LightNavigationBarIcons()
         FullscreenPictureContent(url = url, hdUrl = hdUrl, title = title, onDismiss = onDismiss)
     }
 }
@@ -185,6 +189,14 @@ private fun FullscreenPictureContent(
             )
             sharperUrl?.let { HdPicture(url = it, onLoaded = onPictureLoaded, onSettled = { isLoading = false }) }
         }
+        // A zoomed picture fills the screen, so the three-button bar would sit on the image itself.
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .windowInsetsBottomHeight(WindowInsets.tappableElement)
+                .background(ApodTheme.colors.scrim.copy(alpha = BUTTON_SCRIM_ALPHA))
+        )
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
